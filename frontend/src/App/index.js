@@ -16,7 +16,7 @@ fontawesome.library.add(faFacebook, faGithub, faTwitter, faEnvelope, faCalendar,
 
 class App extends Component {
 	static propTypes = {
-		token: PropTypes.string,	
+		token: PropTypes.string,
 	}
 
 	static defaultProps = {
@@ -32,11 +32,13 @@ class App extends Component {
 		return (
 			<div>
 				<Navigation auth={!!this.props.token} />
-				<Switch>
-					<Route exact path={routes.HOME} component={Home} />
-					<Route exact path={routes.ABOUT} component={About} />
-					<Route component={NotFound} />
-				</Switch>
+				<div className="pageWrap" >
+					<Switch>
+						<Route exact path={routes.HOME} component={Home} />
+						<Route exact path={routes.ABOUT} component={About} />
+						<Route component={NotFound} />
+					</Switch>
+				</div>
 				<Footer />
 			</div>
 		);
