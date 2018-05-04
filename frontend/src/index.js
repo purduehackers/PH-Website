@@ -6,6 +6,7 @@ import store, { history } from './ducks/store';
 import App from './App';
 import 'sanitize.css/sanitize.css';
 import './index.css';
+import './assets/css/bvalidator.css';
 
 render(
 	<Provider store={store}>
