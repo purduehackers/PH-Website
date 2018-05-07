@@ -3,22 +3,30 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+	  "build": "tsc",
     "watch": "tsc -w",
     "serve": "nodemon dist/index.js",
     "start": "./node_modules/.bin/concurrently \"npm run watch\" \"npm run serve\""
   },
   "dependencies": {
+    "bcrypt": "^2.0.1",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "express": "~4.16.0",
     "http-errors": "^1.6.3",
     "jade": "~1.11.0",
-    "morgan": "~1.9.0"
+    "mongoose": "^5.0.17",
+    "morgan": "~1.9.0",
+    "reflect-metadata": "^0.1.12",
+    "typegoose": "^5.1.0"
   },
   "devDependencies": {
+    "@types/bcrypt": "^2.0.0",
     "@types/cookie-parser": "^1.4.1",
     "@types/express": "^4.11.1",
     "@types/http-errors": "^1.6.1",
+    "@types/mongodb": "^3.0.18",
+    "@types/mongoose": "^5.0.12",
     "@types/morgan": "^1.7.35",
     "@types/node": "^10.0.3",
     "concurrently": "^3.5.1",

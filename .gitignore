@@ -60,3 +60,5 @@ dist/
 # dotenv environment variables file
 .env
 
+# MongoDB Dumps
+dump/
