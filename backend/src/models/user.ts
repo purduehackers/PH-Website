@@ -1,4 +1,6 @@
 import * as bcrypt from 'bcrypt';
+import * as jwt from 'jsonwebtoken';
+
 import { prop, Typegoose, ModelType, InstanceType, Ref, pre } from 'typegoose';
 
 enum MemberType {

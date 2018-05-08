@@ -75,10 +75,10 @@
         "no-console":false,
         "curly":false,
         "semicolon": [true, "always"],
-		  "indent": [true, "tabs", 4],
-		  "quotemark": [true, "single", "avoid-escape"],
-		  "no-invalid-this": false,
-		  "max-classes-per-file": false,
+        "indent": [true, "tabs", 4],
+        "quotemark": [true, "single", "avoid-escape"],
+        "max-classes-per-file": false,
+        "prefer-const": [true, {"destructuring": "all"}],
         "no-empty-interface": {"severity": "warning"},
         "no-import-side-effect": {"severity": "warning"},
         "no-var-keyword": {"severity": "warning"},
@@ -87,7 +87,6 @@
         "prefer-for-of": {"severity": "warning"},
         "unified-signatures": {"severity": "warning"},
         "no-unused-variable": {"severity": "warning"},
-        "prefer-const": {"severity": "warning"},
         "trailing-comma": {"severity": "warning"}
     },
     "rulesDirectory": []
