@@ -11,6 +11,7 @@ import * as cors from 'cors';
 // tslint:disable-next-line:no-import-side-effect
 import './config';
 import passportMiddleWare from './middleware/passport';
+import { router as auth } from './routes/auth';
 import { router as home } from './routes/home';
 import { router as users } from './routes/users';
 
@@ -24,6 +25,7 @@ mongoose.connect(DB);
 passportMiddleWare(passport);
 
 api.use('/', home);
+api.use('/auth', auth);
 api.use('/users', users);
 
 app.use(logger('dev'));
@@ -33,6 +35,7 @@ app.use(cookieParser());
 app.use(passport.initialize());
 app.use(cors());
 app.use('/api', api);
+
 // Serves react app, only used in production
 app.use(express.static(path.join(__dirname, '../../frontend/build')));
 app.get('*', (req, res) =>
