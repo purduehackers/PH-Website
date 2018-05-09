@@ -29,9 +29,19 @@ class Footer extends Component {
 					</li>
 				</ul>
 				<h4>
-					Made with <FontAwesomeIcon icon="heart" /> and <FontAwesomeIcon icon="coffee" /> by the Purdue Hackers Team
+					Made with <FontAwesomeIcon icon="heart" /> and <FontAwesomeIcon icon="coffee" /> by
+					the Purdue Hackers Team
 				</h4>
-				<h4>Source <Link to="https://github.com/purdueHackers/MembersPortal" rel="noopener noreferrer" target="_blank">available on GitHub</Link></h4>
+				<h4>
+					Source{' '}
+					<Link
+						to="https://github.com/purdueHackers/MembersPortal"
+						rel="noopener noreferrer"
+						target="_blank"
+					>
+						available on GitHub
+					</Link>
+				</h4>
 			</div>
 		);
 	}

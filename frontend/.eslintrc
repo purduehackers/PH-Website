@@ -1,21 +1,36 @@
 {
 	"parser": "babel-eslint",
 	"extends": "airbnb",
-	"plugins": [
-		"react",
-		"import"
-	],
+	"plugins": ["import", "prettier", "react"],
 	"rules": {
-		"indent": ["error", "tab"],
-		"no-tabs": 0,
+		"indent": ["warn", "tab", { "SwitchCase": 1 }],
+		"no-tabs": "off",
 		"react/jsx-indent": ["error", "tab"],
-		"react/jsx-filename-extension": [1, {
-			"extensions": [".js", ".jsx"]
-		}],
+		"react/jsx-filename-extension": [
+			1,
+			{
+				"extensions": [".js", ".jsx"]
+			}
+		],
+		"react/jsx-indent-props": 0,
+		"react/no-unescaped-entities": "off",
+		"react/forbid-prop-types": "off",
 		"no-console": "off",
 		"jsx-a11y/anchor-is-valid": 0,
 		"react/prefer-stateless-function": 0,
-		"import/first": 0
+		"arrow-parens": "off",
+		"import/first": 0,
+		"no-mixed-spaces-and-tabs": "error",
+		"prettier/prettier": [
+			"error",
+			{
+				"singleQuote": true,
+				"printWidth": 100,
+				"tabWidth": 3,
+				"useTabs": true
+			}
+		],
+		"comma-dangle": "off"
 	},
 	"env": {
 		"browser": true

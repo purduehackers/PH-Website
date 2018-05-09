@@ -10,18 +10,19 @@ import Navigation from '../Navigation';
 import Footer from '../Footer';
 import Home from '../Home';
 import About from '../About';
+import Login from '../Login';
 import NotFound from '../404';
 
 fontawesome.library.add(faFacebook, faGithub, faTwitter, faEnvelope, faCalendar, faCoffee, faHeart);
 
 class App extends Component {
 	static propTypes = {
-		token: PropTypes.string,
-	}
+		token: PropTypes.string
+	};
 
 	static defaultProps = {
-		token: '',
-	}
+		token: ''
+	};
 
 	constructor(props) {
 		super(props);
@@ -32,10 +33,11 @@ class App extends Component {
 		return (
 			<div>
 				<Navigation auth={!!this.props.token} />
-				<div className="pageWrap" >
+				<div className="pageWrap">
 					<Switch>
 						<Route exact path={routes.HOME} component={Home} />
 						<Route exact path={routes.ABOUT} component={About} />
+						<Route exact path={routes.LOGIN} component={Login} />
 						<Route component={NotFound} />
 					</Switch>
 				</div>
@@ -46,7 +48,7 @@ class App extends Component {
 }
 
 const mapStateToProps = state => ({
-	token: state.sessionState.token,
+	token: state.sessionState.token
 });
 
 export default connect(mapStateToProps)(App);

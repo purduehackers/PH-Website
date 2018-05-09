@@ -6,8 +6,8 @@ const Home = () => (
 			<div className="section-container">
 				<h1>Who Are We?</h1>
 				<h3>
-					We are a community of students who collaborate, learn, and build
-					kick-ass technical projects.
+					We are a community of students who collaborate, learn, and build kick-ass technical
+					projects.
 				</h3>
 				<div className="about-img" />
 				<a href="//eepurl.com/MpyV1">
@@ -22,20 +22,19 @@ const Home = () => (
 				<div className="content left">
 					<h3>Hackathons</h3>
 					<p>
-						Hackathons are 36 hour coding competitions and the fastest way to build
-						the project of your dreams. We send buses to hackathons across the
-						country almost every week. While you're hacking, you can get to know
-						representatives from companies like Google, Facebook, Microsoft, and more!
-						Plus, every hackathon is filled to the brim with free food and free swag.
+						Hackathons are 36 hour coding competitions and the fastest way to build the
+						project of your dreams. We send buses to hackathons across the country almost
+						every week. While you're hacking, you can get to know representatives from
+						companies like Google, Facebook, Microsoft, and more! Plus, every hackathon is
+						filled to the brim with free food and free swag.
 					</p>
 					<h3>Social Events</h3>
 					<p>
-						Every few weeks Purdue Hackers hosts events where people
-						hang out, work on projects, share ideas, and learn
-						about cool new technologies. We strive to create an environment
-						where it's easy to meet some of the students at the forefront of
-						innovation at Purdue. We also invite speakers from cutting edge
-						companies in the industry to share their experience with us.
+						Every few weeks Purdue Hackers hosts events where people hang out, work on
+						projects, share ideas, and learn about cool new technologies. We strive to create
+						an environment where it's easy to meet some of the students at the forefront of
+						innovation at Purdue. We also invite speakers from cutting edge companies in the
+						industry to share their experience with us.
 					</p>
 				</div>
 				<div className="event-img" />
@@ -49,27 +48,34 @@ const Home = () => (
 				<div className="content right">
 					<h3>What is hacking?</h3>
 					<p>
-						You&#39;re probably thinking of movies where hackers steal
-						secrets from the FBI. That&#39;s not what we&#39;re about.
-						To us, hacking means using cutting edge technology to create kick-ass projects.
+						You&#39;re probably thinking of movies where hackers steal secrets from the FBI.
+						That&#39;s not what we&#39;re about. To us, hacking means using cutting edge
+						technology to create kick-ass projects.
 					</p>
-					<h3>I missed the callout!<br />Can I still join?</h3>
+					<h3>
+						I missed the callout!<br />Can I still join?
+					</h3>
 					<p>
 						Absolutely! You can find all of our events in the Purdue Hackers
-						<a href="https://www.facebook.com/groups/purduehackers/" rel="noopener noreferrer" target="_blank">facebook group</a>. No prior knowledge or experience is needed, so come say hi!
+						<a
+							href="https://www.facebook.com/groups/purduehackers/"
+							rel="noopener noreferrer"
+							target="_blank"
+						>
+							facebook group
+						</a>. No prior knowledge or experience is needed, so come say hi!
 					</p>
 					<h3>What if I can&#39;t code?</h3>
 					<p>
-						No problem! As long as you&#39;re passionate about how
-						technology can shape the future, you&#39;ll fit right in. We offer
-						lots of events to help teach coding skills, including a semester-long
-						coding bootcamp called Ignite.
+						No problem! As long as you&#39;re passionate about how technology can shape the
+						future, you&#39;ll fit right in. We offer lots of events to help teach coding
+						skills, including a semester-long coding bootcamp called Ignite.
 					</p>
 					<h3>What&#39;s up with the logo?</h3>
 					<p>
-						It&#39;s a glider from Conway&#39;s Game of Life. It&#39;s a
-						universal symbol for hacking and was chosen because it&#39;s the
-						only pattern in the game that can spread life to new areas.
+						It&#39;s a glider from Conway&#39;s Game of Life. It&#39;s a universal symbol for
+						hacking and was chosen because it&#39;s the only pattern in the game that can
+						spread life to new areas.
 					</p>
 				</div>
 			</div>
@@ -79,8 +85,8 @@ const Home = () => (
 			<div className="section-container">
 				<h1>What's Up?</h1>
 				<h3>
-					Get instant access to some of the brightest minds and technical bad
-					asses that inhabit the midwest.
+					Get instant access to some of the brightest minds and technical bad asses that
+					inhabit the midwest.
 				</h3>
 				<div className="sponsor-img" />
 				<a href="mailto:purduehackers@gmail.com">
@@ -90,6 +96,5 @@ const Home = () => (
 		</div>
 	</React.Fragment>
 );
-
 
 export default Home;
