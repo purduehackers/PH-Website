@@ -41,7 +41,7 @@
 		"build": "react-scripts build",
 		"test": "react-scripts test --env=jsdom",
 		"eject": "react-scripts eject",
-		"lint": "./node_modules/.bin/eslint src",
-		"prettier-watch": "npx onchange '**/*.js' -- ./node_modules/.bin/prettier --write {{changed}}"
-	}
+		"lint": "./node_modules/.bin/eslint src"
+	},
+	"proxy": "http://localhost:5000"
 }

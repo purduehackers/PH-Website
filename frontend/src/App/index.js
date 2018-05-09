@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import { Route, Switch } from 'react-router-dom';
 import fontawesome from '@fortawesome/fontawesome';
 import { faFacebook, faGithub, faTwitter } from '@fortawesome/fontawesome-free-brands';
@@ -51,4 +52,4 @@ const mapStateToProps = state => ({
 	token: state.sessionState.token
 });
 
-export default connect(mapStateToProps)(App);
+export default withRouter(connect(mapStateToProps)(App));

@@ -1,4 +1,4 @@
-import { AUTH_USER_SET, DB_USER_SET } from '../actions';
+import { AUTH_USER_SET, AUTH_TOKEN_SET } from '../actions';
 
 export default (
 	state = {
@@ -11,16 +11,16 @@ export default (
 		case AUTH_USER_SET: {
 			return {
 				...state,
-				token: action.token
-			};
-		}
-		case DB_USER_SET: {
-			return {
-				...state,
 				user: {
 					...state.user,
 					...action.user
 				}
+			};
+		}
+		case AUTH_TOKEN_SET: {
+			return {
+				...state,
+				token: action.token
 			};
 		}
 		default:

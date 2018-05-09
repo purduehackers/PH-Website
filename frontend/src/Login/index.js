@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
+import { signIn } from '../ducks/actions';
 import PropTypes from 'prop-types';
 
 // TODO: Add flash messages for error/success
 
 class LoginPage extends Component {
 	static propTypes = {
-		user: PropTypes.object
+		user: PropTypes.object,
+		signIn: PropTypes.func
 	};
 
 	static defaultProps = {
-		user: null
+		user: null,
+		signIn: null
 	};
 
 	constructor(props) {
@@ -26,12 +28,17 @@ class LoginPage extends Component {
 
 	onChange = e => this.setState({ [e.target.id]: e.target.value });
 
-	onSubmit = e => {
+	onSubmit = async e => {
 		e.preventDefault();
-		const { email, password } = this.state;
-		if (!email) return this.setState({ error: 'Please enter your email' });
-		if (!password) return this.setState({ error: 'Please enter your password' });
-		console.log('About to submit:', this.state);
+		try {
+			const { email, password } = this.state;
+			if (!email) return this.setState({ error: 'Please enter your email' });
+			if (!password) return this.setState({ error: 'Please enter your password' });
+			await this.props.signIn(email, password);
+			return this.props.history.push('/'); // eslint-disable-line
+		} catch (err) {
+			return this.setState({ error: err.error });
+		}
 	};
 
 	render() {
@@ -87,4 +94,4 @@ const mapStateToProps = state => ({
 	...state.sessionState
 });
 
-export default connect(mapStateToProps)(LoginPage);
+export default connect(mapStateToProps, { signIn })(LoginPage);
