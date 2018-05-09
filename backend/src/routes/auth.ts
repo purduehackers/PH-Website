@@ -28,19 +28,21 @@ router.post('/signup', async (req, res, next) => {
 });
 
 router.post('/signin', async (req, res, next) => {
-	const { username, password } = req.body;
+	const { email, password } = req.body;
 	try {
-		const user = await User.findOne({ username }).exec();
-		if (!user) return errorRes(res, 401, 'Authentication failed. User not found.');
+		const user = await User.findOne({ email }).exec();
+		if (!user) return errorRes(res, 401, 'User not found.');
 
 		// Check if password matches
-		const isMatch = user.comparePassword(password);
-		if (!isMatch) return errorRes(res, 401, 'Authentication failed. Wrong password.');
+		if (!user.comparePassword(password)) return errorRes(res, 401, 'Wrong password.');
 
+		const u = user.toJSON()
+		delete u.password
 		// If user is found and password is right create a token
-		const token = jwt.sign(user.toJSON(), CONFIG.SECRET);
+		const token = jwt.sign(u, CONFIG.SECRET);
+
 		return successRes(res, {
-			user,
+			user: u,
 			token
 		});
 	} catch (error) {
