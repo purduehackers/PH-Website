@@ -37,7 +37,7 @@ class App extends Component {
 		const { token, user } = this.props;
 		return (
 			<div>
-				<Navigation auth={!!this.props.token} />
+				<Navigation auth={!!token} />
 				<div className="pageWrap">
 					<Switch>
 						<Route exact path={routes.HOME} component={Home} />
