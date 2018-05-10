@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import {} from '../../actions';
+import validator from 'validator';
+import { signUp } from '../../actions';
 
 class SignupPage extends Component {
 	static propTypes = {
@@ -33,15 +34,30 @@ class SignupPage extends Component {
 	onSubmit = async e => {
 		e.preventDefault();
 		try {
-			// const { email, password } = this.state;
-			// if (!email) return this.setState({ error: 'Please enter your email' });
-			// if (!password) return this.setState({ error: 'Please enter your password' });
-			// await this.props.signUp(this.state);
-			// return this.props.history.push('/'); // eslint-disable-line
+			const { email, password, passwordConfirm } = this.state;
+			const graduationYear = parseInt(this.state.graduationYear, 10);
+			if (!email || !validator.isEmail(email))
+				return this.setState({ error: 'Please enter your email' });
+			if (!password) return this.setState({ error: 'Please enter your password' });
+			if (password.length < 5)
+				return this.setState({ error: 'Password must be at least 5 characters' });
+			if (!passwordConfirm) return this.setState({ error: 'Please confirm your password' });
+			if (
+				!graduationYear ||
+				graduationYear < 1869 ||
+				graduationYear > new Date().getFullYear() + 20
+			)
+				return this.setState({ error: 'Please enter a valid graduation year' });
+			if (password !== passwordConfirm)
+				return this.setState({ error: 'Passwords do not match' });
+
 			console.log('About to sign up:', this.state);
-			return null;
+			const resp = await this.props.signUp(this.state);
+			console.log('Signup returned response:', resp);
+			return this.props.history.push('/'); // eslint-disable-line
 		} catch (err) {
-			return this.setState({ error: err.error });
+			console.error('SignUp Page error:', err);
+			return this.setState({ error: err });
 		}
 	};
 
@@ -66,6 +82,8 @@ class SignupPage extends Component {
 									value={this.state.name}
 									className="form-control"
 									onChange={this.onChange}
+									pattern="[a-zA-Z]+ [a-zA-Z]+"
+									title="Please enter first and last name"
 									required
 								/>
 							</label>
@@ -141,4 +159,4 @@ const mapStateToProps = state => ({
 	...state.sessionState
 });
 
-export default connect(mapStateToProps, {})(SignupPage);
+export default connect(mapStateToProps, { signUp })(SignupPage);

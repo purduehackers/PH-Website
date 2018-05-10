@@ -19,6 +19,8 @@
 		"jsx-a11y/anchor-is-valid": 0,
 		"react/prefer-stateless-function": 0,
 		"arrow-parens": "off",
+		"curly": "off",
+		"object-curly-newline": "off",
 		"no-confusing-arrow": "off",
 		"no-unused-expressions": "off",
 		"import/first": 0,

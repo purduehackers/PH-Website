@@ -7,13 +7,14 @@ export const router = express.Router();
 
 router.post('/signup', async (req, res, next) => {
 	try {
-		const { name, email, graduationYear, password, passwordConfirm } = req.body;
+		let { name, email, graduationYear, password, passwordConfirm } = req.body;
 		const maxYear = new Date().getFullYear() + 20;
+		if (typeof graduationYear === 'string') graduationYear = validator.toInt(graduationYear, 10);
 		if (!name) return errorRes(res, 400, 'User must have a full name');
 		if (!email) return errorRes(res, 400, 'User must have an email');
 		if (!validator.isEmail(email)) return errorRes(res, 400, 'Invalid email address');
 		if (!graduationYear) return errorRes(res, 400, 'User must have a graduation year');
-		if (!validator.isNumeric(graduationYear) || graduationYear < 1869 || graduationYear > maxYear)
+		if (graduationYear < 1869 || graduationYear > maxYear)
 			return errorRes(res, 400, `Graduation year must be a number between 1869 and ${maxYear}`);
 		if (!password || password.length < 5)
 			return errorRes(res, 400, 'Password must be more then 5 characters');
@@ -32,7 +33,7 @@ router.post('/signup', async (req, res, next) => {
 			name,
 			validator.normalizeEmail(email) as string,
 			password,
-			validator.toInt(graduationYear, 10)
+			graduationYear
 		);
 		await user.save();
 		const u = user.toJSON();

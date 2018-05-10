@@ -30,6 +30,7 @@ export const signUp = newUser => async dispatch => {
 		dispatch(setUser(response.user));
 		return response;
 	} catch (error) {
+		console.error('Signin error', error.response.data);
 		throw error.response.data;
 	}
 };
