@@ -35,9 +35,11 @@ router.post('/signup', async (req, res, next) => {
 			validator.toInt(graduationYear, 10)
 		);
 		await user.save();
-		const token = jwt.sign(user.toJSON(), CONFIG.SECRET);
+		const u = user.toJSON();
+		delete u.password;
+		const token = jwt.sign(u, CONFIG.SECRET);
 		return successRes(res, {
-			user,
+			user: u,
 			token
 		});
 	} catch (error) {

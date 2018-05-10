@@ -23,8 +23,8 @@ export const createAccount = async (
 
 	if (email.endsWith('.edu')) Object.assign(userBuilder, { emailEdu: email });
 	Object.assign(userBuilder, {
-		
-	})
+		emailPublic: email
+	});
 
 	return new User(userBuilder);
 };

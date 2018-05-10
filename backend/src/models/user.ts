@@ -31,7 +31,7 @@ enum Gender {
 class User extends Typegoose {
 	@prop({ required: true }) public name: string;
 	@prop({ required: true }) public email: string;
-	@prop({ required: true, default: new Date().getFullYear() + 4 }) public graduationYear: number;
+	@prop({ required: true }) public graduationYear: number;
 	@prop({ required: true }) public password: string;
 	@prop({ enum: MemberType, default: MemberType.MEMBER }) public memberStatus: MemberType;
 	@prop({ enum: Gender }) public gender: Gender;
