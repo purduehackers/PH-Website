@@ -1,5 +1,6 @@
 export default {
 	HOME: '/',
 	ABOUT: '/about',
-	LOGIN: '/login'
+	LOGIN: '/login',
+	PROFILE: '/profile'
 };

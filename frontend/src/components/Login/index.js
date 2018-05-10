@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { signIn } from '../ducks/actions';
+import { signIn } from '../../actions';
 import PropTypes from 'prop-types';
 
 // TODO: Add flash messages for error/success

@@ -6,7 +6,8 @@ import fontawesome from '@fortawesome/fontawesome';
 import { faFacebook, faGithub, faTwitter } from '@fortawesome/fontawesome-free-brands';
 import { faEnvelope, faCalendar, faCoffee, faHeart } from '@fortawesome/fontawesome-free-solid';
 import PropTypes from 'prop-types';
-import routes from '../constants';
+import routes from '../../constants';
+import { ProtectedRoute } from '../Common';
 import Navigation from '../Navigation';
 import Footer from '../Footer';
 import Home from '../Home';
@@ -18,11 +19,13 @@ fontawesome.library.add(faFacebook, faGithub, faTwitter, faEnvelope, faCalendar,
 
 class App extends Component {
 	static propTypes = {
-		token: PropTypes.string
+		token: PropTypes.string,
+		user: PropTypes.object // eslint-disable-line
 	};
 
 	static defaultProps = {
-		token: ''
+		token: '',
+		user: null
 	};
 
 	constructor(props) {
@@ -31,6 +34,7 @@ class App extends Component {
 	}
 
 	render() {
+		const { token, user } = this.props;
 		return (
 			<div>
 				<Navigation auth={!!this.props.token} />
@@ -49,7 +53,7 @@ class App extends Component {
 }
 
 const mapStateToProps = state => ({
-	token: state.sessionState.token
+	...state.sessionState
 });
 
 export default withRouter(connect(mapStateToProps)(App));
