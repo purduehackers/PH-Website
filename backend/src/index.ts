@@ -24,16 +24,18 @@ mongoose.connect(DB);
 
 passportMiddleWare(passport);
 
+app.use(logger('dev'));
+app.use(express.json());
+// app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(passport.initialize());
+app.use(cors());
+
 api.use('/', home);
 api.use('/auth', auth);
 api.use('/users', users);
 
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(passport.initialize());
-app.use(cors());
 app.use('/api', api);
 
 // Serves react app, only used in production

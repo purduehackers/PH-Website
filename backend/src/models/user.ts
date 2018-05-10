@@ -29,26 +29,18 @@ enum Gender {
 	}
 })
 class User extends Typegoose {
-	@prop({ required: true })
-	public name: string;
-	@prop({ required: true })
-	public username: string;
-	@prop() public privateProfile: boolean;
-	@prop({ required: true })
-	public email: string;
+	@prop({ required: true }) public name: string;
+	@prop({ required: true }) public email: string;
+	@prop({ required: true, default: new Date().getFullYear() + 4 }) public graduationYear: number;
+	@prop({ required: true }) public password: string;
+	@prop({ enum: MemberType, default: MemberType.MEMBER }) public memberStatus: MemberType;
+	@prop({ enum: Gender }) public gender: Gender;
+	@prop({ default: false }) public unsubscribed: boolean;
+	@prop({ default: false }) public privateProfile: boolean;
 	@prop() public emailPublic: string;
 	@prop() public emailEdu: string;
 	@prop() public phone: string;
-	@prop() public unsubscribed: boolean;
-	@prop({ required: true })
-	public password: string;
 	@prop() public setupEmailSent: Date;
-	@prop({ enum: MemberType })
-	public memberStatus: MemberType;
-	@prop({ enum: Gender })
-	public gender: Gender;
-	@prop({ required: true })
-	public graduationYear: number;
 	@prop() public major: string;
 	@prop() public picture: string;
 	@prop() public description: string;
@@ -65,7 +57,7 @@ class User extends Typegoose {
 	@prop() public linktoresume: string;
 
 	@instanceMethod
-	comparePassword(this: InstanceType<User>, password: string) {
+	public comparePassword(this: InstanceType<User>, password: string) {
 		return bcrypt.compareSync(password, this.password);
 	}
 }
