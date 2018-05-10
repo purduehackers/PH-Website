@@ -11,7 +11,6 @@ import { ProtectedRoute } from '../Common';
 import Navigation from '../Navigation';
 import Footer from '../Footer';
 import Home from '../Home';
-import About from '../About';
 import Login from '../Login';
 import SignUp from '../Signup';
 import NotFound from '../404';
@@ -42,7 +41,6 @@ class App extends Component {
 				<div className="pageWrap">
 					<Switch>
 						<Route exact path={routes.HOME} component={Home} />
-						<Route exact path={routes.ABOUT} component={About} />
 						<Route exact path={routes.LOGIN} component={Login} />
 						<Route exact path={routes.SIGNUP} component={SignUp} />
 						<Route component={NotFound} />
