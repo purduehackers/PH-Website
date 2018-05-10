@@ -13,6 +13,7 @@ import Footer from '../Footer';
 import Home from '../Home';
 import About from '../About';
 import Login from '../Login';
+import SignUp from '../Signup';
 import NotFound from '../404';
 
 fontawesome.library.add(faFacebook, faGithub, faTwitter, faEnvelope, faCalendar, faCoffee, faHeart);
@@ -34,7 +35,7 @@ class App extends Component {
 	}
 
 	render() {
-		const { token, user } = this.props;
+		const { token } = this.props;
 		return (
 			<div>
 				<Navigation auth={!!token} />
@@ -43,6 +44,7 @@ class App extends Component {
 						<Route exact path={routes.HOME} component={Home} />
 						<Route exact path={routes.ABOUT} component={About} />
 						<Route exact path={routes.LOGIN} component={Login} />
+						<Route exact path={routes.SIGNUP} component={SignUp} />
 						<Route component={NotFound} />
 					</Switch>
 				</div>
