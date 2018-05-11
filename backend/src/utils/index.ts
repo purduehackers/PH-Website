@@ -1,4 +1,4 @@
-import { UserModel as User } from '../models/user';
+import { UserModel as User, Permissions } from '../models/user';
 
 export const successRes = (res, response) => res.json({ status: 200, response });
 
@@ -17,14 +17,13 @@ export const createAccount = async (
 	const userBuilder = {
 		name,
 		email,
+		emailPublic: email,
 		password,
-		graduationYear
+		graduationYear,
+		permissions: [Permissions.NONE]
 	};
 
 	if (email.endsWith('.edu')) Object.assign(userBuilder, { emailEdu: email });
-	Object.assign(userBuilder, {
-		emailPublic: email
-	});
 
 	return new User(userBuilder);
 };

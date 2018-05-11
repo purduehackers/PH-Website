@@ -1,18 +1,35 @@
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
-import { prop, Typegoose, ModelType, InstanceType, Ref, pre, instanceMethod } from 'typegoose';
+import {
+	prop,
+	Typegoose,
+	ModelType,
+	InstanceType,
+	Ref,
+	pre,
+	instanceMethod,
+	arrayProp
+} from 'typegoose';
 
-enum MemberType {
+export enum MemberType {
 	MEMBER,
 	ALUMNI,
 	INACTIVE
 }
 
-enum Gender {
+export enum Gender {
 	MALE,
 	FEMALE,
 	OTHER,
 	NO
+}
+
+export enum Permissions {
+	PERMISSIONS,
+	EVENTS,
+	CREDENTIALS,
+	MEMBERS,
+	NONE
 }
 
 @pre<User>('save', async function(next) {
@@ -29,14 +46,24 @@ enum Gender {
 	}
 })
 class User extends Typegoose {
-	@prop({ required: true }) public name: string;
-	@prop({ required: true }) public email: string;
-	@prop({ required: true }) public graduationYear: number;
-	@prop({ required: true }) public password: string;
-	@prop({ enum: MemberType, default: MemberType.MEMBER }) public memberStatus: MemberType;
-	@prop({ enum: Gender }) public gender: Gender;
-	@prop({ default: false }) public unsubscribed: boolean;
-	@prop({ default: false }) public privateProfile: boolean;
+	@prop({ required: true })
+	public name: string;
+	@prop({ required: true, index: true })
+	public email: string;
+	@prop({ required: true })
+	public graduationYear: number;
+	@prop({ required: true, select: false })
+	public password: string;
+	@prop({ enum: MemberType, default: MemberType.MEMBER })
+	public memberStatus: MemberType;
+	@arrayProp({ enum: Permissions, items: Number })
+	public permissions: Permissions[];
+	@prop({ enum: Gender })
+	public gender: Gender;
+	@prop({ default: false })
+	public unsubscribed: boolean;
+	@prop({ default: false })
+	public privateProfile: boolean;
 	@prop() public emailPublic: string;
 	@prop() public emailEdu: string;
 	@prop() public phone: string;
