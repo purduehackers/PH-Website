@@ -11,6 +11,7 @@ import { ProtectedRoute } from '../Common';
 import Navigation from '../Navigation';
 import Footer from '../Footer';
 import Home from '../Home';
+import Members from '../Members';
 import Login from '../Login';
 import Logout from '../Logout';
 import SignUp from '../Signup';
@@ -39,7 +40,7 @@ class App extends Component {
 	}
 
 	render() {
-		const { token } = this.props;
+		const { token, user } = this.props;
 		return (
 			<div>
 				<Navigation auth={!!token} />
@@ -49,6 +50,13 @@ class App extends Component {
 						<Route exact path={routes.LOGIN} component={Login} />
 						<Route exact path={routes.LOGOUT} component={Logout} />
 						<Route exact path={routes.SIGNUP} component={SignUp} />
+						<ProtectedRoute
+							token={token}
+							user={user}
+							exact
+							path={routes.MEMBERS}
+							component={Members}
+						/>
 						<Route component={NotFound} />
 					</Switch>
 				</div>

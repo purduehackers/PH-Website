@@ -58,6 +58,23 @@ export const signOut = () => dispatch => {
 	console.log('Signed out');
 };
 
+export const fetchMembers = async params => {
+	try {
+		const token = getToken();
+		const {
+			data: { response }
+		} = await axios.get('/api/members', {
+			params,
+			headers: {
+				headers: { Authorization: `Bearer ${token}` }
+			}
+		});
+		return response;
+	} catch (error) {
+		throw error.response.data;
+	}
+};
+
 export const localStorageChanged = e => dispatch => {
 	console.log('Local storage changed event:', e);
 	dispatch(setToken(getToken()));
