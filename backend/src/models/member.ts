@@ -32,7 +32,7 @@ export enum Permissions {
 	NONE
 }
 
-@pre<User>('save', async function(next) {
+@pre<Member>('save', async function(next) {
 	if (this.isModified('password') || this.isNew) {
 		try {
 			const salt = await bcrypt.genSalt(10);
@@ -45,7 +45,7 @@ export enum Permissions {
 		return next();
 	}
 })
-class User extends Typegoose {
+class Member extends Typegoose {
 	@prop({ required: true })
 	public name: string;
 	@prop({ required: true, index: true })
@@ -84,9 +84,9 @@ class User extends Typegoose {
 	@prop() public linktoresume: string;
 
 	@instanceMethod
-	public comparePassword(this: InstanceType<User>, password: string) {
+	public comparePassword(this: InstanceType<Member>, password: string) {
 		return bcrypt.compareSync(password, this.password);
 	}
 }
 
-export const UserModel = new User().getModelForClass(User, { schemaOptions: { timestamps: true } });
+export const MemberModel = new Member().getModelForClass(Member, { schemaOptions: { timestamps: true } });

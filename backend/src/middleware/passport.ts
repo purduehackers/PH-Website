@@ -1,6 +1,6 @@
 import * as passport from 'passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';
-import { UserModel as User } from '../models/user';
+import { MemberModel as Member } from '../models/member';
 import { errorRes } from '../utils';
 
 passport.serializeUser<any, any>((user, done) => {
@@ -8,13 +8,13 @@ passport.serializeUser<any, any>((user, done) => {
 });
 
 passport.deserializeUser((id, done) =>
-	User.findById(id, (err, user) => {
+	Member.findById(id, (err, user) => {
 		done(err, user);
 	})
 );
 
-export default passport => {
-	passport.use(
+export default pass => {
+	pass.use(
 		new Strategy(
 			{
 				jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -22,7 +22,7 @@ export default passport => {
 			},
 			async (payload, done) => {
 				try {
-					const user = await User.findById(payload._id).exec();
+					const user = await Member.findById(payload._id).exec();
 					return user ? done(null, user) : done(null, false);
 				} catch (error) {
 					console.error('Strategy error:', error);
