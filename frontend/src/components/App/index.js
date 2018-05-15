@@ -14,6 +14,7 @@ import Home from '../Home';
 import Members from '../Members';
 import Events from '../Events';
 import Calendar from '../Calendar';
+import AnvilWifi from '../AnvilWifi';
 import Login from '../Login';
 import Logout from '../Logout';
 import SignUp from '../Signup';
@@ -66,6 +67,13 @@ class App extends Component {
 							exact
 							path={routes.EVENTS}
 							component={Events}
+						/>
+						<ProtectedRoute
+							token={token}
+							user={user}
+							exact
+							path={routes.ANVIL_WIFI}
+							component={AnvilWifi}
 						/>
 						<Route component={NotFound} />
 					</Switch>
