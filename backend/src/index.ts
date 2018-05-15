@@ -15,9 +15,9 @@ import passportMiddleWare from './middleware/passport';
 import { router as auth } from './routes/auth';
 import { router as home } from './routes/home';
 import { router as members } from './routes/members';
+import { router as events } from './routes/events';
 
 export const app = express();
-export const api = express.Router();
 export const server = http.createServer(app);
 const { PORT, DB } = CONFIG;
 
@@ -33,11 +33,10 @@ app.use(passport.initialize());
 app.use(cors());
 
 app.use(paginate.middleware(20, 50));
-api.use('/', home);
-api.use('/auth', auth);
-api.use('/members', members);
-
-app.use('/api', api);
+app.use('/api', home);
+app.use('/api/auth', auth);
+app.use('/api/members', members);
+app.use('/api/events', events);
 
 // Serves react app, only used in production
 app.use(express.static(path.join(__dirname, '../../frontend/build')));

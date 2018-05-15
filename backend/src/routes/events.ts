@@ -13,13 +13,13 @@ router.get('/', async (req, res, next) => {
 		// tslint:disable-next-line
 		const skip = req.skip;
 		// tslint:disable-next-line:triple-equals
-		const order = req.query.order == '-1' ? -1 : 1;
-		let sortBy = req.query.sortBy || 'name';
+		const order = req.query.order == '1' ? 1 : -1;
+		let sortBy = req.query.sortBy || 'created_at';
 		let contains = false;
 		Event.schema.eachPath(path => {
 			if (path.toLowerCase() === sortBy.toLowerCase()) contains = true;
 		});
-		if (!contains) sortBy = 'name';
+		if (!contains) sortBy = 'created_at';
 
 		const [results, itemCount] = await Promise.all([
 			Event.find()
@@ -35,7 +35,7 @@ router.get('/', async (req, res, next) => {
 
 		return successRes(res, {
 			has_more: paginate.hasNextPages(req)(pageCount),
-			members: results,
+			events: results,
 			pages: paginate.getArrayPages(req)(5, pageCount, req.query.page)
 		});
 	} catch (error) {

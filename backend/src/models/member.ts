@@ -45,7 +45,7 @@ export enum Permissions {
 		return next();
 	}
 })
-class Member extends Typegoose {
+export class Member extends Typegoose {
 	@prop({ required: true })
 	public name: string;
 	@prop({ required: true, index: true })
