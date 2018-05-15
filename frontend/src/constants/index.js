@@ -9,7 +9,7 @@ export default {
 	CREATE_EVENT: '/events/create',
 	MEMBERS: '/members',
 	MEMBER: '/member:id',
-	CALENDER: '/calender',
+	CALENDAR: '/calendar',
 	REPORTS: '/reports',
 	PERMISSIONS: '/permissions',
 	CREDENTIALS: '/credentials',

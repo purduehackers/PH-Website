@@ -7,7 +7,7 @@ const AuthNav = () => (
 		<Link to="/profile">Profile</Link>
 		<Link to="/members">Members</Link>
 		<Link to="/events">Events</Link>
-		<Link to="/calender">Calender</Link>
+		<Link to="/calendar">Calendar</Link>
 		<Link to="/logout">Logout</Link>
 	</React.Fragment>
 );
