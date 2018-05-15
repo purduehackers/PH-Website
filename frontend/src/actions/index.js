@@ -75,6 +75,23 @@ export const fetchMembers = async params => {
 	}
 };
 
+export const fetchEvents = async params => {
+	try {
+		const token = getToken();
+		const {
+			data: { response }
+		} = await axios.get('/api/events', {
+			params,
+			headers: {
+				headers: { Authorization: `Bearer ${token}` }
+			}
+		});
+		return response;
+	} catch (error) {
+		throw error.response.data;
+	}
+};
+
 export const localStorageChanged = e => dispatch => {
 	console.log('Local storage changed event:', e);
 	dispatch(setToken(getToken()));

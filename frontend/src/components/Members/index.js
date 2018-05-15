@@ -6,6 +6,7 @@ import routes from '../../constants';
 import { fetchMembers } from '../../actions';
 
 // TODO: Implement pagination
+// TODO: Implement permissions
 
 class MembersPage extends Component {
 	constructor(props) {

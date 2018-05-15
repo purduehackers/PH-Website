@@ -32,7 +32,7 @@ class MemberTable extends Component {
 					</thead>
 					<tbody>
 						{members &&
-							members.map((member, i) => (
+							members.map(member => (
 								<tr key={member._id} id={member._id} onClick={this.onClick}>
 									<td className="member-icon">
 										<img src={member.picture} alt="" className="member-icon" />
