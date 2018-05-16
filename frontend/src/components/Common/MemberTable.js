@@ -12,10 +12,7 @@ class MemberTable extends Component {
 		push: null
 	};
 
-	onClick = e => {
-		console.log('Trying to go to:', e.target.id);
-		this.props.push(`/member/${e.target.id}`);
-	};
+	onClick = id => () => this.props.push(`/member/${id}`);
 
 	render() {
 		const { members } = this.props;
@@ -33,7 +30,7 @@ class MemberTable extends Component {
 					<tbody>
 						{members &&
 							members.map(member => (
-								<tr key={member._id} id={member._id} onClick={this.onClick}>
+								<tr key={member._id} id={member._id} onClick={this.onClick(member._id)}>
 									<td className="member-icon">
 										<img src={member.picture} alt="" className="member-icon" />
 									</td>

@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+const formatDate = date =>
+	new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
 class EventTable extends Component {
 	static propTypes = {
 		events: PropTypes.array,
@@ -12,10 +15,7 @@ class EventTable extends Component {
 		push: null
 	};
 
-	onClick = e => {
-		console.log('Trying to go to:', e.target.id);
-		this.props.push(`/event/${e.target.id}`);
-	};
+	onClick = id => () => this.props.push(`/event/${id}`);
 
 	render() {
 		const { events } = this.props;
@@ -33,9 +33,9 @@ class EventTable extends Component {
 					<tbody>
 						{events &&
 							events.map(event => (
-								<tr key={event._id} id={event._id} onClick={this.onClick}>
+								<tr key={event._id + 1} id={event._id} onClick={this.onClick(event._id)}>
 									<td>{event.name}</td>
-									<td>{new Date(event.created_at).toDateString()}</td>
+									<td>{formatDate(event.created_at)}</td>
 									<td>{event.location}</td>
 									<td>{event.members}</td>
 								</tr>

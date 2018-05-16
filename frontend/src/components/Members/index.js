@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import MemberTable from '../Common/MemberTable';
@@ -9,6 +10,16 @@ import { fetchMembers } from '../../actions';
 // TODO: Implement permissions
 
 class MembersPage extends Component {
+	static propTypes = {
+		history: PropTypes.shape({
+			push: PropTypes.func
+		})
+	};
+
+	static defaultProps = {
+		history: null
+	};
+
 	constructor(props) {
 		super(props);
 		this.state = {
