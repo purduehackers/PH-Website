@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import { hasPermission } from '../../constants';
+import { CustomRedirect } from '../Common';
 
 export default class extends PureComponent {
 	render = () => {
@@ -10,7 +11,11 @@ export default class extends PureComponent {
 				{...rest}
 				render={props => {
 					const allowed = roles ? roles.every(role => hasPermission(user, role)) : true;
-					return allowed && token && user ? <Component {...props} /> : <Redirect to="/" />;
+					return allowed && token && user ? (
+						<Component {...props} />
+					) : (
+						<CustomRedirect to="/" />
+					);
 				}}
 			/>
 		);

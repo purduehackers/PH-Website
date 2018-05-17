@@ -57,7 +57,6 @@ router.post('/login', async (req, res, next) => {
 			.populate({ path: 'permissions', model: Permission })
 			.exec();
 		if (!user) return errorRes(res, 401, 'Member not found.');
-		console.log('User', user);
 
 		// Check if password matches
 		if (!user.comparePassword(password)) return errorRes(res, 401, 'Wrong password.');

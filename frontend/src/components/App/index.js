@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 import routes from '../../constants';
 import { ProtectedRoute } from '../Common';
 import Navigation from '../Navigation';
+import FlashMessage from '../FlashMessage';
 import Footer from '../Footer';
 import Home from '../Home';
 import Members from '../Members';
@@ -21,7 +22,7 @@ import Login from '../Login';
 import Logout from '../Logout';
 import SignUp from '../Signup';
 import NotFound from '../404';
-import { localStorageChanged } from '../../actions';
+import { localStorageChanged, clearFlashMessages } from '../../actions';
 
 fontawesome.library.add(faFacebook, faGithub, faTwitter, faEnvelope, faCalendar, faCoffee, faHeart);
 
@@ -29,6 +30,10 @@ class App extends Component {
 	static propTypes = {
 		token: PropTypes.string,
 		user: PropTypes.object,
+		history: PropTypes.shape({
+			listen: PropTypes.func
+		}).isRequired,
+		clearFlashMessages: PropTypes.func.isRequired,
 		localStorageChanged: PropTypes.func.isRequired
 	};
 
@@ -40,6 +45,7 @@ class App extends Component {
 	constructor(props) {
 		super(props);
 		window.addEventListener('storage', this.props.localStorageChanged);
+		this.props.history.listen(() => this.props.clearFlashMessages());
 		console.log('App props:', this.props);
 	}
 
@@ -49,6 +55,7 @@ class App extends Component {
 			<div>
 				<Navigation auth={!!token} id={user ? user._id : null} />
 				<div className="pageWrap">
+					<FlashMessage />
 					<Switch>
 						<Route exact path={routes.HOME} component={Home} />
 						<Route exact path={routes.LOGIN} component={Login} />
@@ -56,27 +63,9 @@ class App extends Component {
 						<Route exact path={routes.SIGNUP} component={SignUp} />
 						<Route exact path={routes.CALENDAR} component={Calendar} />
 						<Route exact path={routes.DEV} component={Dev} />
-						<ProtectedRoute
-							token={token}
-							user={user}
-							exact
-							path={routes.MEMBERS}
-							component={Members}
-						/>
-						<ProtectedRoute
-							token={token}
-							user={user}
-							exact
-							path={routes.MEMBER}
-							component={Member}
-						/>
-						<ProtectedRoute
-							token={token}
-							user={user}
-							exact
-							path={routes.EVENTS}
-							component={Events}
-						/>
+						<Route exact path={routes.MEMBERS} component={Members} />
+						<Route exact path={routes.MEMBER} component={Member} />
+						<Route exact path={routes.EVENTS} component={Events} />
 						<ProtectedRoute
 							token={token}
 							user={user}
@@ -97,4 +86,6 @@ const mapStateToProps = state => ({
 	...state.sessionState
 });
 
-export default withRouter(connect(mapStateToProps, { localStorageChanged })(App));
+export default withRouter(
+	connect(mapStateToProps, { localStorageChanged, clearFlashMessages })(App)
+);

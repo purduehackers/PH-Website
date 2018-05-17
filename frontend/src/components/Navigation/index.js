@@ -15,6 +15,9 @@ const AuthNav = ({ id }) => (
 
 const NonAuthNav = () => (
 	<React.Fragment>
+		<Link to="/members">Members</Link>
+		<Link to="/events">Events</Link>
+		<Link to="/calendar">Calendar</Link>
 		<Link to="/login">Login</Link>
 		<Link to="/signup">Join</Link>
 	</React.Fragment>

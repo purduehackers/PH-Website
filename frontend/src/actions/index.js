@@ -3,12 +3,6 @@ import axios from 'axios';
 // Helper functions
 export const getToken = () => localStorage.getItem('token');
 export const getCurrentUser = () => JSON.parse(localStorage.getItem('user'));
-
-// Actions
-export const AUTH_USER_SET = 'AUTH_USER_SET';
-export const AUTH_TOKEN_SET = 'AUTH_TOKEN_SET';
-
-// Dispatchers
 const makeDispatcher = (type, ...argNames) => (...args) => {
 	const action = { type };
 	argNames.forEach((arg, index) => {
@@ -17,8 +11,19 @@ const makeDispatcher = (type, ...argNames) => (...args) => {
 	return action;
 };
 
+// Actions
+export const AUTH_USER_SET = 'AUTH_USER_SET';
+export const AUTH_TOKEN_SET = 'AUTH_TOKEN_SET';
+
+export const FLASH_GREEN_SET = 'FLASH_GREEN_SET';
+export const FLASH_RED_SET = 'FLASH_RED_SET';
+
+// Dispatchers
 const setUser = makeDispatcher(AUTH_USER_SET, 'user');
 const setToken = makeDispatcher(AUTH_TOKEN_SET, 'token');
+
+const setGreenFlash = makeDispatcher(FLASH_GREEN_SET, 'msgGreen');
+const setRedFlash = makeDispatcher(FLASH_RED_SET, 'msgRed');
 
 // Creators
 export const signUp = newUser => async dispatch => {
@@ -56,6 +61,15 @@ export const signOut = () => dispatch => {
 	dispatch(setToken(null));
 	dispatch(setUser(null));
 	console.log('Signed out');
+};
+
+export const sendFlashMessage = (msg, type = 'red') => dispatch => {
+	type === 'red' ? dispatch(setRedFlash(msg)) : dispatch(setGreenFlash(msg));
+};
+
+export const clearFlashMessages = () => dispatch => {
+	dispatch(setGreenFlash(''));
+	dispatch(setRedFlash(''));
 };
 
 export const fetchMembers = async params => {
