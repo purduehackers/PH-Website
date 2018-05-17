@@ -7,7 +7,7 @@ import { faFacebook, faGithub, faTwitter } from '@fortawesome/fontawesome-free-b
 import { faEnvelope, faCalendar, faCoffee, faHeart } from '@fortawesome/fontawesome-free-solid';
 import PropTypes from 'prop-types';
 import routes from '../../constants';
-import { ProtectedRoute } from '../Common';
+import { ProtectedRoute, CustomRedirect } from '../Common';
 import Navigation from '../Navigation';
 import FlashMessage from '../FlashMessage';
 import Footer from '../Footer';
@@ -73,7 +73,7 @@ class App extends Component {
 							path={routes.ANVIL_WIFI}
 							component={AnvilWifi}
 						/>
-						<Route component={NotFound} />
+						<Route render={() => <CustomRedirect msgRed="Error: Page Not Found" />} />
 					</Switch>
 				</div>
 				<Footer />

@@ -4,8 +4,13 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import routes, { memberMatches } from '../../constants';
-import { fetchMember, fetchMemberEvents, fetchMemberLocations } from '../../actions';
-import { SocialMediaPanel, EventsAttendedTable, ProfilePanel } from '../Common';
+import {
+	fetchMember,
+	fetchMemberEvents,
+	fetchMemberLocations,
+	sendFlashMessage
+} from '../../actions';
+import { SocialMediaPanel, EventsAttendedTable, ProfilePanel, CustomRedirect } from '../Common';
 
 class MemberPage extends Component {
 	static propTypes = {
@@ -17,6 +22,7 @@ class MemberPage extends Component {
 		history: PropTypes.shape({
 			push: PropTypes.func
 		}).isRequired,
+		flash: PropTypes.func.isRequired,
 		user: PropTypes.shape({
 			permissions: PropTypes.array
 		}).isRequired
@@ -28,39 +34,46 @@ class MemberPage extends Component {
 			member: null,
 			events: [],
 			locations: [],
-			memberMatched: memberMatches(this.props.user, this.props.match.params.id)
+			memberMatched: memberMatches(this.props.user, this.props.match.params.id),
+			notFound: false
 		};
 		console.log('MemberPage props:', this.props);
 	}
 
 	componentDidMount = () => {
-		const { id } = this.props.match.params;
+		const {
+			match: {
+				params: { id }
+			},
+			flash
+		} = this.props;
 		fetchMember(id)
 			.then(member => {
 				console.log('MemberPage fetched member:', member);
-				this.setState({ member });
+				member ? this.setState({ member }) : this.setState({ notFound: true });
 			})
-			.catch(error => this.setState({ error }));
+			.catch(() => this.setState({ notFound: true }));
 
 		fetchMemberEvents(id)
 			.then(events => {
 				console.log('MemberPage fetched events:', events);
 				this.setState({ events });
 			})
-			.catch(error => this.setState({ error }));
+			.catch(err => flash(err.error));
 		fetchMemberLocations(id)
 			.then(locations => {
 				console.log('MemberPage fetched locations:', locations);
 				this.setState({ locations });
 			})
-			.catch(error => this.setState({ error }));
+			.catch(err => flash(err.error));
 	};
 
 	onEventClick = id => () => this.props.history.push(`/event/${id}`);
 
 	render() {
-		const { member, events, locations, memberMatched } = this.state;
-		if (!member) return <div>Loading...</div>;
+		const { member, events, locations, memberMatched, notFound } = this.state;
+		if (notFound) return <CustomRedirect msgRed="Error. Member not found" />;
+		if (!member) return null;
 		return (
 			<div>
 				<Helmet>
@@ -203,4 +216,4 @@ const mapStateToProps = state => ({
 	...state.sessionState
 });
 
-export default connect(mapStateToProps, {})(MemberPage);
+export default connect(mapStateToProps, { flash: sendFlashMessage })(MemberPage);

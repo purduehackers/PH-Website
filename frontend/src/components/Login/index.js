@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 class LoginPage extends Component {
 	static propTypes = {
-		sendFlashMessage: PropTypes.func.isRequired,
+		flash: PropTypes.func.isRequired,
 		history: PropTypes.shape({
 			push: PropTypes.func
 		}).isRequired,
@@ -26,16 +26,17 @@ class LoginPage extends Component {
 
 	onSubmit = async e => {
 		e.preventDefault();
+		const { email, password } = this.state;
+		const { flash } = this.props;
 		try {
-			const { email, password } = this.state;
-			if (!email) return this.props.sendFlashMessage('Please enter your email');
-			if (!password) return this.props.sendFlashMessage('Please enter your password');
+			if (!email) return flash('Please enter your email');
+			if (!password) return flash('Please enter your password');
 			const { user } = await this.props.signIn(email, password);
 			console.log('Signed in user:', user);
 			this.props.history.push('/');
-			return this.props.sendFlashMessage(`Welcome ${user.name}!`, 'green');
+			return flash(`Welcome ${user.name}!`, 'green');
 		} catch (err) {
-			return this.props.sendFlashMessage(err.error);
+			return flash(err.error);
 		}
 	};
 
@@ -86,4 +87,4 @@ const mapStateToProps = state => ({
 	...state.sessionState
 });
 
-export default connect(mapStateToProps, { signIn, sendFlashMessage })(LoginPage);
+export default connect(mapStateToProps, { signIn, flash: sendFlashMessage })(LoginPage);

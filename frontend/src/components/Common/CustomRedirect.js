@@ -2,22 +2,33 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { sendFlashMessage } from '../../actions';
 
 class CustomRedirect extends Component {
 	static propTypes = {
-		to: PropTypes.string.isRequired,
-		msg: PropTypes.string
+		to: PropTypes.string,
+		flash: PropTypes.func.isRequired,
+		msgGreen: PropTypes.string,
+		msgRed: PropTypes.string
 	};
 
 	static defaultProps = {
-		msg: ''
+		msgGreen: '',
+		msgRed: '',
+		to: '/'
+	};
+
+	constructor(props) {
+		super(props);
+		console.log('CustomRedirect props:', props);
+	}
+
+	componentDidMount = () => {
+		this.props.flash(this.props.msgRed);
+		this.props.flash(this.props.msgGreen, 'green');
 	};
 
 	render = () => <Redirect to={this.props.to} />;
 }
 
-const mapStateToProps = state => ({
-	...state.sessionState
-});
-
-export default connect(mapStateToProps)(CustomRedirect);
+export default connect(null, { flash: sendFlashMessage })(CustomRedirect);

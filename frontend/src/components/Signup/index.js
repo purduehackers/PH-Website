@@ -2,12 +2,16 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import validator from 'validator';
-import { signUp } from '../../actions';
+import { signUp, sendFlashMessage } from '../../actions';
 
 class SignupPage extends Component {
 	static propTypes = {
 		user: PropTypes.object,
-		signUp: PropTypes.func
+		signUp: PropTypes.func,
+		history: PropTypes.shape({
+			push: PropTypes.func
+		}).isRequired,
+		flash: PropTypes.func.isRequired
 	};
 
 	static defaultProps = {
@@ -23,8 +27,7 @@ class SignupPage extends Component {
 			email: user ? user.email : '',
 			password: '',
 			passwordConfirm: '',
-			graduationYear: user ? user.graduationYear : new Date().getFullYear() + 4,
-			error: null
+			graduationYear: user ? user.graduationYear : new Date().getFullYear() + 4
 		};
 		console.log('Signup page props', this.props);
 	}
@@ -33,31 +36,30 @@ class SignupPage extends Component {
 
 	onSubmit = async e => {
 		e.preventDefault();
+		const { email, password, passwordConfirm } = this.state;
+		const { flash } = this.props;
 		try {
-			const { email, password, passwordConfirm } = this.state;
 			const graduationYear = parseInt(this.state.graduationYear, 10);
-			if (!email || !validator.isEmail(email))
-				return this.setState({ error: 'Please enter your email' });
-			if (!password) return this.setState({ error: 'Please enter your password' });
-			if (password.length < 5)
-				return this.setState({ error: 'Password must be at least 5 characters' });
-			if (!passwordConfirm) return this.setState({ error: 'Please confirm your password' });
+			if (!email || !validator.isEmail(email)) return flash('Please enter your email');
+			if (!password) return flash('Please enter your password');
+			if (password.length < 5) return flash('Password must be at least 5 characters');
+			if (!passwordConfirm) return flash('Please confirm your password');
 			if (
 				!graduationYear ||
 				graduationYear < 1869 ||
 				graduationYear > new Date().getFullYear() + 20
 			)
-				return this.setState({ error: 'Please enter a valid graduation year' });
-			if (password !== passwordConfirm)
-				return this.setState({ error: 'Passwords do not match' });
+				return flash('Please enter a valid graduation year');
+			if (password !== passwordConfirm) return flash('Passwords do not match');
 
 			console.log('About to sign up:', this.state);
 			const resp = await this.props.signUp(this.state);
 			console.log('Signup returned response:', resp);
-			return this.props.history.push('/'); // eslint-disable-line
+			this.props.history.push('/');
+			return flash(`Welcome ${resp.user.name}!`, 'green');
 		} catch (err) {
 			console.error('SignUp Page error:', err);
-			return this.setState({ error: err });
+			return flash(err.error);
 		}
 	};
 
@@ -65,11 +67,6 @@ class SignupPage extends Component {
 		return (
 			<div className="section">
 				<div className="section-container">
-					{this.state.error ? (
-						<p className="warning" style={{ color: 'red' }}>
-							{this.state.error}
-						</p>
-					) : null}
 					<h3>Join Purdue Hackers</h3>
 					<div className="panel panel-default">
 						<form className="panel-body" onSubmit={this.onSubmit}>
@@ -159,4 +156,4 @@ const mapStateToProps = state => ({
 	...state.sessionState
 });
 
-export default connect(mapStateToProps, { signUp })(SignupPage);
+export default connect(mapStateToProps, { signUp, flash: sendFlashMessage })(SignupPage);
