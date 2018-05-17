@@ -10,11 +10,7 @@ class SocialMediaPanel extends Component {
 			devpost: PropTypes.string,
 			website: PropTypes.string,
 			linktoresume: PropTypes.string
-		})
-	};
-
-	static defaultProps = {
-		member: null
+		}).isRequired
 	};
 
 	render() {

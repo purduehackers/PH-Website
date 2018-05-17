@@ -7,13 +7,8 @@ import PropTypes from 'prop-types';
 
 class LoginPage extends Component {
 	static propTypes = {
-		user: PropTypes.object,
-		signIn: PropTypes.func
-	};
-
-	static defaultProps = {
-		user: null,
-		signIn: null
+		user: PropTypes.object.isRequired,
+		signIn: PropTypes.func.isRequired
 	};
 
 	constructor(props) {

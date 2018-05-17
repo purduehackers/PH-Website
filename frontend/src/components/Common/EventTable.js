@@ -4,13 +4,8 @@ import { formatDate } from '../../constants';
 
 class EventTable extends Component {
 	static propTypes = {
-		events: PropTypes.array,
-		push: PropTypes.func
-	};
-
-	static defaultProps = {
-		events: null,
-		push: null
+		events: PropTypes.array.isRequired,
+		push: PropTypes.func.isRequired
 	};
 
 	onClick = id => () => this.props.push(`/event/${id}`);

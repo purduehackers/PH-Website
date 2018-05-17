@@ -13,11 +13,7 @@ class EventsPage extends Component {
 	static propTypes = {
 		history: PropTypes.shape({
 			push: PropTypes.func
-		})
-	};
-
-	static defaultProps = {
-		history: null
+		}).isRequired
 	};
 
 	constructor(props) {

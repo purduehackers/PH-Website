@@ -4,13 +4,8 @@ import { formatDate } from '../../constants';
 
 class MemberTable extends Component {
 	static propTypes = {
-		members: PropTypes.array,
-		push: PropTypes.func
-	};
-
-	static defaultProps = {
-		members: null,
-		push: null
+		members: PropTypes.array.isRequired,
+		push: PropTypes.func.isRequired
 	};
 
 	onClick = id => () => this.props.push(`/member/${id}`);

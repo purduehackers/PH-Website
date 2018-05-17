@@ -7,11 +7,7 @@ import routes from '../../constants';
 
 class Logout extends Component {
 	static propTypes = {
-		signOut: PropTypes.func
-	};
-
-	static defaultProps = {
-		signOut: null
+		signOut: PropTypes.func.isRequired
 	};
 
 	componentWillMount = () => this.props.signOut();

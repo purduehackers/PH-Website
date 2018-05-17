@@ -13,19 +13,13 @@ class MemberPage extends Component {
 			params: PropTypes.shape({
 				id: PropTypes.string
 			})
-		}),
+		}).isRequired,
 		history: PropTypes.shape({
 			push: PropTypes.func
-		}),
+		}).isRequired,
 		user: PropTypes.shape({
 			permissions: PropTypes.array
-		})
-	};
-
-	static defaultProps = {
-		match: null,
-		history: null,
-		user: null
+		}).isRequired
 	};
 
 	constructor(props) {

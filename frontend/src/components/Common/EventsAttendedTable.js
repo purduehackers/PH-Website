@@ -3,13 +3,8 @@ import PropTypes from 'prop-types';
 
 class EventsAttendedTable extends Component {
 	static propTypes = {
-		events: PropTypes.array,
-		push: PropTypes.func
-	};
-
-	static defaultProps = {
-		events: null,
-		push: null
+		events: PropTypes.array.isRequired,
+		push: PropTypes.func.isRequired
 	};
 
 	onEventClick = id => () => this.props.push(`/event/${id}`);

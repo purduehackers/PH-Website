@@ -27,15 +27,9 @@ fontawesome.library.add(faFacebook, faGithub, faTwitter, faEnvelope, faCalendar,
 
 class App extends Component {
 	static propTypes = {
-		token: PropTypes.string,
-		user: PropTypes.object, // eslint-disable-line
-		localStorageChanged: PropTypes.func
-	};
-
-	static defaultProps = {
-		token: '',
-		user: null,
-		localStorageChanged: null
+		token: PropTypes.string.isRequired,
+		user: PropTypes.object.isRequired, // eslint-disable-line
+		localStorageChanged: PropTypes.func.isRequired
 	};
 
 	constructor(props) {
