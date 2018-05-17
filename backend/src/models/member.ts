@@ -90,4 +90,6 @@ export class Member extends Typegoose {
 	}
 }
 
-export const MemberModel = new Member().getModelForClass(Member, { schemaOptions: { timestamps: true } });
+export const MemberModel = new Member().getModelForClass(Member, {
+	schemaOptions: { timestamps: true }
+});

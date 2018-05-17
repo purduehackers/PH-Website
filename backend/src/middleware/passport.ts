@@ -10,12 +10,12 @@ passport.serializeUser<any, any>((user, done) => {
 
 passport.deserializeUser(async (id, done) => {
 	try {
-		const user = await Member
-			.findById(id)
+		const user = await Member.findById(id)
 			.populate({
 				path: 'permissions',
 				model: Permission
 			})
+			.populate('password')
 			.exec();
 		done(null, user);
 	} catch (error) {
