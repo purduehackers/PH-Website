@@ -1,17 +1,27 @@
 import * as passport from 'passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';
 import { MemberModel as Member } from '../models/member';
+import { PermissionModel as Permission } from '../models/permission';
 import { errorRes } from '../utils';
 
 passport.serializeUser<any, any>((user, done) => {
 	done(undefined, user.id);
 });
 
-passport.deserializeUser((id, done) =>
-	Member.findById(id, (err, user) => {
-		done(err, user);
-	})
-);
+passport.deserializeUser(async (id, done) => {
+	try {
+		const user = await Member
+			.findById(id)
+			.populate({
+				path: 'permissions',
+				model: Permission
+			})
+			.exec();
+		done(null, user);
+	} catch (error) {
+		done(error, null);
+	}
+});
 
 export default pass => {
 	pass.use(

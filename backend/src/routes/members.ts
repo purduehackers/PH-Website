@@ -4,6 +4,7 @@ import * as passport from 'passport';
 import { MemberModel as Member } from '../models/member';
 import { EventModel as Event } from '../models/event';
 import { LocationModel as Location } from '../models/location';
+import { PermissionModel as Permission } from '../models/permission';
 import { auth } from '../middleware/passport';
 import { successRes, errorRes } from '../utils';
 export const router = express.Router();
@@ -28,6 +29,10 @@ router.get('/', async (req, res, next) => {
 				.limit(limit)
 				.skip(skip)
 				.sort({ [sortBy]: order })
+				.populate({
+					path: 'permissions',
+					model: Permission
+				})
 				.lean()
 				.exec(),
 			Member.count({})
@@ -49,6 +54,10 @@ router.get('/', async (req, res, next) => {
 router.get('/:id', async (req, res, next) => {
 	try {
 		const user = await Member.findById(req.params.id)
+			.populate({
+				path: 'permissions',
+				model: Permission
+			})
 			.lean()
 			.exec();
 		return successRes(res, user);
@@ -66,7 +75,7 @@ router.get('/:id/events', async (req, res, next) => {
 			})
 			.lean()
 			.exec();
-		const publicEvents = events.filter(event => !event.privateEvent);
+		const publicEvents = events ? events.filter(event => !event.privateEvent) : [];
 		return successRes(res, publicEvents);
 	} catch (error) {
 		console.log(error);
@@ -83,7 +92,7 @@ router.get('/:id/locations', async (req, res, next) => {
 			})
 			.lean()
 			.exec();
-		return successRes(res, locations);
+		return successRes(res, locations || []);
 	} catch (error) {
 		console.log(error);
 		return errorRes(res, 500, error);

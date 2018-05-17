@@ -28,6 +28,7 @@ class SocialMediaPanel extends Component {
 							<a href={member.facebook} target="_blank">
 								{member.facebook}
 							</a>
+							<br />
 						</React.Fragment>
 					)}
 					{member.github && (
@@ -36,6 +37,7 @@ class SocialMediaPanel extends Component {
 							<a href={member.github} target="_blank">
 								{member.github}
 							</a>
+							<br />
 						</React.Fragment>
 					)}
 					{member.linkedin && (
@@ -44,6 +46,7 @@ class SocialMediaPanel extends Component {
 							<a href={member.linkedin} target="_blank">
 								{member.linkedin}
 							</a>
+							<br />
 						</React.Fragment>
 					)}
 					{member.devpost && (
@@ -52,6 +55,7 @@ class SocialMediaPanel extends Component {
 							<a href={member.devpost} target="_blank">
 								{member.devpost}
 							</a>
+							<br />
 						</React.Fragment>
 					)}
 					{member.website && (
@@ -60,6 +64,7 @@ class SocialMediaPanel extends Component {
 							<a href={member.website} target="_blank">
 								{member.website}
 							</a>
+							<br />
 						</React.Fragment>
 					)}
 					{member.linktoresume && (

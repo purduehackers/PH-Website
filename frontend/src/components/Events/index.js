@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import EventTable from '../Common/EventTable';
+import { EventTable } from '../Common';
 import routes from '../../constants';
 import { fetchEvents } from '../../actions';
 

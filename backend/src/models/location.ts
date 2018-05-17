@@ -1,12 +1,7 @@
-import { Member } from './member';
 import {
 	prop,
 	Typegoose,
 	ModelType,
-	InstanceType,
-	Ref,
-	pre,
-	instanceMethod,
 	arrayProp
 } from 'typegoose';
 

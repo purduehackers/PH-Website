@@ -24,13 +24,14 @@ export enum Gender {
 	NO
 }
 
-export enum Permissions {
-	PERMISSIONS,
-	EVENTS,
-	CREDENTIALS,
-	MEMBERS,
-	NONE
-}
+export const Permissions = {
+	ADMIN: 'admin',
+	ADMINPERMISSIONS: 'adminpermissions',
+	PERMISSIONS: 'permissions',
+	EVENTS: 'events',
+	CREDENTIALS: 'credentials',
+	MEMBERS: 'members'
+};
 
 @pre<Member>('save', async function(next) {
 	if (this.isModified('password') || this.isNew) {
@@ -56,8 +57,8 @@ export class Member extends Typegoose {
 	public password: string;
 	@prop({ enum: MemberType, default: MemberType.MEMBER })
 	public memberStatus: MemberType;
-	@arrayProp({ enum: Permissions, items: Number })
-	public permissions: Permissions[];
+	@arrayProp({ items: String })
+	public permissions: string[];
 	@prop({ enum: Gender })
 	public gender: Gender;
 	@prop({ default: false })
