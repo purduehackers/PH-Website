@@ -1,6 +1,7 @@
 import * as express from 'express';
 import * as paginate from 'express-paginate';
 import * as passport from 'passport';
+import { ObjectId } from 'mongodb';
 import { MemberModel as Member } from '../models/member';
 import { EventModel as Event } from '../models/event';
 import { LocationModel as Location } from '../models/location';
@@ -53,6 +54,7 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:id', async (req, res, next) => {
 	try {
+		if (!ObjectId.isValid(req.params.id)) return errorRes(res, 400, 'Invalid member ID');
 		const user = await Member.findById(req.params.id)
 			.populate({
 				path: 'permissions',
@@ -68,13 +70,16 @@ router.get('/:id', async (req, res, next) => {
 
 router.get('/:id/events', async (req, res, next) => {
 	try {
-		const { events } = await Member.findById(req.params.id)
+		if (!ObjectId.isValid(req.params.id)) return errorRes(res, 400, 'Invalid member ID');
+		const member = await Member.findById(req.params.id)
 			.populate({
 				path: 'events',
 				model: Event
 			})
 			.lean()
 			.exec();
+		if (!member) return successRes(res, []);
+		const { events } = member;
 		const publicEvents = events ? events.filter(event => !event.privateEvent) : [];
 		return successRes(res, publicEvents);
 	} catch (error) {
@@ -85,13 +90,16 @@ router.get('/:id/events', async (req, res, next) => {
 
 router.get('/:id/locations', async (req, res, next) => {
 	try {
-		const { locations } = await Member.findById(req.params.id)
+		if (!ObjectId.isValid(req.params.id)) return errorRes(res, 400, 'Invalid member ID');
+		const member = await Member.findById(req.params.id)
 			.populate({
 				path: 'locations.location',
 				model: Location
 			})
 			.lean()
 			.exec();
+		if (!member) return successRes(res, []);
+		const { locations } = member;
 		return successRes(res, locations || []);
 	} catch (error) {
 		console.log(error);
