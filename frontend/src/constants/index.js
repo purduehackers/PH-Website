@@ -1,7 +1,8 @@
 export const formatDate = date =>
 	new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
-export const getPermission = (user, name) => user.permissions.some(per => per.name === name);
+export const getPermission = (user, name) =>
+	user && user.permissions.some(per => per.name === name);
 
 export const isAdmin = user => getPermission(user, 'admin');
 

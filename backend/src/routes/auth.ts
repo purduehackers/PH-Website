@@ -52,8 +52,9 @@ router.post('/signup', async (req, res, next) => {
 router.post('/login', async (req, res, next) => {
 	const { email, password } = req.body;
 	try {
-		const user = await Member.findOne({ email }, {password: 1}).exec();
+		const user = await Member.findOne({ email }, '+password').exec();
 		if (!user) return errorRes(res, 401, 'Member not found.');
+		console.log('User', user);
 
 		// Check if password matches
 		if (!user.comparePassword(password)) return errorRes(res, 401, 'Wrong password.');

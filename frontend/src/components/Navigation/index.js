@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
-const AuthNav = () => (
+// eslint-disable-next-line
+const AuthNav = ({ id }) => (
 	<React.Fragment>
-		<Link to="/profile">Profile</Link>
+		<Link to={`/member/${id}`}>Profile</Link>
 		<Link to="/members">Members</Link>
 		<Link to="/events">Events</Link>
 		<Link to="/calendar">Calendar</Link>
@@ -21,7 +22,8 @@ const NonAuthNav = () => (
 
 class Navbar extends Component {
 	static propTypes = {
-		auth: PropTypes.bool.isRequired
+		auth: PropTypes.bool.isRequired,
+		id: PropTypes.string.isRequired
 	};
 
 	render() {
@@ -36,7 +38,7 @@ class Navbar extends Component {
 					</div>
 					<div className="collapse navbar-collapse" id="navbar">
 						<ul className="nav navbar-nav navbar-right">
-							{this.props.auth ? <AuthNav /> : <NonAuthNav />}
+							{this.props.auth ? <AuthNav id={this.props.id} /> : <NonAuthNav />}
 						</ul>
 					</div>
 				</div>
