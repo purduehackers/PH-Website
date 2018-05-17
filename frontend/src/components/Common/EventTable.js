@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
-const formatDate = date =>
-	new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+import { formatDate } from '../../constants';
 
 class EventTable extends Component {
 	static propTypes = {

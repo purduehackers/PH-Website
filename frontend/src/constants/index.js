@@ -1,3 +1,12 @@
+export const formatDate = date =>
+	new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+export const getPermission = (user, name) => user.permissions.contains(name);
+
+export const isAdmin = user => getPermission(user, 'admin');
+
+export const memberMatches = (user, id) => getPermission(user, 'admin') || user._id === id;
+
 export default {
 	HOME: '/',
 	LOGIN: '/login',

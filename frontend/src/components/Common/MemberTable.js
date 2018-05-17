@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { formatDate } from '../../constants';
 
 class MemberTable extends Component {
 	static propTypes = {
@@ -36,7 +37,7 @@ class MemberTable extends Component {
 									</td>
 									<td>{member.name}</td>
 									<td>{member.graduation_year}</td>
-									<td>{new Date(member.created_at).toDateString()}</td>
+									<td>{formatDate(member.created_at)}</td>
 								</tr>
 							))}
 					</tbody>
