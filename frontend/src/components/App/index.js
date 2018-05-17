@@ -12,6 +12,7 @@ import Navigation from '../Navigation';
 import Footer from '../Footer';
 import Home from '../Home';
 import Members from '../Members';
+import Member from '../Member';
 import Events from '../Events';
 import Calendar from '../Calendar';
 import AnvilWifi from '../AnvilWifi';
@@ -62,6 +63,13 @@ class App extends Component {
 							exact
 							path={routes.MEMBERS}
 							component={Members}
+						/>
+						<ProtectedRoute
+							token={token}
+							user={user}
+							exact
+							path={routes.MEMBER}
+							component={Member}
 						/>
 						<ProtectedRoute
 							token={token}

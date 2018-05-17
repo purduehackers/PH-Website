@@ -8,7 +8,7 @@ export default {
 	EVENT: '/event:id',
 	CREATE_EVENT: '/events/create',
 	MEMBERS: '/members',
-	MEMBER: '/member:id',
+	MEMBER: '/member/:id',
 	CALENDAR: '/calendar',
 	REPORTS: '/reports',
 	PERMISSIONS: '/permissions',

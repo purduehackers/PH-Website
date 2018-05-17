@@ -75,12 +75,80 @@ export const fetchMembers = async params => {
 	}
 };
 
+export const fetchMember = async (id, params) => {
+	try {
+		const token = getToken();
+		const {
+			data: { response }
+		} = await axios.get(`/api/members/${id}`, {
+			params,
+			headers: {
+				headers: { Authorization: `Bearer ${token}` }
+			}
+		});
+		return response;
+	} catch (error) {
+		throw error.response.data;
+	}
+};
+
+export const fetchMemberEvents = async (id, params) => {
+	try {
+		const token = getToken();
+		const {
+			data: { response }
+		} = await axios.get(`/api/members/${id}/events`, {
+			params,
+			headers: {
+				headers: { Authorization: `Bearer ${token}` }
+			}
+		});
+		return response;
+	} catch (error) {
+		throw error.response.data;
+	}
+};
+
+export const fetchMemberLocations = async (id, params) => {
+	try {
+		const token = getToken();
+		const {
+			data: { response }
+		} = await axios.get(`/api/members/${id}/locations`, {
+			params,
+			headers: {
+				headers: { Authorization: `Bearer ${token}` }
+			}
+		});
+		return response;
+	} catch (error) {
+		throw error.response.data;
+	}
+};
+
 export const fetchEvents = async params => {
 	try {
 		const token = getToken();
 		const {
 			data: { response }
 		} = await axios.get('/api/events', {
+			params,
+			headers: {
+				headers: { Authorization: `Bearer ${token}` }
+			}
+		});
+		return response;
+	} catch (error) {
+		throw error.response.data;
+	}
+};
+
+export const fetchEvent = async (id, params) => {
+	try {
+		const token = getToken();
+		const {
+			data: { response }
+		} = await axios.get(`/api/events/${id}`, {
 			params,
 			headers: {
 				headers: { Authorization: `Bearer ${token}` }
