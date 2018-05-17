@@ -1,5 +1,6 @@
 import * as express from 'express';
 import { MemberModel as Member } from '../models/member';
+import { PermissionModel as Permission } from '../models/permission';
 import * as jwt from 'jsonwebtoken';
 import * as validator from 'validator';
 import { successRes, errorRes, createAccount } from '../utils';
@@ -52,7 +53,9 @@ router.post('/signup', async (req, res, next) => {
 router.post('/login', async (req, res, next) => {
 	const { email, password } = req.body;
 	try {
-		const user = await Member.findOne({ email }, '+password').exec();
+		const user = await Member.findOne({ email }, '+password')
+			.populate({ path: 'permissions', model: Permission })
+			.exec();
 		if (!user) return errorRes(res, 401, 'Member not found.');
 		console.log('User', user);
 

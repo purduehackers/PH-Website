@@ -22,11 +22,17 @@ const NonAuthNav = () => (
 
 class Navbar extends Component {
 	static propTypes = {
-		auth: PropTypes.bool.isRequired,
-		id: PropTypes.string.isRequired
+		auth: PropTypes.bool,
+		id: PropTypes.string
+	};
+
+	static defaultProps = {
+		auth: null,
+		id: null
 	};
 
 	render() {
+		const { auth, id } = this.props;
 		return (
 			<nav className="navbar navbar-default navbar-fixed-top">
 				<div className="nav-container container">
@@ -38,7 +44,7 @@ class Navbar extends Component {
 					</div>
 					<div className="collapse navbar-collapse" id="navbar">
 						<ul className="nav navbar-nav navbar-right">
-							{this.props.auth ? <AuthNav id={this.props.id} /> : <NonAuthNav />}
+							{auth && id ? <AuthNav id={this.props.id} /> : <NonAuthNav />}
 						</ul>
 					</div>
 				</div>
