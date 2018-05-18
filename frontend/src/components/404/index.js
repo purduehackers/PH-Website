@@ -1,5 +1,6 @@
 import React from 'react';
+import { CustomRedirect } from '../Common';
 
-const NotFound = () => <div> 404 </div>;
+const NotFound = () => <CustomRedirect msgRed="Error: Page Not Found" />;
 
 export default NotFound;

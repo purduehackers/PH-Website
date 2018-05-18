@@ -1,5 +1,10 @@
 export const formatDate = date =>
-	new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+	new Date(date).toLocaleDateString('en-US', {
+		year: 'numeric',
+		month: 'short',
+		day: 'numeric',
+		weekday: 'short'
+	});
 
 export const hasPermission = (user, name) =>
 	user && user.permissions.some(per => per.name === name || per.name === 'admin');
