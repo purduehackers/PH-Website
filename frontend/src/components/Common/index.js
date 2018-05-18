@@ -5,3 +5,7 @@ export { default as SocialMediaPanel } from './SocialMediaPanel';
 export { default as EventsAttendedTable } from './EventsAttendedTable';
 export { default as ProfilePanel } from './ProfilePanel';
 export { default as CustomRedirect } from './CustomRedirect';
+export { default as NotFound } from './404';
+export { default as Footer } from './Footer';
+export { default as FlashMessage } from './FlashMessage';
+export { default as Navigation } from './Navbar';

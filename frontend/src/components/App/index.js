@@ -7,10 +7,7 @@ import { faFacebook, faGithub, faTwitter } from '@fortawesome/fontawesome-free-b
 import { faEnvelope, faCalendar, faCoffee, faHeart } from '@fortawesome/fontawesome-free-solid';
 import PropTypes from 'prop-types';
 import routes from '../../constants';
-import { ProtectedRoute } from '../Common';
-import Navigation from '../Navigation';
-import FlashMessage from '../FlashMessage';
-import Footer from '../Footer';
+import { ProtectedRoute, NotFound, Footer, FlashMessage, Navigation } from '../Common';
 import Home from '../Home';
 import Members from '../Members';
 import Member from '../Member';
@@ -21,7 +18,6 @@ import Dev from '../Dev';
 import Login from '../Login';
 import Logout from '../Logout';
 import SignUp from '../Signup';
-import NotFound from '../404';
 import { localStorageChanged, clearFlashMessages } from '../../actions';
 
 fontawesome.library.add(faFacebook, faGithub, faTwitter, faEnvelope, faCalendar, faCoffee, faHeart);
