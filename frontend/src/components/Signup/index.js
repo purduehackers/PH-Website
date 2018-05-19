@@ -113,7 +113,7 @@ class SignupPage extends Component {
 								/>
 							</label>
 							<br />
-							<label htmlFor="confirmPassword">
+							<label htmlFor="passwordConfirm">
 								Confirm Password
 								<input
 									type="password"
@@ -128,7 +128,7 @@ class SignupPage extends Component {
 								/>
 							</label>
 							<br />
-							<label htmlFor="gradYear">
+							<label htmlFor="graduationYear">
 								(Expected) Year of Graduation
 								<input
 									type="number"

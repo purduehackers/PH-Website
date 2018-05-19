@@ -79,9 +79,7 @@ export const fetchMembers = async params => {
 			data: { response }
 		} = await axios.get('/api/members', {
 			params,
-			headers: {
-				headers: { Authorization: `Bearer ${token}` }
-			}
+			headers: { Authorization: `Bearer ${token}` }
 		});
 		return response;
 	} catch (error) {
@@ -96,9 +94,7 @@ export const fetchMember = async (id, params) => {
 			data: { response }
 		} = await axios.get(`/api/members/${id}`, {
 			params,
-			headers: {
-				headers: { Authorization: `Bearer ${token}` }
-			}
+			headers: { Authorization: `Bearer ${token}` }
 		});
 		return response;
 	} catch (error) {
@@ -113,9 +109,7 @@ export const fetchMemberEvents = async (id, params) => {
 			data: { response }
 		} = await axios.get(`/api/members/${id}/events`, {
 			params,
-			headers: {
-				headers: { Authorization: `Bearer ${token}` }
-			}
+			headers: { Authorization: `Bearer ${token}` }
 		});
 		return response;
 	} catch (error) {
@@ -130,9 +124,7 @@ export const fetchMemberLocations = async (id, params) => {
 			data: { response }
 		} = await axios.get(`/api/members/${id}/locations`, {
 			params,
-			headers: {
-				headers: { Authorization: `Bearer ${token}` }
-			}
+			headers: { Authorization: `Bearer ${token}` }
 		});
 		return response;
 	} catch (error) {
@@ -147,9 +139,7 @@ export const fetchEvents = async params => {
 			data: { response }
 		} = await axios.get('/api/events', {
 			params,
-			headers: {
-				headers: { Authorization: `Bearer ${token}` }
-			}
+			headers: { Authorization: `Bearer ${token}` }
 		});
 		return response;
 	} catch (error) {
@@ -164,9 +154,50 @@ export const fetchEvent = async (id, params) => {
 			data: { response }
 		} = await axios.get(`/api/events/${id}`, {
 			params,
-			headers: {
-				headers: { Authorization: `Bearer ${token}` }
-			}
+			headers: { Authorization: `Bearer ${token}` }
+		});
+		return response;
+	} catch (error) {
+		throw error.response.data;
+	}
+};
+
+export const fetchCredentials = async params => {
+	try {
+		const token = getToken();
+		const {
+			data: { response }
+		} = await axios.get('/api/credentials', {
+			params,
+			headers: { Authorization: `Bearer ${token}` }
+		});
+		return response;
+	} catch (error) {
+		throw error.response.data;
+	}
+};
+
+export const addCredential = async credential => {
+	try {
+		const token = getToken();
+		const {
+			data: { response }
+		} = await axios.post('/api/credentials', credential, {
+			headers: { Authorization: `Bearer ${token}` }
+		});
+		return response;
+	} catch (error) {
+		throw error.response.data;
+	}
+};
+
+export const deleteCredential = async id => {
+	try {
+		const token = getToken();
+		const {
+			data: { response }
+		} = await axios.delete(`/api/credentials/${id}`, {
+			headers: { Authorization: `Bearer ${token}` }
 		});
 		return response;
 	} catch (error) {
