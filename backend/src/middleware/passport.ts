@@ -44,8 +44,7 @@ export default pass => {
 };
 
 export const auth = () => (req, res, next) =>
-	passport.authenticate(
-		'jwt',
-		{ session: false },
-		(err, data, info) => (err || info ? errorRes(res, 401, 'Unauthorized') : next())
-	)(req, res, next);
+	passport.authenticate('jwt', { session: false }, (err, data, info) => {
+		req.user = data;
+		err || info ? errorRes(res, 401, 'Unauthorized') : next();
+	})(req, res, next);

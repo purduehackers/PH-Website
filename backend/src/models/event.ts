@@ -5,8 +5,6 @@ import {
 	ModelType,
 	InstanceType,
 	Ref,
-	pre,
-	instanceMethod,
 	arrayProp
 } from 'typegoose';
 
