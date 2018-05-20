@@ -2,11 +2,11 @@ import * as express from 'express';
 import * as passport from 'passport';
 import { AES, enc } from 'crypto-js';
 import { CredentialModel as Credential } from '../models/credential';
-import { auth } from '../middleware/passport';
+import { auth, permissions } from '../middleware/passport';
 import { successRes, errorRes } from '../utils';
 export const router = express.Router();
 
-router.get('/', auth(), async (req, res, next) => {
+router.get('/', auth(), permissions(['credentials']), async (req, res, next) => {
 	try {
 		const credentials = await Credential.find().exec();
 		return successRes(res, credentials);
@@ -16,7 +16,7 @@ router.get('/', auth(), async (req, res, next) => {
 	}
 });
 
-router.post('/', auth(), async (req, res, next) => {
+router.post('/', auth(), permissions(['credentials']), async (req, res, next) => {
 	try {
 		const { site, username, password, description } = req.body;
 		if (!site) return errorRes(res, 400, 'Credential must have a site');
@@ -37,7 +37,7 @@ router.post('/', auth(), async (req, res, next) => {
 	}
 });
 
-router.get('/:id', auth(), async (req, res, next) => {
+router.get('/:id', auth(), permissions(['credentials']), async (req, res, next) => {
 	try {
 		const credential = await Credential.findById(req.params.id).exec();
 		return successRes(res, credential);
@@ -46,7 +46,7 @@ router.get('/:id', auth(), async (req, res, next) => {
 	}
 });
 
-router.delete('/:id', auth(), async (req, res, next) => {
+router.delete('/:id', auth(), permissions(['credentials']), async (req, res, next) => {
 	try {
 		const credential = await Credential.findById(req.params.id).exec();
 		await credential.remove();

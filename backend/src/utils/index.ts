@@ -27,8 +27,9 @@ export const createAccount = async (
 	return new Member(memberBuilder);
 };
 
-export const getPermission = (user, name) => user.permissions.some(per => per.name === name);
+export const hasPermission = (user, name) =>
+	user.permissions.some(per => per.name === name || per.name === 'admin');
 
-export const isAdmin = user => getPermission(user, 'admin');
+export const isAdmin = user => hasPermission(user, 'admin');
 
-export const memberMatches = (user, id) => getPermission(user, 'admin') || user._id === id;
+export const memberMatches = (user, id) => hasPermission(user, 'admin') || user._id === id;

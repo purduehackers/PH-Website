@@ -1,8 +1,8 @@
 import * as passport from 'passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';
 import { MemberModel as Member } from '../models/member';
-import { PermissionModel as Permission } from '../models/permission';
-import { errorRes } from '../utils';
+import { PermissionModel, Permission } from '../models/permission';
+import { errorRes, hasPermission } from '../utils';
 
 passport.serializeUser<any, any>((user, done) => {
 	done(undefined, user.id);
@@ -13,9 +13,8 @@ passport.deserializeUser(async (id, done) => {
 		const user = await Member.findById(id)
 			.populate({
 				path: 'permissions',
-				model: Permission
+				model: PermissionModel
 			})
-			.populate('password')
 			.exec();
 		done(null, user);
 	} catch (error) {
@@ -32,7 +31,13 @@ export default pass => {
 			},
 			async (payload, done) => {
 				try {
-					const user = await Member.findById(payload._id).exec();
+					const user = await Member.findById(payload._id)
+						.populate({
+							path: 'permissions',
+							model: PermissionModel
+						})
+						.lean()
+						.exec();
 					return user ? done(null, user) : done(null, false);
 				} catch (error) {
 					console.error('Strategy error:', error);
@@ -48,3 +53,17 @@ export const auth = () => (req, res, next) =>
 		req.user = data;
 		err || info ? errorRes(res, 401, 'Unauthorized') : next();
 	})(req, res, next);
+
+export const permissions = (roles: string[]) => (req, res, next) => {
+	if (!req.user || !roles.some(role => hasPermission(req.user, role)))
+		return errorRes(res, 401, 'Permission Denied');
+	return next();
+	// for (const role of roles) {
+	// 	console.log('Role:', role);
+	// 	const allowed = hasPermission(req.user, role);
+	// 	console.log('Has Permission:', allowed);
+	// }
+	// next();
+	// const allowed = roles.some(role => hasPermission(req.user, role));
+	// return allowed ? next() : errorRes(res, 401, 'Permission Denied');
+};
