@@ -33,6 +33,7 @@ class CredentialsPage extends Component {
 			const credentials = await fetchCredentials();
 			this.setState({ credentials });
 		} catch (error) {
+			console.error('Credentials error:', error);
 			flash(error.error);
 		}
 	};

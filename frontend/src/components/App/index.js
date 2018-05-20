@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Route, Switch } from 'react-router-dom';
 import fontawesome from '@fortawesome/fontawesome';
 import { faFacebook, faGithub, faTwitter } from '@fortawesome/fontawesome-free-brands';
 import { faEnvelope, faCalendar, faCoffee, faHeart } from '@fortawesome/fontawesome-free-solid';
-import PropTypes from 'prop-types';
 import routes from '../../constants';
 import { ProtectedRoute, NotFound, Footer, FlashMessage, Navigation } from '../Common';
 import Home from '../Home';
@@ -75,6 +75,7 @@ class App extends Component {
 							user={user}
 							exact
 							path={routes.CREDENTIALS}
+							roles={['credentials']}
 							component={Credentials}
 						/>
 						<Route component={NotFound} />

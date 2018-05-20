@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { MemberTable } from '../Common';
-import routes from '../../constants';
+import routes, { hasPermission } from '../../constants';
 import { fetchMembers } from '../../actions';
 
 // TODO: Implement pagination
@@ -13,7 +13,8 @@ class MembersPage extends Component {
 	static propTypes = {
 		history: PropTypes.shape({
 			push: PropTypes.func
-		}).isRequired
+		}).isRequired,
+		user: PropTypes.object.isRequired
 	};
 
 	constructor(props) {
@@ -31,32 +32,40 @@ class MembersPage extends Component {
 
 	render() {
 		const { members } = this.state;
+		const { user } = this.props;
 		return (
 			<div className="section">
 				<div className="section-container">
 					<h3>
-						<Link to={routes.REPORTS} className="pull-left marginR">
-							<button type="button" className="btn btn-primary btn-sm">
-								Graphs
-							</button>
-						</Link>
-						<Link to={routes.LOCATIONS} className="pull-left">
-							<button type="button" className="btn btn-primary btn-sm">
-								Map
-							</button>
-						</Link>
-						<Link to="#" className="pull-right">
-							<button type="button" className="btn btn-primary btn-sm">
-								{members && members.length} members
-							</button>
-						</Link>
-						<Link to={routes.PERMISSIONS} className="pull-right marginR">
-							<button type="button" className="btn btn-primary btn-sm">
-								Edit Permissions
-							</button>
-						</Link>
+						Members
+						{hasPermission(user, 'members') && (
+							<React.Fragment>
+								<Link to={routes.REPORTS} className="pull-left marginR">
+									<button type="button" className="btn btn-primary btn-sm">
+										Graphs
+									</button>
+								</Link>
+								<Link to={routes.LOCATIONS} className="pull-left">
+									<button type="button" className="btn btn-primary btn-sm">
+										Map
+									</button>
+								</Link>
+								<Link to="#" className="pull-right">
+									<button type="button" className="btn btn-primary btn-sm">
+										{members && members.length} members
+									</button>
+								</Link>
+							</React.Fragment>
+						)}
+						{hasPermission(user, 'members') && (
+							<Link to={routes.PERMISSIONS} className="pull-right marginR">
+								<button type="button" className="btn btn-primary btn-sm">
+									Edit Permissions
+								</button>
+							</Link>
+						)}
 					</h3>
-					<MemberTable members={members} push={this.props.history.push} />
+					<MemberTable members={members} push={this.props.history.push} user={user} />
 				</div>
 			</div>
 		);

@@ -9,8 +9,12 @@ class LoginPage extends Component {
 		history: PropTypes.shape({
 			push: PropTypes.func
 		}).isRequired,
-		user: PropTypes.object.isRequired,
+		user: PropTypes.object,
 		signIn: PropTypes.func.isRequired
+	};
+
+	static defaultProps = {
+		user: null
 	};
 
 	constructor(props) {
