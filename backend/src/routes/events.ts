@@ -1,42 +1,31 @@
 import * as express from 'express';
 import * as paginate from 'express-paginate';
 import * as passport from 'passport';
+import { ObjectId } from 'mongodb';
 import { EventModel as Event } from '../models/event';
 import { auth } from '../middleware/passport';
 import { successRes, errorRes } from '../utils';
 export const router = express.Router();
 
-/* GET members list */
 router.get('/', async (req, res, next) => {
 	try {
-		const { limit } = req.query;
-		// tslint:disable-next-line
-		const skip = req.skip;
 		// tslint:disable-next-line:triple-equals
 		const order = req.query.order == '1' ? 1 : -1;
-		let sortBy = req.query.sortBy || 'created_at';
+		let sortBy = req.query.sortBy || 'event_time';
 		let contains = false;
 		Event.schema.eachPath(path => {
 			if (path.toLowerCase() === sortBy.toLowerCase()) contains = true;
 		});
-		if (!contains) sortBy = 'created_at';
+		if (!contains) sortBy = 'event_time';
 
-		const [results, itemCount] = await Promise.all([
-			Event.find()
-				.limit(limit)
-				.skip(skip)
-				.sort({ [sortBy]: order })
-				.lean()
-				.exec(),
-			Event.count({})
-		]);
-
-		const pageCount = Math.ceil(itemCount / req.query.limit);
+		const results = await Event.find({ privateProfile: { $ne: 1 } })
+			.sort({ [sortBy]: order })
+			// .limit(50)
+			.lean()
+			.exec();
 
 		return successRes(res, {
-			has_more: paginate.hasNextPages(req)(pageCount),
-			events: results,
-			pages: paginate.getArrayPages(req)(5, pageCount, req.query.page)
+			events: results
 		});
 	} catch (error) {
 		console.error(error);
@@ -46,7 +35,10 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:id', async (req, res, next) => {
 	try {
-		const user = await Event.findById(req.params.id).exec();
+		if (!ObjectId.isValid(req.params.id)) return errorRes(res, 400, 'Invalid event ID');
+		const user = await Event.findById(req.params.id)
+			.populate('members')
+			.exec();
 		return successRes(res, user);
 	} catch (error) {
 		return errorRes(res, 500, error);

@@ -12,6 +12,7 @@ import Home from '../Home';
 import Members from '../Members';
 import Member from '../Member';
 import Events from '../Events';
+import Event from '../Event';
 import Credentials from '../Credentials';
 import Calendar from '../Calendar';
 import AnvilWifi from '../AnvilWifi';
@@ -63,6 +64,7 @@ class App extends Component {
 						<Route exact path={routes.MEMBERS} component={Members} />
 						<Route exact path={routes.MEMBER} component={Member} />
 						<Route exact path={routes.EVENTS} component={Events} />
+						<Route exact path={routes.EVENT} component={Event} />
 						<ProtectedRoute
 							token={token}
 							user={user}

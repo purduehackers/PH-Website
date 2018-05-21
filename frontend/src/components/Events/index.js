@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { EventTable } from '../Common';
-import routes from '../../constants';
+import routes, { hasPermission } from '../../constants';
 import { fetchEvents } from '../../actions';
 
 // TODO: Implement pagination
@@ -13,24 +13,31 @@ class EventsPage extends Component {
 	static propTypes = {
 		history: PropTypes.shape({
 			push: PropTypes.func
-		}).isRequired
+		}).isRequired,
+		user: PropTypes.object
+	};
+
+	static defaultProps = {
+		user: null
 	};
 
 	constructor(props) {
 		super(props);
 		this.state = {
-			events: []
+			events: [],
+			loading: true,
+			allowed: hasPermission(this.props.user, 'events') || false
 		};
 	}
 
 	componentDidMount = async () => {
 		const { events } = await fetchEvents({});
 		console.log('EventsPage fetched events:', events);
-		this.setState({ events });
+		this.setState({ events, loading: false });
 	};
 
 	render() {
-		const { events } = this.state;
+		const { events, loading, allowed } = this.state;
 		return (
 			<div className="section">
 				<div className="section-container">
@@ -46,18 +53,29 @@ class EventsPage extends Component {
 								Submit Event Suggestion
 							</button>
 						</a>
-						<Link to={routes.ANVIL_WIFI} className="pull-left">
-							<button type="button" className="btn btn-info btn-sm">
-								Anvil Wifi
-							</button>
-						</Link>
-						<Link to={routes.CREATE_EVENT} className="pull-right">
-							<button type="button" className="btn btn-primary btn-sm marginR">
-								+ Add Event
-							</button>
-						</Link>
+						{allowed && (
+							<React.Fragment>
+								<Link to={routes.ANVIL_WIFI} className="pull-left">
+									<button type="button" className="btn btn-info btn-sm">
+										Anvil Wifi
+									</button>
+								</Link>
+								<Link to={routes.CREATE_EVENT} className="pull-right">
+									<button type="button" className="btn btn-primary btn-sm marginR">
+										+ Add Event
+									</button>
+								</Link>
+							</React.Fragment>
+						)}
 					</h3>
-					<EventTable events={events} push={this.props.history.push} />
+					{loading ? (
+						<div>
+							<hr />
+							<span>Loading...</span>
+						</div>
+					) : (
+						<EventTable events={events} push={this.props.history.push} allowed={allowed} />
+					)}
 				</div>
 			</div>
 		);

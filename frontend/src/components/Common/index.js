@@ -3,6 +3,7 @@ export { default as EventTable } from './EventTable';
 export { default as MemberTable } from './MemberTable';
 export { default as SocialMediaPanel } from './SocialMediaPanel';
 export { default as EventsAttendedTable } from './EventsAttendedTable';
+export { default as MembersAttendedTable } from './MembersAttendedTable';
 export { default as ProfilePanel } from './ProfilePanel';
 export { default as CustomRedirect } from './CustomRedirect';
 export { default as NotFound } from './404';

@@ -143,8 +143,8 @@ class MemberPage extends Component {
 
 	render() {
 		const { member, events, jobs, memberMatched, notFound, name, city, start, end } = this.state;
-		if (notFound) return <CustomRedirect msgRed="Error. Member not found" />;
-		if (!member) return null;
+		if (notFound) return <CustomRedirect msgRed="Member not found" />;
+		if (!member) return <span>Loading...</span>;
 		return (
 			<div>
 				<Helmet>

@@ -20,7 +20,7 @@ export default {
 	SIGNUP: '/signup',
 	PROFILE: '/profile',
 	EVENTS: '/events',
-	EVENT: '/event:id',
+	EVENT: '/event/:id',
 	CREATE_EVENT: '/events/create',
 	MEMBERS: '/members',
 	MEMBER: '/member/:id',

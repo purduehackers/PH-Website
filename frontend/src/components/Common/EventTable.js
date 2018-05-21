@@ -5,13 +5,14 @@ import { formatDate } from '../../constants';
 class EventTable extends Component {
 	static propTypes = {
 		events: PropTypes.array.isRequired,
-		push: PropTypes.func.isRequired
+		push: PropTypes.func.isRequired,
+		allowed: PropTypes.bool.isRequired
 	};
 
 	onClick = id => () => this.props.push(`/event/${id}`);
 
 	render() {
-		const { events } = this.props;
+		const { events, allowed } = this.props;
 		return (
 			<div className="panel panel-default">
 				<table className="table table-bordered table-hover table-clickable panel-body sortableTable">
@@ -20,7 +21,7 @@ class EventTable extends Component {
 							<th>Name</th>
 							<th>Date</th>
 							<th>Location</th>
-							<th># Attended</th>
+							{allowed && <th># Attended</th>}
 						</tr>
 					</thead>
 					<tbody>
@@ -30,7 +31,7 @@ class EventTable extends Component {
 									<td>{event.name}</td>
 									<td>{formatDate(event.created_at)}</td>
 									<td>{event.location}</td>
-									<td>{event.members}</td>
+									{allowed && <td>{event.members ? event.members.length : 0}</td>}
 								</tr>
 							))}
 					</tbody>
