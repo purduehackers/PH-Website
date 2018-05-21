@@ -1,4 +1,5 @@
 import * as bcrypt from 'bcrypt';
+import { Location } from './location';
 import {
 	prop,
 	Typegoose,
@@ -82,6 +83,7 @@ export class Member extends Typegoose {
 	@prop() public authenticatedAt: Date;
 	@prop() public rememberToken: string;
 	@prop() public linktoresume: string;
+	@arrayProp({ itemsRef: Location }) public locations: Array<Ref<Location>>;
 
 	@instanceMethod
 	public comparePassword(this: InstanceType<Member>, password: string) {

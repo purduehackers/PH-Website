@@ -8,6 +8,7 @@ import { LocationModel as Location } from '../models/location';
 import { PermissionModel as Permission } from '../models/permission';
 import { auth } from '../middleware/passport';
 import { successRes, errorRes } from '../utils';
+import { Job } from '../models/job';
 export const router = express.Router();
 
 // router.get('/', async (req, res, next) => {
@@ -132,6 +133,16 @@ router.get('/:id/locations', async (req, res, next) => {
 		if (!member) return successRes(res, []);
 		const { locations } = member;
 		return successRes(res, locations || []);
+	} catch (error) {
+		console.log(error);
+		return errorRes(res, 500, error);
+	}
+});
+
+router.get('/:id/jobs', async (req, res, next) => {
+	try {
+		const jobs = await Job.find({ member: req.params.id }).populate('location').exec();
+		return successRes(res, jobs);
 	} catch (error) {
 		console.log(error);
 		return errorRes(res, 500, error);
