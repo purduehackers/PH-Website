@@ -3,14 +3,19 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import routes, { memberMatches } from '../../constants';
+import routes, { memberMatches, formatDate } from '../../constants';
 import {
 	fetchMember,
 	fetchMemberEvents,
-	fetchMemberLocations,
-	sendFlashMessage
+	fetchMemberJobs,
+	addJob,
+	deleteJob,
+	sendFlashMessage,
+	clearFlashMessages
 } from '../../actions';
 import { SocialMediaPanel, EventsAttendedTable, ProfilePanel, CustomRedirect } from '../Common';
+
+// TODO: Add autocomplete to input tags
 
 class MemberPage extends Component {
 	static propTypes = {
@@ -23,6 +28,7 @@ class MemberPage extends Component {
 			push: PropTypes.func
 		}).isRequired,
 		flash: PropTypes.func.isRequired,
+		clear: PropTypes.func.isRequired,
 		user: PropTypes.shape({
 			permissions: PropTypes.array
 		}).isRequired
@@ -33,9 +39,13 @@ class MemberPage extends Component {
 		this.state = {
 			member: null,
 			events: [],
-			locations: [],
+			jobs: [],
 			memberMatched: memberMatches(this.props.user, this.props.match.params.id),
-			notFound: false
+			notFound: false,
+			name: '',
+			city: '',
+			start: '',
+			end: ''
 		};
 		console.log('MemberPage props:', this.props);
 	}
@@ -60,18 +70,79 @@ class MemberPage extends Component {
 				this.setState({ events });
 			})
 			.catch(err => flash(err.error));
-		fetchMemberLocations(id)
-			.then(locations => {
-				console.log('MemberPage fetched locations:', locations);
-				this.setState({ locations });
+		fetchMemberJobs(id)
+			.then(jobs => {
+				console.log('MemberPage fetched jobs:', jobs);
+				this.setState({ jobs });
 			})
 			.catch(err => flash(err.error));
 	};
 
+	onChange = e => this.setState({ [e.target.id]: e.target.value });
+
 	onEventClick = id => () => this.props.history.push(`/event/${id}`);
 
+	onJobClick = id => () => this.props.history.push(`/location/${id}`);
+
+	onAddJob = async e => {
+		e.preventDefault();
+		const { name, city, start, end } = this.state;
+		const {
+			flash,
+			clear,
+			match: {
+				params: { id }
+			}
+		} = this.props;
+		clear();
+		try {
+			console.log('About to add new location:', name, city, start.toString(), end);
+			if (!name) return flash('Location Name Required.');
+			if (!city) return flash('City Required.');
+			if (!start) return flash('Start Date Required.');
+			const startDate = Date.parse(start);
+			const endDate = Date.parse(end);
+			if (Number.isNaN(startDate)) return flash('Invalid start date');
+			console.log('StartDate:', startDate);
+			console.log('EndDate:', endDate);
+			if (end) {
+				if (Number.isNaN(endDate)) return flash('Invalid end date');
+				if (startDate > endDate) return flash('Start date must be before end date');
+			}
+			const job = await addJob({
+				name,
+				city,
+				start,
+				end,
+				memberID: id
+			});
+			console.log('Created job:', job);
+			this.setState({ jobs: [...this.state.jobs, job] });
+			return flash('Job Record Added!', 'green');
+		} catch (error) {
+			return flash(error.error);
+		}
+	};
+
+	onDeleteJob = async e => {
+		e.preventDefault();
+		e.stopPropagation();
+		const { flash, clear, history, match } = this.props;
+		clear();
+		try {
+			console.log('About to delete job:');
+			const job = await deleteJob(e.target.id);
+			console.log('Deleted job:', job);
+			this.setState({ jobs: this.state.jobs.filter(j => j._id !== job._id) });
+			history.push(`/member/${match.params.id}`);
+			return flash('Job Record Removed!', 'green');
+		} catch (error) {
+			return flash(error.error);
+		}
+	};
+
 	render() {
-		const { member, events, locations, memberMatched, notFound } = this.state;
+		const { member, events, jobs, memberMatched, notFound, name, city, start, end } = this.state;
 		if (notFound) return <CustomRedirect msgRed="Error. Member not found" />;
 		if (!member) return null;
 		return (
@@ -102,7 +173,7 @@ class MemberPage extends Component {
 						<ProfilePanel
 							member={member}
 							events={events ? events.length : 0}
-							locations={locations ? locations.length : 0}
+							jobs={jobs ? jobs.length : 0}
 						/>
 
 						{(member.facebook ||
@@ -126,18 +197,22 @@ class MemberPage extends Component {
 									</tr>
 								</thead>
 								<tbody>
-									{locations && locations.length ? (
-										locations.map((location, i) => (
-											<tr key={i} onClick={`/location/${location.location._id}`}>
-												<td>{location.location.name}</td>
-												<td>{location.location.city}</td>
-												<td>{location.dateStart}</td>
+									{jobs && jobs.length ? (
+										jobs.map((job, i) => (
+											<tr key={i} onClick={this.onJobClick(job.location._id)}>
+												<td>{job.location.name}</td>
+												<td>{job.location.city}</td>
+												<td>{formatDate(job.start)}</td>
 												<td>
-													{location.dateEnd ? location.dateEnd : 'Current'}
+													{job.end ? formatDate(job.end) : 'Current'}
 													{memberMatched && (
-														<a href="" className="btn btn-sm btn-danger pull-right">
+														<button
+															id={job._id}
+															className="btn btn-sm btn-danger pull-right"
+															onClick={this.onDeleteJob}
+														>
 															Remove
-														</a>
+														</button>
 													)}
 												</td>
 											</tr>
@@ -156,10 +231,12 @@ class MemberPage extends Component {
 											<td>
 												<input
 													type="text"
-													name="locationName"
-													id="locationName"
+													name="name"
+													id="name"
 													placeholder="Location Name"
 													className="form-control locationsautocomplete"
+													value={name}
+													onChange={this.onChange}
 												/>
 											</td>
 											<td>
@@ -169,30 +246,37 @@ class MemberPage extends Component {
 													id="city"
 													placeholder="City"
 													className="form-control citiesautocomplete"
+													value={city}
+													onChange={this.onChange}
 												/>
 											</td>
 											<td>
 												<input
-													type="text"
-													name="date_start"
-													id="date_start"
+													type="date"
+													name="start"
+													id="start"
 													placeholder="Start Date"
 													className="form-control datepicker"
+													value={start}
+													onChange={this.onChange}
 												/>
 											</td>
 											<td>
 												<input
-													type="text"
-													name="date_end"
-													id="date_end"
+													type="date"
+													name="end"
+													id="end"
 													placeholder="End Date (Optional)"
 													className="form-control datepicker"
+													value={end}
+													onChange={this.onChange}
 												/>
 												<br />
 												<input
 													type="submit"
 													value="Add Location Record"
 													className="btn btn-primary pull-right"
+													onClick={this.onAddJob}
 												/>
 											</td>
 										</tr>
@@ -216,4 +300,6 @@ const mapStateToProps = state => ({
 	...state.sessionState
 });
 
-export default connect(mapStateToProps, { flash: sendFlashMessage })(MemberPage);
+export default connect(mapStateToProps, { flash: sendFlashMessage, clear: clearFlashMessages })(
+	MemberPage
+);

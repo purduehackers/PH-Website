@@ -117,12 +117,12 @@ export const fetchMemberEvents = async (id, params) => {
 	}
 };
 
-export const fetchMemberLocations = async (id, params) => {
+export const fetchMemberJobs = async (id, params) => {
 	try {
 		const token = getToken();
 		const {
 			data: { response }
-		} = await axios.get(`/api/members/${id}/locations`, {
+		} = await axios.get(`/api/members/${id}/jobs`, {
 			params,
 			headers: { Authorization: `Bearer ${token}` }
 		});
@@ -197,6 +197,34 @@ export const deleteCredential = async id => {
 		const {
 			data: { response }
 		} = await axios.delete(`/api/credentials/${id}`, {
+			headers: { Authorization: `Bearer ${token}` }
+		});
+		return response;
+	} catch (error) {
+		throw error.response.data;
+	}
+};
+
+export const addJob = async location => {
+	try {
+		const token = getToken();
+		const {
+			data: { response }
+		} = await axios.post('/api/jobs', location, {
+			headers: { Authorization: `Bearer ${token}` }
+		});
+		return response;
+	} catch (error) {
+		throw error.response.data;
+	}
+};
+
+export const deleteJob = async id => {
+	try {
+		const token = getToken();
+		const {
+			data: { response }
+		} = await axios.delete(`/api/jobs/${id}`, {
 			headers: { Authorization: `Bearer ${token}` }
 		});
 		return response;
