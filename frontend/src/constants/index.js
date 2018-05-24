@@ -11,7 +11,10 @@ export const hasPermission = (user, name) =>
 
 export const isAdmin = user => hasPermission(user, 'admin');
 
-export const memberMatches = (user, id) => hasPermission(user, 'admin') || user._id === id;
+export const memberMatches = (user, id) =>
+	user && (hasPermission(user, 'admin') || user._id === id);
+
+export const shortName = name => name.substr(0, 32);
 
 export default {
 	HOME: '/',
@@ -22,6 +25,7 @@ export default {
 	EVENTS: '/events',
 	EVENT: '/event/:id',
 	CREATE_EVENT: '/events/create',
+	EDIT_EVENT: '/event/:id/edit',
 	MEMBERS: '/members',
 	MEMBER: '/member/:id',
 	CALENDAR: '/calendar',

@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { hasPermission, formatDate } from '../../constants';
+import { hasPermission, formatDate, shortName } from '../../constants';
 import { sendFlashMessage, clearFlashMessages, fetchEvent } from '../../actions';
 import { MembersAttendedTable, CustomRedirect } from '../Common';
 
@@ -28,7 +29,7 @@ class EventPage extends Component {
 		super(props);
 		this.state = {
 			event: null,
-			notFound: false
+			loading: true
 		};
 		console.log('EventPage props:', this.props);
 	}
@@ -44,7 +45,7 @@ class EventPage extends Component {
 		try {
 			clear();
 			const event = await fetchEvent(id);
-			event ? this.setState({ event }) : this.setState({ notFound: true });
+			this.setState({ event, loading: false });
 		} catch (error) {
 			this.setState({ notFound: true });
 			flash(error.error);
@@ -54,19 +55,32 @@ class EventPage extends Component {
 	onChange = e => this.setState({ [e.target.id]: e.target.value });
 
 	render() {
-		const { event, notFound } = this.state;
+		const { event, loading } = this.state;
 		const { user } = this.props;
-		if (notFound) return <CustomRedirect msgRed="Event not found" />;
-		if (!event) return <span>Loading...</span>;
-		// if (event.privateEvent && )
+		if (loading) return <span>Loading...</span>;
+		if (!loading && !event) return <CustomRedirect msgRed="Event not found" />;
+		if (event.privateEvent && !hasPermission(user, 'events'))
+			return <CustomRedirect msgRed="You are not authorized to view this event" />;
 		return (
 			<div>
 				<Helmet>
-					<title>{event.name.substr(0, 30)}</title>
+					<title>{shortName(event.name)}</title>
 				</Helmet>
 				<div className="section">
 					<div className="section-container">
-						<h3>{event.name.substr(0, 30)}</h3>
+						<h3>
+							{shortName(event.name)}
+							{hasPermission(user, 'events') && (
+								<Link to={`/event/${event._id}/edit`}>
+									<button
+										type="button"
+										className="pull-right marginR btn btn-primary btn-sm"
+									>
+										Edit Event
+									</button>
+								</Link>
+							)}
+						</h3>
 						<div className="panel panel-default text-left">
 							<div className="panel-body">
 								<div id="profile_intro_text">
