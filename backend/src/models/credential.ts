@@ -8,23 +8,26 @@ export interface ICredentialModel extends Document {
 	description: string;
 }
 
-const schema = new Schema({
-	site: {
-		type: String,
-		required: true
+const schema = new Schema(
+	{
+		site: {
+			type: String,
+			required: true
+		},
+		username: {
+			type: String,
+			required: true
+		},
+		password: {
+			type: String,
+			required: true
+		},
+		description: {
+			type: String
+		}
 	},
-	username: {
-		type: String,
-		required: true
-	},
-	password: {
-		type: String,
-		required: true
-	},
-	description: {
-		type: String,
-	}
-});
+	{ timestamps: true }
+);
 
 schema.pre('save', function(next) {
 	const cred = this as ICredentialModel;
@@ -36,7 +39,7 @@ schema.pre('save', function(next) {
 			throw error;
 		}
 	}
-	
+
 	next();
 });
 

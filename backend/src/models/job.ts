@@ -10,24 +10,27 @@ export interface IJobModel extends Document {
 	end: Date;
 }
 
-const schema = new Schema({
-	location: {
-		type: Schema.Types.ObjectId,
-		ref: 'Location',
-		required: true
+const schema = new Schema(
+	{
+		location: {
+			type: Schema.Types.ObjectId,
+			ref: 'Location',
+			required: true
+		},
+		member: {
+			type: Schema.Types.ObjectId,
+			ref: 'Member',
+			required: true
+		},
+		start: {
+			type: Date,
+			required: true
+		},
+		end: {
+			type: Date
+		}
 	},
-	member: {
-		type: Schema.Types.ObjectId,
-		ref: 'Member',
-		required: true
-	},
-	start: {
-		type: Date,
-		required: true
-	},
-	end: {
-		type: Date
-	}
-});
+	{ timestamps: true }
+);
 
 export const Job = model<IJobModel>('Job', schema, 'jobs');

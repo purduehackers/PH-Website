@@ -1,7 +1,7 @@
 import * as bcrypt from 'bcrypt';
 import { Document, Schema, model } from 'mongoose';
 import { Location } from './location';
-import { Event } from './event';
+import { IEventModel } from './event';
 import { IPermissionModel } from './permission';
 
 export const memberStatuses = {
@@ -24,7 +24,7 @@ export interface IMemberModel extends Document {
 	password: string;
 	memberStatus: string;
 	permissions: IPermissionModel[];
-	events: Event[];
+	events: IEventModel[];
 	gender: string[];
 	unsubscribed: boolean;
 	privateProfile: boolean;

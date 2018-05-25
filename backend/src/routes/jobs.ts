@@ -8,6 +8,9 @@ import { successRes, errorRes, memberMatches } from '../utils';
 import { IPermissionModel, Permission } from '../models/permission';
 export const router = express.Router();
 
+// TODO: Add auth to routes
+// TODO: Add permissions to routes
+
 router.get('/', auth(), async (req, res, next) => {
 	try {
 		const jobs = await Job.find().exec();
