@@ -2,17 +2,20 @@ import * as express from 'express';
 import * as paginate from 'express-paginate';
 import * as passport from 'passport';
 import { ObjectId } from 'mongodb';
-import { EventModel as Event } from '../models/event';
+import { IEventModel, Event } from '../models/event';
 import { auth } from '../middleware/passport';
 import { successRes, errorRes } from '../utils';
 export const router = express.Router();
 
 router.get('/', async (req, res, next) => {
 	try {
+		let { order, sortBy } = req.query;
 		// tslint:disable-next-line:triple-equals
-		const order = req.query.order == '1' ? 1 : -1;
-		let sortBy = req.query.sortBy || 'event_time';
+		order = order == '1' ? 1 : -1;
+		if (!Event.schema.path(sortBy)) sortBy = 'event_time';
 		let contains = false;
+		const exists = Event.schema.path(sortBy);
+		console.log('Path:', sortBy, 'exists:', exists);
 		Event.schema.eachPath(path => {
 			if (path.toLowerCase() === sortBy.toLowerCase()) contains = true;
 		});

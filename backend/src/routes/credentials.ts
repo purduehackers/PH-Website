@@ -1,7 +1,7 @@
 import * as express from 'express';
 import * as passport from 'passport';
 import { AES, enc } from 'crypto-js';
-import { CredentialModel as Credential } from '../models/credential';
+import { ICredentialModel, Credential } from '../models/credential';
 import { auth, permissions } from '../middleware/passport';
 import { successRes, errorRes } from '../utils';
 export const router = express.Router();

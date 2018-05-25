@@ -1,11 +1,11 @@
 import { Document, Schema, model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
-import { LocationModel, Location } from './location';
-import { MemberModel, Member } from './member';
+import { ILocationModel, Location } from './location';
+import { IMemberModel, Member } from './member';
 
 export interface IJobModel extends Document {
-	location: Location;
-	member: Member;
+	location: ILocationModel;
+	member: IMemberModel;
 	start: Date;
 	end: Date;
 }

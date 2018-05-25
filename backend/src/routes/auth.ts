@@ -1,6 +1,6 @@
 import * as express from 'express';
-import { MemberModel as Member } from '../models/member';
-import { PermissionModel as Permission } from '../models/permission';
+import { Member } from '../models/member';
+import { IPermissionModel, Permission } from '../models/permission';
 import * as jwt from 'jsonwebtoken';
 import * as validator from 'validator';
 import { successRes, errorRes, createAccount } from '../utils';

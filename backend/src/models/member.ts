@@ -1,96 +1,167 @@
 import * as bcrypt from 'bcrypt';
+import { Document, Schema, model } from 'mongoose';
 import { Location } from './location';
-import {
-	prop,
-	Typegoose,
-	ModelType,
-	InstanceType,
-	Ref,
-	pre,
-	instanceMethod,
-	arrayProp
-} from 'typegoose';
+import { Event } from './event';
+import { IPermissionModel } from './permission';
 
-export enum MemberType {
-	MEMBER,
-	ALUMNI,
-	INACTIVE
-}
-
-export enum Gender {
-	MALE,
-	FEMALE,
-	OTHER,
-	NO
-}
-
-export const Permissions = {
-	ADMIN: 'admin',
-	ADMINPERMISSIONS: 'adminpermissions',
-	PERMISSIONS: 'permissions',
-	EVENTS: 'events',
-	CREDENTIALS: 'credentials',
-	MEMBERS: 'members'
+export const memberStatuses = {
+	MEMBER: 'Member',
+	ALUMNI: 'Alumni',
+	INACTIVE: 'Inactive'
 };
 
-@pre<Member>('save', async function(next) {
-	if (this.isModified('password') || this.isNew) {
-		try {
-			const salt = await bcrypt.genSalt(10);
-			const hash = await bcrypt.hash(this.password, salt);
-			this.password = hash;
-		} catch (error) {
-			console.error(error);
-		}
-	} else {
-		return next();
-	}
-})
-export class Member extends Typegoose {
-	@prop({ required: true })
-	public name: string;
-	@prop({ required: true, index: true })
-	public email: string;
-	@prop({ required: true })
-	public graduationYear: number;
-	@prop({ required: true, select: false })
-	public password: string;
-	@prop({ enum: MemberType, default: MemberType.MEMBER })
-	public memberStatus: MemberType;
-	@arrayProp({ items: String })
-	public permissions: string[];
-	@prop({ enum: Gender })
-	public gender: Gender;
-	@prop({ default: false })
-	public unsubscribed: boolean;
-	@prop({ default: false })
-	public privateProfile: boolean;
-	@prop() public emailPublic: string;
-	@prop() public emailEdu: string;
-	@prop() public phone: string;
-	@prop() public setupEmailSent: Date;
-	@prop() public major: string;
-	@prop() public picture: string;
-	@prop() public description: string;
-	@prop() public facebook: string;
-	@prop() public github: string;
-	@prop() public linkedin: string;
-	@prop() public devpost: string;
-	@prop() public website: string;
-	@prop() public resume: string;
-	@prop() public createdAt: Date;
-	@prop() public updatedAt: Date;
-	@prop() public authenticatedAt: Date;
-	@prop() public rememberToken: string;
-	@prop() public linktoresume: string;
-	@arrayProp({ itemsRef: Location }) public locations: Array<Ref<Location>>;
+export const genders = {
+	MALE: 'Male',
+	FEMALE: 'Female',
+	OTHER: 'Other',
+	NO: 'No'
+};
 
-	@instanceMethod
-	public comparePassword(this: InstanceType<Member>, password: string) {
-		return bcrypt.compareSync(password, this.password);
-	}
+export interface IMemberModel extends Document {
+	name: string;
+	email: string;
+	graduationYear: number;
+	password: string;
+	memberStatus: string;
+	permissions: IPermissionModel[];
+	events: Event[];
+	gender: string[];
+	unsubscribed: boolean;
+	privateProfile: boolean;
+	emailPublic: string;
+	emailEdu: string;
+	phone: string;
+	setupEmailSent: Date;
+	major: string;
+	picture: string;
+	description: string;
+	facebook: string;
+	github: string;
+	linkedin: string;
+	devpost: string;
+	website: string;
+	resume: string;
+	createdAt: Date;
+	updatedAt: Date;
+	authenticatedAt: Date;
+	rememberToken: string;
+	comparePassword(password: string): boolean;
 }
 
-export const MemberModel = new Member().getModelForClass(Member, {
-	schemaOptions: { timestamps: true }
+const schema = new Schema(
+	{
+		name: {
+			type: String,
+			required: true
+		},
+		email: {
+			type: String,
+			unique: true,
+			required: true
+		},
+		graduationYear: {
+			type: Number,
+			required: true
+		},
+		password: {
+			type: String,
+			select: false,
+			required: true
+		},
+		memberStatus: {
+			type: String,
+			enum: [...Object.keys(memberStatuses)],
+			default: memberStatuses.MEMBER
+		},
+		gender: {
+			type: String,
+			enum: [...Object.keys(genders)]
+		},
+		unsubscribed: {
+			type: Boolean,
+			default: false
+		},
+		privateProfile: {
+			type: Boolean,
+			default: false
+		},
+		emailPublic: {
+			type: String
+		},
+		emailEdu: {
+			type: String
+		},
+		phone: {
+			type: String
+		},
+		major: {
+			type: String
+		},
+
+		picture: {
+			type: String
+		},
+		description: {
+			type: String
+		},
+		facebook: {
+			type: String
+		},
+		github: {
+			type: String
+		},
+		linkedin: {
+			type: String
+		},
+		devpost: {
+			type: String
+		},
+		website: {
+			type: String
+		},
+		resume: {
+			type: String
+		},
+		authenticatedAt: {
+			type: Date
+		},
+		setupEmailSent: {
+			type: Date
+		},
+		rememberToken: {
+			type: String
+		},
+		permissions: {
+			type: [Schema.Types.ObjectId],
+			ref: 'Permission',
+			default: []
+		},
+		events: {
+			type: [Schema.Types.ObjectId],
+			ref: 'Event',
+			default: []
+		}
+	},
+	{ timestamps: true }
+);
+
+schema.pre('save', async function(next) {
+	const member = this as IMemberModel;
+	if (member.isModified('password') || member.isNew) {
+		try {
+			const salt = await bcrypt.genSalt(10);
+			const hash = await bcrypt.hash(member.password, salt);
+			member.password = hash;
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	}
+	next();
 });
+
+schema.methods.comparePassword = function(password: string) {
+	return bcrypt.compareSync(password, this.password);
+};
+
+export const Member = model<IMemberModel>('Member', schema, 'members');

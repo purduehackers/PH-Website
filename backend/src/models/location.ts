@@ -1,18 +1,27 @@
-import {
-	prop,
-	Typegoose,
-	ModelType,
-	arrayProp
-} from 'typegoose';
+import { Document, Schema, model } from 'mongoose';
 
-export class Location extends Typegoose {
-	@arrayProp({items: Number, index: true}) public loc: number[];
-	@prop() public name: string;
-	@prop() public city: string;
-	@prop() public loc_lat: number;
-	@prop() public loc_lng: number;
+export interface ILocationModel extends Document {
+	loc: any;
+	name: string;
+	city: string;
 }
 
-export const LocationModel = new Location().getModelForClass(Location, {
-	schemaOptions: { timestamps: true }
-});
+const schema = new Schema(
+	{
+		loc: {
+			type: {type: String, default: 'Point'},
+			coordinates: [Number]
+		},
+		name: {
+			type: String
+		},
+		city: {
+			type: String
+		}
+	},
+	{ timestamps: true }
+);
+
+schema.index({ loc: '2dsphere' });
+
+export const Location = model<ILocationModel>('Location', schema, 'locations');

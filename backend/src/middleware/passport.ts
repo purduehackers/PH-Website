@@ -1,7 +1,7 @@
 import * as passport from 'passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';
-import { MemberModel as Member } from '../models/member';
-import { PermissionModel, Permission } from '../models/permission';
+import { Member } from '../models/member';
+import { IPermissionModel, Permission } from '../models/permission';
 import { errorRes, hasPermission } from '../utils';
 
 passport.serializeUser<any, any>((user, done) => {
@@ -14,7 +14,7 @@ passport.deserializeUser(async (id, done) => {
 		const user = await Member.findById(id)
 			.populate({
 				path: 'permissions',
-				model: PermissionModel
+				model: Permission
 			})
 			.exec();
 		console.log('Passport serialize user:', user);
@@ -36,7 +36,7 @@ export default pass => {
 					const user = await Member.findById(payload._id)
 						.populate({
 							path: 'permissions',
-							model: PermissionModel
+							model: Permission
 						})
 						.lean()
 						.exec();

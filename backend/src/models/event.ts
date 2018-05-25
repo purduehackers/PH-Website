@@ -1,26 +1,36 @@
-import { Member } from './member';
-import {
-	prop,
-	Typegoose,
-	ModelType,
-	InstanceType,
-	Ref,
-	arrayProp
-} from 'typegoose';
+import { Document, Schema, model } from 'mongoose';
 
-export class Event extends Typegoose {
-	@prop() public privateEvent: boolean;
-	@prop() public requiresApplication: boolean;
-	@prop() public requiresRegistration: boolean;
-	@prop() public name: string;
-	@prop() public category: string;
-	@prop() public location: string;
-	@prop() public facebook: string;
-	@prop() public startsAt: Date;
-	@arrayProp({ itemsRef: Member })
-	public members: Array<Ref<Member>>;
+export interface IEventModel extends Document {
+	name: string;
+	category: string;
+	location: string;
+	facebook: string;
+	eventTime: Date;
+	privateEvent: boolean;
 }
 
-export const EventModel = new Event().getModelForClass(Event, {
-	schemaOptions: { timestamps: true }
-});
+const schema = new Schema(
+	{
+		name: {
+			type: String
+		},
+		category: {
+			type: String
+		},
+		location: {
+			type: String
+		},
+		facebook: {
+			type: String
+		},
+		eventTime: {
+			type: Date
+		},
+		privateEvent: {
+			type: Boolean
+		}
+	},
+	{ timestamps: true }
+);
+
+export const Event = model<IEventModel>('Event', schema, 'events');

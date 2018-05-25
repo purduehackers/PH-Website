@@ -1,4 +1,4 @@
-import { MemberModel as Member } from '../models/member';
+import { Member } from '../models/member';
 
 export const successRes = (res, response) => res.json({ status: 200, response });
 

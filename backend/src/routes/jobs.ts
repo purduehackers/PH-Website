@@ -1,11 +1,11 @@
 import * as express from 'express';
 import { ObjectId } from 'mongodb';
-import { LocationModel as Location } from '../models/location';
-import { MemberModel as Member } from '../models/member';
+import { ILocationModel, Location } from '../models/location';
+import { Member } from '../models/member';
 import { Job } from '../models/job';
 import { auth, permissions } from '../middleware/passport';
 import { successRes, errorRes, memberMatches } from '../utils';
-import { Permission, PermissionModel } from '../models/permission';
+import { IPermissionModel, Permission } from '../models/permission';
 export const router = express.Router();
 
 router.get('/', auth(), async (req, res, next) => {
@@ -33,7 +33,7 @@ router.post('/', auth(), async (req, res, next) => {
 			Member.findById(memberID)
 				.populate({
 					path: 'permissions',
-					model: PermissionModel
+					model: Permission
 				})
 				.exec()
 		]);
@@ -53,7 +53,7 @@ router.post('/', auth(), async (req, res, next) => {
 			start: new Date(start),
 			end: end ? new Date(end) : null
 		});
-		member.locations.push(location._id);
+		// member.locations.push(location._id);
 		await Promise.all([job.save(), member.save()]);
 		const ret = await job.populate('location').execPopulate();
 		return successRes(res, job.toJSON());
@@ -80,7 +80,7 @@ router.delete('/:id', auth(), async (req, res, next) => {
 				path: 'member',
 				populate: {
 					path: 'permissions',
-					model: PermissionModel
+					model: Permission
 				}
 			})
 			.exec();

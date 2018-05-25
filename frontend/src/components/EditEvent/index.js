@@ -67,6 +67,7 @@ class EditEventPage extends Component {
 			console.log('Fetched event:', event);
 		} catch (error) {
 			console.log('Edit Event Page error:', error);
+			this.setState({ loading: false });
 			flash(error.message || error.error);
 		}
 	};

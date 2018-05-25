@@ -1,51 +1,54 @@
 import { AES, enc } from 'crypto-js';
-import { prop, Typegoose, pre, post } from 'typegoose';
+import { Document, Schema, model } from 'mongoose';
 
-@pre<Credential>('save', function(next) {
+export interface ICredentialModel extends Document {
+	site: string;
+	username: string;
+	password: string;
+	description: string;
+}
+
+const schema = new Schema({
+	site: {
+		type: String,
+		required: true
+	},
+	username: {
+		type: String,
+		required: true
+	},
+	password: {
+		type: String,
+		required: true
+	},
+	description: {
+		type: String,
+	}
+});
+
+schema.pre('save', function(next) {
+	const cred = this as ICredentialModel;
 	if (this.isModified('password') || this.isNew) {
 		try {
-			this.password = AES.encrypt(this.password, CONFIG.SECRET).toString();
-			next();
+			cred.password = AES.encrypt(cred.password, CONFIG.SECRET).toString();
 		} catch (error) {
 			console.error(error);
+			throw error;
 		}
-	} else {
-		return next();
 	}
-})
+	
+	next();
+});
+
 // tslint:disable-next-line:only-arrow-functions
-@post<Credential>('find', function(credentials, next) {
-	try {
-		credentials.forEach(
-			credential =>
-				(credential.password = AES.decrypt(credential.password, CONFIG.SECRET).toString(
-					enc.Utf8
-				))
-		);
-		next();
-	} catch (error) {
-		console.error(error);
-	}
-})
-// tslint:disable-next-line:only-arrow-functions
-@post<Credential>('findOne', function(credential, next) {
+schema.post('findOne', function(err, credential: ICredentialModel, next) {
 	try {
 		credential.password = AES.decrypt(credential.password, CONFIG.SECRET).toString(enc.Utf8);
 		next();
 	} catch (error) {
 		console.error(error);
+		next(error);
 	}
-})
-export class Credential extends Typegoose {
-	@prop({ required: true })
-	public site: string;
-	@prop({ required: true })
-	public username: string;
-	@prop({ required: true })
-	public password: string;
-	@prop() public description: string;
-}
-
-export const CredentialModel = new Credential().getModelForClass(Credential, {
-	schemaOptions: { timestamps: true }
 });
+
+export const Credential = model<ICredentialModel>('Credential', schema, 'credentials');
