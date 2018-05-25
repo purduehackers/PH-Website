@@ -70,8 +70,20 @@ class EventPage extends Component {
 					<div className="section-container">
 						<h3>
 							{shortName(event.name)}
-							{hasPermission(user, 'events') && (
-								<Link to={`/event/${event._id}/edit`}>
+							{hasPermission(user, 'events') && [
+								<Link key={`${event._id}-1`} to="/events">
+									<button
+										type="button"
+										className="pull-left btn btn-primary btn-sm marginR"
+									>
+										<span
+											className="glyphicon glyphicon-chevron-left"
+											aria-hidden="true"
+										/>
+										Events
+									</button>
+								</Link>,
+								<Link key={`${event._id}-2`} to={`/event/${event._id}/edit`}>
 									<button
 										type="button"
 										className="pull-right marginR btn btn-primary btn-sm"
@@ -79,14 +91,14 @@ class EventPage extends Component {
 										Edit Event
 									</button>
 								</Link>
-							)}
+							]}
 						</h3>
 						<div className="panel panel-default text-left">
 							<div className="panel-body">
 								<div id="profile_intro_text">
 									<div id="profile_name">{event.name}</div>
 									<div id="profile_email">Location: {event.location}</div>
-									<div id="profile_major">{formatDate(event.event_time)}</div>
+									<div id="profile_major">{formatDate(event.eventTime)}</div>
 									{event.facebook && (
 										<a href={event.facebook}>
 											{event.facebook}
@@ -101,11 +113,6 @@ class EventPage extends Component {
 							<MembersAttendedTable members={event.members} />
 						) : (
 							<h3>No Members attended</h3>
-						)}
-						{hasPermission(user, 'events') && (
-							<button type="button" className="btn btn-danger btn-sm">
-								Delete Event
-							</button>
 						)}
 					</div>
 				</div>

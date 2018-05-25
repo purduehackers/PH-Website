@@ -19,7 +19,7 @@ const MembersAttendedTable = ({ members }) => (
 					{members.map(member => (
 						<tr key={member._id}>
 							<td>{member.name}</td>
-							<td>{member.graduation_year}</td>
+							<td>{member.graduationYear}</td>
 							<td>{member.events ? member.events.length : 0}</td>
 						</tr>
 					))}

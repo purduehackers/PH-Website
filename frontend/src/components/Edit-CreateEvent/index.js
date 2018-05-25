@@ -4,8 +4,15 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { hasPermission, shortName } from '../../constants';
-import { sendFlashMessage, clearFlashMessages, fetchEvent } from '../../actions';
-import { MembersAttendedTable, CustomRedirect } from '../Common';
+import {
+	sendFlashMessage,
+	clearFlashMessages,
+	fetchEvent,
+	createEvent,
+	updateEvent,
+	deleteEvent
+} from '../../actions';
+import { CustomRedirect } from '../Common';
 
 // TODO: Add autocomplete to input tags
 
@@ -16,9 +23,13 @@ class EditEventPage extends Component {
 				id: PropTypes.string
 			})
 		}).isRequired,
+		history: PropTypes.shape({
+			push: PropTypes.func
+		}).isRequired,
 		flash: PropTypes.func.isRequired,
 		clear: PropTypes.func.isRequired,
-		user: PropTypes.object
+		user: PropTypes.object,
+		type: PropTypes.string.isRequired
 	};
 
 	static defaultProps = {
@@ -27,14 +38,17 @@ class EditEventPage extends Component {
 
 	constructor(props) {
 		super(props);
+		let date = new Date();
+		date.setMinutes(0 - date.getTimezoneOffset());
+		date = date.toJSON().slice(0, 10);
 		this.state = {
 			event: null,
 			loading: true,
 			name: '',
 			privateEvent: false,
-			time: null,
-			hour: '-',
-			minute: '-',
+			date,
+			hour: '',
+			minute: '',
 			location: '',
 			facebook: ''
 		};
@@ -42,15 +56,16 @@ class EditEventPage extends Component {
 	}
 
 	componentDidMount = async () => {
-		const { match, flash, clear } = this.props;
+		const { match, flash, clear, type } = this.props;
+		if (type !== 'edit') return this.setState({ loading: false });
 		try {
 			clear();
 			const event = await fetchEvent(match.params.id);
-			let time = new Date(event.event_time);
-			const hour = time.getHours();
-			const minute = time.getMinutes() || '00';
-			time.setMinutes(minute - time.getTimezoneOffset());
-			time = time.toJSON().slice(0, 10);
+			let date = new Date(event.eventTime);
+			const hour = date.getHours();
+			const minute = date.getMinutes() || '00';
+			date.setMinutes(minute - date.getTimezoneOffset());
+			date = date.toJSON().slice(0, 10);
 			const { name, privateEvent, location, facebook } = event;
 			this.setState({
 				event,
@@ -58,17 +73,17 @@ class EditEventPage extends Component {
 				minute,
 				name,
 				privateEvent,
-				time,
+				date,
 				location,
 				facebook,
 				loading: false
 			});
 
-			console.log('Fetched event:', event);
+			return console.log('Fetched event:', event);
 		} catch (error) {
 			console.log('Edit Event Page error:', error);
 			this.setState({ loading: false });
-			flash(error.message || error.error);
+			return flash(error.message || error.error);
 		}
 	};
 
@@ -76,7 +91,55 @@ class EditEventPage extends Component {
 
 	onSubmit = async e => {
 		e.preventDefault();
-		console.log('About to change event to:', this.state);
+		const { match, flash, clear, history, type } = this.props;
+		try {
+			clear();
+			const { name, privateEvent, hour, minute, date, location, facebook } = this.state;
+			if (!name) return flash('Event requires name');
+			if (!date) return flash('Event requires date');
+			if (!hour || !minute) return flash('Event requires time');
+			if (!location) return flash('Event requires location');
+			if (facebook && !facebook.match('((http|https)://)?(www[.])?facebook.com.*'))
+				return flash('Must specify a url from Facebook');
+
+			const eventTime = new Date(`${date} ${hour}:${minute}`);
+			const event = {
+				name,
+				privateEvent,
+				eventTime,
+				location,
+				facebook
+			};
+			if (type === 'edit') {
+				const newEvent = await updateEvent(match.params.id, event);
+				console.log('Created new event:', newEvent);
+				this.setState({ event: newEvent });
+				return flash('Event successfully updated', 'green');
+			}
+
+			const newEvent = await createEvent(event);
+			console.log('Created new event:', newEvent);
+			history.push('/events');
+			return flash('Event created', 'green');
+		} catch (error) {
+			console.log('Edit Event Page error:', error);
+			return flash(error.message || error.error);
+		}
+	};
+
+	onDeleteEvent = async e => {
+		e.preventDefault();
+		const { match, flash, clear, history } = this.props;
+		try {
+			clear();
+			const event = await deleteEvent(match.params.id);
+			console.log('Deleted event:', event);
+			history.push('/events');
+			return flash('Successfully deleted event', 'green');
+		} catch (error) {
+			console.log('Edit Event Page error:', error);
+			return flash(error.message || error.error);
+		}
 	};
 
 	render() {
@@ -87,15 +150,16 @@ class EditEventPage extends Component {
 			privateEvent,
 			hour,
 			minute,
-			time,
+			date,
 			location,
 			facebook
 		} = this.state;
-		const { user } = this.props;
+		const { user, type } = this.props;
 		if (loading) return <span>Loading...</span>;
-		if (!loading && !event) return <CustomRedirect msgRed="Event not found" />;
+		if (!loading && !event && type === 'edit') return <CustomRedirect msgRed="Event not found" />;
 		if (!hasPermission(user, 'events'))
 			return <CustomRedirect msgRed="You are not authorized to edit this event" />;
+		const canEdit = type === 'edit' && hasPermission(user, 'events');
 		return (
 			<div>
 				<Helmet>
@@ -105,7 +169,7 @@ class EditEventPage extends Component {
 					<div className="section-container">
 						<h3>
 							{shortName(name)}
-							{hasPermission(user, 'events') && (
+							{canEdit && (
 								<Link to={`/event/${event._id}`}>
 									<button
 										type="button"
@@ -134,9 +198,6 @@ class EditEventPage extends Component {
 											placeholder="Event Name"
 											value={name}
 											className="form-control"
-											data-bvalidator="required"
-											data-bvalidator-msg="Event requires name."
-											aria-describedby="eventNameAria"
 											onChange={this.onChange}
 										/>
 
@@ -163,9 +224,9 @@ class EditEventPage extends Component {
 											<input
 												type="date"
 												name="date"
-												id="time"
+												id="date"
 												placeholder="Date"
-												value={time}
+												value={date}
 												className="form-control datepicker"
 												data-bvalidator="required,date[yyyy-mm-dd]"
 												data-bvalidator-msg="Event requires date/time."
@@ -243,21 +304,20 @@ class EditEventPage extends Component {
 								<br />
 								<input
 									type="submit"
-									value="Update Event"
+									value={`${type === 'edit' ? 'Update' : 'Create'} Event`}
 									className="btn btn-primary"
 									onClick={this.onSubmit}
 								/>
 							</form>
 						</div>
 						<hr />
-						{event.members && event.members.length ? (
-							<MembersAttendedTable members={event.members} />
-						) : (
-							<h3>No Members attended</h3>
-						)}
 					</div>
-					{hasPermission(user, 'events') && (
-						<button type="button" className="btn btn-danger btn-sm">
+					{canEdit && (
+						<button
+							type="button"
+							className="btn btn-danger btn-sm"
+							onClick={this.onDeleteEvent}
+						>
 							Delete Event
 						</button>
 					)}

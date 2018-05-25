@@ -34,8 +34,8 @@ class MemberTable extends Component {
 										</td>
 									)}
 									<td>{member.name}</td>
-									<td>{member.graduation_year}</td>
-									<td>{formatDate(member.created_at)}</td>
+									<td>{member.graduationYear}</td>
+									<td>{formatDate(member.createdAt)}</td>
 								</tr>
 							))}
 					</tbody>

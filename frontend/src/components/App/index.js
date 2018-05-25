@@ -13,7 +13,7 @@ import Members from '../Members';
 import Member from '../Member';
 import Events from '../Events';
 import Event from '../Event';
-import EditEvent from '../EditEvent';
+import EditCreateEvent from '../Edit-CreateEvent';
 import Credentials from '../Credentials';
 import Calendar from '../Calendar';
 import AnvilWifi from '../AnvilWifi';
@@ -70,8 +70,17 @@ class App extends Component {
 							token={token}
 							user={user}
 							exact
+							path={routes.CREATE_EVENT}
+							type="create"
+							component={EditCreateEvent}
+						/>
+						<ProtectedRoute
+							token={token}
+							user={user}
+							exact
 							path={routes.EDIT_EVENT}
-							component={EditEvent}
+							type="edit"
+							component={EditCreateEvent}
 						/>
 						<ProtectedRoute
 							token={token}

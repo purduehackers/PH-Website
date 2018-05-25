@@ -26,7 +26,7 @@ class EventsAttendedTable extends Component {
 							events.map((event, i) => (
 								<tr key={i} onClick={this.onEventClick(event._id)}>
 									<td>{event.name}</td>
-									<td>{formatDate(event.event_time)}</td>
+									<td>{formatDate(event.eventTime)}</td>
 								</tr>
 							))
 						) : (

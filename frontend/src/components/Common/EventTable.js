@@ -29,7 +29,7 @@ class EventTable extends Component {
 							events.map(event => (
 								<tr key={event._id + 1} id={event._id} onClick={this.onClick(event._id)}>
 									<td>{event.name}</td>
-									<td>{formatDate(event.created_at)}</td>
+									<td>{formatDate(event.createdAt)}</td>
 									<td>{event.location}</td>
 									{allowed && <td>{event.members ? event.members.length : 0}</td>}
 								</tr>

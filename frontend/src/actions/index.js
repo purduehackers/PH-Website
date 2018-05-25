@@ -162,6 +162,48 @@ export const fetchEvent = async (id, params) => {
 	}
 };
 
+export const createEvent = async event => {
+	try {
+		const token = getToken();
+		const {
+			data: { response }
+		} = await axios.post('/api/events/', event, {
+			headers: { Authorization: `Bearer ${token}` }
+		});
+		return response;
+	} catch (error) {
+		throw error.response.data;
+	}
+};
+
+export const updateEvent = async (id, event) => {
+	try {
+		const token = getToken();
+		const {
+			data: { response }
+		} = await axios.post(`/api/events/${id}`, event, {
+			headers: { Authorization: `Bearer ${token}` }
+		});
+		return response;
+	} catch (error) {
+		throw error.response.data;
+	}
+};
+
+export const deleteEvent = async id => {
+	try {
+		const token = getToken();
+		const {
+			data: { response }
+		} = await axios.delete(`/api/events/${id}`, {
+			headers: { Authorization: `Bearer ${token}` }
+		});
+		return response;
+	} catch (error) {
+		throw error.response.data;
+	}
+};
+
 export const fetchCredentials = async params => {
 	try {
 		const token = getToken();

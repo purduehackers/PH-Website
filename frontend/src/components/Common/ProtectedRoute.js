@@ -4,13 +4,13 @@ import { Route } from 'react-router-dom';
 import { hasPermission } from '../../constants';
 import { CustomRedirect } from '../Common';
 
-const ProtectedRoute = ({ component: Component, roles, token, user, msg, ...rest }) => (
+const ProtectedRoute = ({ component: Component, roles, token, user, msg, type, ...rest }) => (
 	<Route
 		{...rest}
 		render={props => {
 			const allowed = roles ? roles.every(role => hasPermission(user, role)) : true;
 			return allowed && token && user ? (
-				<Component {...props} />
+				<Component {...props} type={type} />
 			) : (
 				<CustomRedirect to="/" msgRed={msg} />
 			);
@@ -23,14 +23,16 @@ ProtectedRoute.propTypes = {
 	roles: PropTypes.array,
 	token: PropTypes.string,
 	user: PropTypes.object,
-	msg: PropTypes.string
+	msg: PropTypes.string,
+	type: PropTypes.string
 };
 
 ProtectedRoute.defaultProps = {
 	roles: null,
 	token: null,
 	user: null,
-	msg: 'Permission Denied'
+	msg: 'Permission Denied',
+	type: ''
 };
 
 export default ProtectedRoute;
