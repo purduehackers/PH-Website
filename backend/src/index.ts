@@ -17,8 +17,9 @@ import { router as auth } from './routes/auth';
 import { router as home } from './routes/home';
 import { router as members } from './routes/members';
 import { router as events } from './routes/events';
-import { router as credentials } from './routes/credentials';
 import { router as jobs } from './routes/jobs';
+import { router as credentials } from './routes/credentials';
+import { router as permissions } from './routes/permissions';
 
 export const app = express();
 export const server = http.createServer(app);
@@ -51,8 +52,9 @@ app.use('/api', home);
 app.use('/api/auth', auth);
 app.use('/api/members', members);
 app.use('/api/events', events);
-app.use('/api/credentials', credentials);
 app.use('/api/jobs', jobs);
+app.use('/api/credentials', credentials);
+app.use('/api/permissions', permissions);
 
 // Serves react app, only used in production
 app.use(express.static(path.join(__dirname, '../../frontend/build')));
@@ -61,5 +63,5 @@ app.get('*', (req, res) =>
 );
 
 server.listen(PORT, () => {
-	console.log(`Listening on port ${PORT}`);
+	console.log(`Listening on port: ${PORT}`);
 });

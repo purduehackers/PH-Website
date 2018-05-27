@@ -1,0 +1,38 @@
+{
+	// Use IntelliSense to learn about possible attributes.
+	// Hover to view descriptions of existing attributes.
+	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+	"version": "0.2.0",
+	"compounds": [
+		{
+			"name": "Compound",
+			"configurations": [
+				"Server",
+				"Client"
+			]
+		}
+	],
+	"configurations": [
+		{
+			"type": "node",
+			"request": "attach",
+			"name": "Server",
+			"port": 9229,
+			"skipFiles": [
+				 "<node_internals>/**/*.js",
+				 "${workspaceFolder}/**/node_modules/**/*.js"
+   			]
+		},
+		{
+			"type": "chrome",
+			"request": "launch",
+			"name": "Client",
+			"url": "http://localhost:3000",
+			"webRoot": "${workspaceFolder}/frontend/src",
+			"userDataDir": false,
+			"skipFiles": [
+				"${workspaceFolder}/**/node_modules/**/*.js"
+			]
+		}
+	]
+}

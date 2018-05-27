@@ -120,7 +120,8 @@ class MemberPage extends Component {
 			this.setState({ jobs: [...this.state.jobs, job] });
 			return flash('Job Record Added!', 'green');
 		} catch (error) {
-			return flash(error.error);
+			console.error(error);
+			return flash(error.message || error.error);
 		}
 	};
 
@@ -137,7 +138,8 @@ class MemberPage extends Component {
 			history.push(`/member/${match.params.id}`);
 			return flash('Job Record Removed!', 'green');
 		} catch (error) {
-			return flash(error.error);
+			console.error(error);
+			return flash(error.message || error.error);
 		}
 	};
 

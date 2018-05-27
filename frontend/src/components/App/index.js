@@ -15,6 +15,7 @@ import Events from '../Events';
 import Event from '../Event';
 import EditCreateEvent from '../Edit-CreateEvent';
 import Credentials from '../Credentials';
+import Permissions from '../Permissions';
 import Calendar from '../Calendar';
 import AnvilWifi from '../AnvilWifi';
 import Dev from '../Dev';
@@ -86,16 +87,24 @@ class App extends Component {
 							token={token}
 							user={user}
 							exact
-							path={routes.ANVIL_WIFI}
-							component={AnvilWifi}
+							path={routes.CREDENTIALS}
+							roles={['credentials']}
+							component={Credentials}
 						/>
 						<ProtectedRoute
 							token={token}
 							user={user}
 							exact
-							path={routes.CREDENTIALS}
-							roles={['credentials']}
-							component={Credentials}
+							path={routes.PERMISSIONS}
+							roles={['permissions']}
+							component={Permissions}
+						/>
+						<ProtectedRoute
+							token={token}
+							user={user}
+							exact
+							path={routes.ANVIL_WIFI}
+							component={AnvilWifi}
 						/>
 						<Route component={NotFound} />
 					</Switch>

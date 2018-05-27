@@ -56,7 +56,7 @@ export const auth = () => (req, res, next) =>
 		err || info ? errorRes(res, 401, 'Unauthorized') : next();
 	})(req, res, next);
 
-export const permissions = (roles: string[]) => (req, res, next) =>
+export const hasPermissions = (roles: string[]) => (req, res, next) =>
 	!req.user || !roles.some(role => hasPermission(req.user, role))
 		? errorRes(res, 401, 'Permission Denied')
 		: next();

@@ -9,8 +9,8 @@ export interface ILocationModel extends Document {
 const schema = new Schema(
 	{
 		loc: {
-			type: {type: String, default: 'Point'},
-			coordinates: [Number]
+			type: { type: String },
+			coordinates: { type: [], index: '2dsphere' }
 		},
 		name: {
 			type: String
@@ -22,6 +22,6 @@ const schema = new Schema(
 	{ timestamps: true }
 );
 
-schema.index({ loc: '2dsphere' });
+// schema.index({ loc: '2dsphere' });
 
 export const Location = model<ILocationModel>('Location', schema, 'locations');

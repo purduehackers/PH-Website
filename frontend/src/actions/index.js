@@ -247,6 +247,21 @@ export const deleteCredential = async id => {
 	}
 };
 
+export const fetchPermissions = async params => {
+	try {
+		const token = getToken();
+		const {
+			data: { response }
+		} = await axios.get('/api/permissions', {
+			params,
+			headers: { Authorization: `Bearer ${token}` }
+		});
+		return response;
+	} catch (error) {
+		throw error.response.data;
+	}
+};
+
 export const addJob = async location => {
 	try {
 		const token = getToken();

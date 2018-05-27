@@ -29,6 +29,7 @@
 		"no-unused-expressions": "off",
 		"import/first": 0,
 		"no-mixed-spaces-and-tabs": "error",
+		"newline-per-chained-call": "error",
 		"prettier/prettier": [
 			"error",
 			{

@@ -3,7 +3,7 @@ import { ObjectId } from 'mongodb';
 import { ILocationModel, Location } from '../models/location';
 import { Member } from '../models/member';
 import { Job } from '../models/job';
-import { auth, permissions } from '../middleware/passport';
+import { auth, hasPermissions } from '../middleware/passport';
 import { successRes, errorRes, memberMatches } from '../utils';
 import { IPermissionModel, Permission } from '../models/permission';
 export const router = express.Router();
@@ -41,7 +41,7 @@ router.post('/', auth(), async (req, res, next) => {
 				.exec()
 		]);
 		if (!member) return errorRes(res, 400, 'Member does not exist');
-		if (!memberMatches(member, req.params.id)) return errorRes(res, 401, 'Unauthorized');
+		if (!memberMatches(member, req.user._id)) return errorRes(res, 401, 'Unauthorized');
 
 		if (!location) {
 			location = new Location({
@@ -56,7 +56,6 @@ router.post('/', auth(), async (req, res, next) => {
 			start: new Date(start),
 			end: end ? new Date(end) : null
 		});
-		// member.locations.push(location._id);
 		await Promise.all([job.save(), member.save()]);
 		const ret = await job.populate('location').execPopulate();
 		return successRes(res, job.toJSON());
@@ -88,7 +87,8 @@ router.delete('/:id', auth(), async (req, res, next) => {
 			})
 			.exec();
 		if (!job) return errorRes(res, 400, 'Job not found');
-		if (!memberMatches(job.member, req.params.id)) return errorRes(res, 401, 'Unauthorized');
+
+		if (!memberMatches(job.member, req.user._id)) return errorRes(res, 401, 'Unauthorized');
 		const jo = await job.remove();
 
 		// Remove if there are no more jobs that reference location of job that was just deleted

@@ -1,4 +1,5 @@
-import { Member } from '../models/member';
+import { IMemberModel, Member } from '../models/member';
+import { userInfo } from 'os';
 
 export const successRes = (res, response) => res.json({ status: 200, response });
 
@@ -32,4 +33,8 @@ export const hasPermission = (user, name) =>
 
 export const isAdmin = user => hasPermission(user, 'admin');
 
-export const memberMatches = (user, id) => hasPermission(user, 'admin') || user._id === id;
+export const memberMatches = (user: IMemberModel, id) =>
+	user &&
+	(hasPermission(user, 'admin') ||
+		user._id === id ||
+		(typeof user._id.equals === 'function' && user._id.equals(id)));

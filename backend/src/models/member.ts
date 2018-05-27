@@ -70,12 +70,12 @@ const schema = new Schema(
 		},
 		memberStatus: {
 			type: String,
-			enum: [...Object.keys(memberStatuses)],
+			enum: [...Object.values(memberStatuses)],
 			default: memberStatuses.MEMBER
 		},
 		gender: {
 			type: String,
-			enum: [...Object.keys(genders)]
+			enum: [...Object.values(genders)]
 		},
 		unsubscribed: {
 			type: Boolean,

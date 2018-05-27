@@ -1,0 +1,80 @@
+{
+	// See https://go.microsoft.com/fwlink/?LinkId=733558
+	// for the documentation about the tasks.json format
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "start",
+			"dependsOn": ["start:server", "start:client"],
+			"problemMatcher": []
+		},
+		{
+			"label": "start:server",
+			"type": "npm",
+			"script": "start",
+			"isBackground": true,
+			"path": "backend/",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			},
+			"problemMatcher": ["$tsc-watch"]
+		},
+		{
+			"label": "start:client",
+			"type": "npm",
+			"script": "start",
+			"isBackground": true,
+			"path": "frontend/",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			},
+			"problemMatcher": ["$eslint-compact", "$eslint-stylish"]
+		},
+
+		{
+			"label": "build",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"dependsOn": ["build:server", "build:client"],
+			"problemMatcher": []
+		},
+		{
+			"label": "build:server",
+			"type": "npm",
+			"script": "build",
+			"isBackground": true,
+			"path": "backend/",
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			},
+			"problemMatcher": ["$tsc-watch"]
+		},
+		{
+			"label": "build:client",
+			"type": "npm",
+			"script": "build",
+			"isBackground": true,
+			"path": "frontend/",
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			},
+			"problemMatcher": ["$eslint-compact", "$eslint-stylish"]
+		}
+	]
+}

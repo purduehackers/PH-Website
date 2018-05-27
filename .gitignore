@@ -62,5 +62,6 @@ dist/
 
 # MongoDB Dumps
 dump/
+phdump/
 
 .DS_Store
