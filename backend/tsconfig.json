@@ -1,21 +1,18 @@
 {
-  "compilerOptions": {
-    "lib": [
-      "es2018"
-    ],
-    "module": "commonjs",
-    "noImplicitReturns": true,
-    "outDir": "dist",
-    "sourceMap": true,
-    "target": "es6",
-    "allowJs": true,
-   "removeComments": true,
-   "moduleResolution": "node",
-	 "experimentalDecorators": true,
-	 "emitDecoratorMetadata": true
-  },
-  "compileOnSave": true,
-  "include": [
-    "src"
-  ]
+	"compilerOptions": {
+		"lib": ["es2018"],
+		"module": "commonjs",
+		"noImplicitReturns": true,
+		"outDir": "dist",
+		"sourceMap": true,
+		"target": "es6",
+		"strict": true,
+		"allowJs": true,
+		"removeComments": true,
+		"moduleResolution": "node",
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true
+	},
+	"compileOnSave": true,
+	"include": ["src"]
 }

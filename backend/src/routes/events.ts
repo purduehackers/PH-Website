@@ -1,5 +1,5 @@
 import * as express from 'express';
-import * as paginate from 'express-paginate';
+// import * as paginate from 'express-paginate';
 import * as passport from 'passport';
 import { ObjectId } from 'mongodb';
 import { IEventModel, Event } from '../models/event';

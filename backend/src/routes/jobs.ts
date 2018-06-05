@@ -41,7 +41,7 @@ router.post('/', auth(), async (req, res, next) => {
 				.exec()
 		]);
 		if (!member) return errorRes(res, 400, 'Member does not exist');
-		if (!memberMatches(member, req.user._id)) return errorRes(res, 401, 'Unauthorized');
+		if (!memberMatches(member, (req.user as any)._id)) return errorRes(res, 401, 'Unauthorized');
 
 		if (!location) {
 			location = new Location({
@@ -88,7 +88,8 @@ router.delete('/:id', auth(), async (req, res, next) => {
 			.exec();
 		if (!job) return errorRes(res, 400, 'Job not found');
 
-		if (!memberMatches(job.member, req.user._id)) return errorRes(res, 401, 'Unauthorized');
+		if (!memberMatches(job.member, (req.user as any)._id))
+			return errorRes(res, 401, 'Unauthorized');
 		const jo = await job.remove();
 
 		// Remove if there are no more jobs that reference location of job that was just deleted

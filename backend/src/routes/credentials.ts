@@ -49,7 +49,7 @@ router.get('/:id', auth(), hasPermissions(['credentials']), async (req, res, nex
 router.delete('/:id', auth(), hasPermissions(['credentials']), async (req, res, next) => {
 	try {
 		const credential = await Credential.findById(req.params.id).exec();
-		await credential.remove();
+		if (credential) await credential.remove();
 		return successRes(res, credential);
 	} catch (error) {
 		return errorRes(res, 500, error);

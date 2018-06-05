@@ -1,5 +1,5 @@
 import * as express from 'express';
-import * as paginate from 'express-paginate';
+// import * as paginate from 'express-paginate';
 import * as passport from 'passport';
 import { ObjectId } from 'mongodb';
 import { model } from 'mongoose';
@@ -116,7 +116,7 @@ router.get('/:id/events', async (req, res, next) => {
 			.exec();
 		if (!member) return successRes(res, []);
 		const { events } = member;
-		const publicEvents = events ? events.filter(event => !event.privateEvent) : [];
+		const publicEvents = events ? events.filter((event: IEventModel) => !event.privateEvent) : [];
 		return successRes(res, publicEvents);
 	} catch (error) {
 		console.log(error);

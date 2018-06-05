@@ -1,6 +1,7 @@
 import * as passport from 'passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';
-import { Member } from '../models/member';
+import { Request, Response, NextFunction } from 'express';
+import { Member, IMemberModel } from '../models/member';
 import { IPermissionModel, Permission } from '../models/permission';
 import { errorRes, hasPermission } from '../utils';
 
@@ -18,13 +19,13 @@ passport.deserializeUser(async (id, done) => {
 			})
 			.exec();
 		console.log('Passport serialize user:', user);
-		done(null, user);
+		done(null, user as IMemberModel);
 	} catch (error) {
-		done(error, null);
+		done(error, undefined);
 	}
 });
 
-export default pass => {
+export default (pass: any) => {
 	pass.use(
 		new Strategy(
 			{
@@ -50,13 +51,17 @@ export default pass => {
 	);
 };
 
-export const auth = () => (req, res, next) =>
+export const auth = () => (req: Request, res: Response, next: NextFunction) =>
 	passport.authenticate('jwt', { session: false }, (err, data, info) => {
 		req.user = data;
 		err || info ? errorRes(res, 401, 'Unauthorized') : next();
 	})(req, res, next);
 
-export const hasPermissions = (roles: string[]) => (req, res, next) =>
-	!req.user || !roles.some(role => hasPermission(req.user, role))
+export const hasPermissions = (roles: string[]) => (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) =>
+	!req.user || !roles.some(role => hasPermission(req.user as IMemberModel, role))
 		? errorRes(res, 401, 'Permission Denied')
 		: next();
