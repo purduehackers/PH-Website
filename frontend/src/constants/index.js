@@ -31,6 +31,7 @@ export default {
 	CALENDAR: '/calendar',
 	REPORTS: '/reports',
 	PERMISSIONS: '/permissions',
+	PERMISSION: '/permission/:id',
 	CREDENTIALS: '/credentials',
 	LOCATIONS: '/locations',
 	HACKATHONS: '/hackathons',

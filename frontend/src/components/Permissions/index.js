@@ -54,7 +54,10 @@ class PermissionsPage extends Component {
 							</thead>
 							<tbody>
 								{permissions.map(permission => (
-									<tr key={permission._id} onClick={this.onPermissionClick}>
+									<tr
+										key={permission._id}
+										onClick={this.onPermissionClick(permission._id)}
+									>
 										<td>{permission.name}</td>
 										<td>{permission.description}</td>
 										<td>{permission.members ? permission.members.length : 0}</td>

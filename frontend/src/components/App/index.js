@@ -16,6 +16,7 @@ import Event from '../Event';
 import EditCreateEvent from '../Edit-CreateEvent';
 import Credentials from '../Credentials';
 import Permissions from '../Permissions';
+import Permission from '../Permission';
 import Calendar from '../Calendar';
 import AnvilWifi from '../AnvilWifi';
 import Dev from '../Dev';
@@ -98,6 +99,14 @@ class App extends Component {
 							path={routes.PERMISSIONS}
 							roles={['permissions']}
 							component={Permissions}
+						/>
+						<ProtectedRoute
+							token={token}
+							user={user}
+							exact
+							path={routes.PERMISSION}
+							roles={['permissions']}
+							component={Permission}
 						/>
 						<ProtectedRoute
 							token={token}
