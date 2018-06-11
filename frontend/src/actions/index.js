@@ -277,6 +277,70 @@ export const fetchPermission = async (id, params) => {
 	}
 };
 
+export const addPermission = async (permission, params) => {
+	try {
+		const token = getToken();
+		const {
+			data: { response }
+		} = await axios.post('/api/permissions/', permission, {
+			params,
+			headers: { Authorization: `Bearer ${token}` }
+		});
+		return response;
+	} catch (error) {
+		throw error.response.data;
+	}
+};
+
+export const deletePermission = async (id, params) => {
+	try {
+		const token = getToken();
+		const {
+			data: { response }
+		} = await axios.delete(`/api/permissions/${id}`, {
+			params,
+			headers: { Authorization: `Bearer ${token}` }
+		});
+		return response;
+	} catch (error) {
+		throw error.response.data;
+	}
+};
+
+export const addUserToPermission = async (id, email, params) => {
+	try {
+		const token = getToken();
+		const {
+			data: { response }
+		} = await axios.post(
+			`/api/permissions/${id}`,
+			{ email },
+			{
+				params,
+				headers: { Authorization: `Bearer ${token}` }
+			}
+		);
+		return response;
+	} catch (error) {
+		throw error.response.data;
+	}
+};
+
+export const removeUserFromPermission = async (id, memberID, params) => {
+	try {
+		const token = getToken();
+		const {
+			data: { response }
+		} = await axios.delete(`/api/permissions/${id}/member/${memberID}`, {
+			params,
+			headers: { Authorization: `Bearer ${token}` }
+		});
+		return response;
+	} catch (error) {
+		throw error.response.data;
+	}
+};
+
 export const addJob = async location => {
 	try {
 		const token = getToken();

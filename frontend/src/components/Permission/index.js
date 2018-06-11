@@ -2,27 +2,39 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import routes, { formatDate } from '../../constants';
-import { sendFlashMessage, clearFlashMessages, fetchPermission } from '../../actions';
+import routes, { formatDate, hasPermission } from '../../constants';
+import {
+	sendFlashMessage,
+	clearFlashMessages,
+	fetchPermission,
+	deletePermission,
+	addUserToPermission,
+	removeUserFromPermission
+} from '../../actions';
+import { CustomRedirect } from '../Common';
 
 class PermissionPage extends Component {
 	static propTypes = {
-		// history: PropTypes.shape({
-		// 	push: PropTypes.func
-		// }).isRequired
-		// user: PropTypes.object.isRequired
+		history: PropTypes.shape({
+			push: PropTypes.func
+		}).isRequired,
+		user: PropTypes.object.isRequired,
 		match: PropTypes.shape({
 			params: PropTypes.shape({
 				id: PropTypes.string
 			})
-		}).isRequired
+		}).isRequired,
+		flash: PropTypes.func.isRequired,
+		clear: PropTypes.func.isRequired
 	};
 
 	constructor(props) {
 		super(props);
 		this.state = {
 			permission: null,
-			loading: true
+			loading: true,
+			memberEmail: '',
+			members: []
 		};
 	}
 
@@ -32,7 +44,11 @@ class PermissionPage extends Component {
 			clear();
 			const permission = await fetchPermission(this.props.match.params.id);
 			console.log('Fetched permission:', permission);
-			this.setState({ permission, loading: false });
+			this.setState({
+				permission,
+				loading: false,
+				members: permission ? permission.members : []
+			});
 		} catch (error) {
 			console.error('Permission Page error:', error);
 			this.setState({ loading: false });
@@ -40,11 +56,65 @@ class PermissionPage extends Component {
 		}
 	};
 
+	onChange = e => this.setState({ [e.target.id]: e.target.value });
+
+	onClick = id => () => this.props.history.push(`/member/${id}`);
+
+	onAddUser = async e => {
+		e.preventDefault();
+		const { flash, clear } = this.props;
+		const { memberEmail } = this.state;
+		try {
+			clear();
+			const response = await addUserToPermission(this.props.match.params.id, memberEmail);
+			console.log('Added user to permission:', response);
+			const { permission } = response;
+			this.setState({ members: permission.members, memberEmail: '' });
+			return flash('Successfully added user to this permission', 'green');
+		} catch (error) {
+			console.error('Permissions Page error:', error);
+			return flash(error.error);
+		}
+	};
+
+	onDeleteUser = async e => {
+		e.preventDefault();
+		e.stopPropagation();
+		const { flash, clear } = this.props;
+		const { id: memberID } = e.target;
+		try {
+			clear();
+			const { permission } = await removeUserFromPermission(
+				this.props.match.params.id,
+				memberID
+			);
+			this.setState({ members: permission.members });
+			return flash('Successfully removed user from this permission', 'green');
+		} catch (error) {
+			console.error('Permissions Page error:', error);
+			return flash(error.error);
+		}
+	};
+
+	onDeletePermission = async e => {
+		e.preventDefault();
+		const { flash, clear, history } = this.props;
+		try {
+			clear();
+			await deletePermission(this.props.match.params.id);
+			history.push('/permissions');
+			return flash('Permission successfully deleted', 'green');
+		} catch (error) {
+			console.error('Permissions Page error:', error);
+			return flash(error.error);
+		}
+	};
+
 	render() {
-		const { permission, loading } = this.state;
+		const { permission, loading, memberEmail, members } = this.state;
+		const { user } = this.props;
 		if (loading) return <div>Loading...</div>;
-		if (!permission) return <div>Permission not found</div>;
-		const { members } = permission;
+		if (!permission) return <CustomRedirect msgRed="Permission not found" />;
 		return (
 			<div className="section">
 				<div className="section-container">
@@ -85,19 +155,18 @@ class PermissionPage extends Component {
 							<tbody>
 								{members && members.length ? (
 									members.map((m, i) => (
-										<tr onClick="location.href='{{ $member->profileURL() }}';" key={i}>
+										<tr onClick={this.onClick(m.member._id)} key={i}>
 											<td>{m.member.name}</td>
 											<td>{formatDate(m.dateAdded)}</td>
 											<td>
 												{m.recordedBy ? m.recordedBy.name : 'Unknown'}
-												<a
-													href="{{ action('PermissionController@getDeleteMember', [$permission->id, $member->id]) }}"
-													className="pull-right"
+												<button
+													className="btn btn-xs btn-danger pull-right"
+													id={m.member._id}
+													onClick={this.onDeleteUser}
 												>
-													<button className="btn btn-xs btn-danger pull-right">
-														Delete
-													</button>
-												</a>
+													Delete
+												</button>
 											</td>
 										</tr>
 									))
@@ -108,43 +177,40 @@ class PermissionPage extends Component {
 										<td />
 									</tr>
 								)}
-								<form
-									method="post"
-									action="{{ action('PermissionController@postAdd',$permission->id) }}"
-									className="panel-body validate"
-								>
-									<tr>
-										<td>
-											<input
-												type="text"
-												id="memberEmail"
-												name="member_name"
-												placeholder="Add User"
-												className="form-control membersautocomplete"
-												data-bvalidator="required"
-											/>
-										</td>
-										<td />
-										<td>
-											<input
-												type="submit"
-												value="Add User"
-												className="btn btn-sm btn-primary"
-											/>
-										</td>
-									</tr>
-								</form>
+								<tr>
+									<td />
+									<td>
+										<input
+											type="text"
+											id="memberEmail"
+											name="member_name"
+											placeholder="Add User"
+											className="form-control membersautocomplete"
+											data-bvalidator="required"
+											value={memberEmail}
+											onChange={this.onChange}
+										/>
+									</td>
+									<td>
+										<input
+											type="submit"
+											value="Add User"
+											className="btn btn-sm btn-primary"
+											onClick={this.onAddUser}
+										/>
+									</td>
+								</tr>
 							</tbody>
 						</table>
 					</div>
-					@can ('permission','adminpermissions')
-					<a
-						href="{{ action('PermissionController@getDelete', $permission->id) }}"
-						className="pull-right"
-					>
-						<button className="btn btn-sm btn-danger pull-right">Delete Permission</button>
-					</a>
-					@endcan
+					{hasPermission(user, 'adminpermissions') && (
+						<button
+							className="btn btn-sm btn-danger pull-right"
+							onClick={this.onDeletePermission}
+						>
+							Delete Permission
+						</button>
+					)}
 				</div>
 			</div>
 		);

@@ -14,7 +14,14 @@ const schema = new Schema(
 		description: {
 			type: String,
 			required: true
-		}
+		},
+		members: [
+			{
+				member: Schema.Types.ObjectId,
+				recordedBy: Schema.Types.ObjectId,
+				dateAdded: Date
+			}
+		]
 	},
 	{ timestamps: true }
 );
