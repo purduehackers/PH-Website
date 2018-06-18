@@ -26,6 +26,7 @@ export default {
 	EVENT: '/event/:id',
 	CREATE_EVENT: '/events/create',
 	EDIT_EVENT: '/event/:id/edit',
+	CHECKIN_EVENT: '/event/:id/checkin',
 	MEMBERS: '/members',
 	MEMBER: '/member/:id',
 	CALENDAR: '/calendar',

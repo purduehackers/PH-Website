@@ -8,7 +8,8 @@ const ProtectedRoute = ({ component: Component, roles, token, user, msg, type, .
 	<Route
 		{...rest}
 		render={props => {
-			const allowed = roles ? roles.every(role => hasPermission(user, role)) : true;
+			console.log('Permission:', hasPermission(user, 'credentials'));
+			const allowed = roles ? roles.some(role => hasPermission(user, role)) : true;
 			return allowed && token && user ? (
 				<Component {...props} type={type} />
 			) : (

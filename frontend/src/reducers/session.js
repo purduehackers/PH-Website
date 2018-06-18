@@ -2,15 +2,15 @@ import { AUTH_USER_SET, AUTH_TOKEN_SET } from '../actions';
 
 export default (
 	state = {
-		token: localStorage.getItem('token') || null,
-		user: JSON.parse(localStorage.getItem('user')) || null
+		token: sessionStorage.getItem('token') || null,
+		user: JSON.parse(sessionStorage.getItem('user')) || null
 	},
 	action
 ) => {
 	switch (action.type) {
 		case AUTH_USER_SET: {
 			if (action.user) {
-				localStorage.setItem('user', JSON.stringify(action.user));
+				sessionStorage.setItem('user', JSON.stringify(action.user));
 				return {
 					...state,
 					user: {
@@ -20,7 +20,7 @@ export default (
 				};
 			}
 
-			localStorage.removeItem('user');
+			sessionStorage.removeItem('user');
 			return {
 				...state,
 				user: null
@@ -28,8 +28,8 @@ export default (
 		}
 		case AUTH_TOKEN_SET: {
 			action.token
-				? localStorage.setItem('token', action.token)
-				: localStorage.removeItem('token');
+				? sessionStorage.setItem('token', action.token)
+				: sessionStorage.removeItem('token');
 			return {
 				...state,
 				token: action.token

@@ -70,25 +70,27 @@ class EventPage extends Component {
 					<div className="section-container">
 						<h3>
 							{shortName(event.name)}
+							<Link key={`${event._id}-1`} to="/events">
+								<button type="button" className="pull-left btn btn-primary btn-sm marginR">
+									<span className="glyphicon glyphicon-chevron-left" aria-hidden="true" />
+									Events
+								</button>
+							</Link>
 							{hasPermission(user, 'events') && [
-								<Link key={`${event._id}-1`} to="/events">
-									<button
-										type="button"
-										className="pull-left btn btn-primary btn-sm marginR"
-									>
-										<span
-											className="glyphicon glyphicon-chevron-left"
-											aria-hidden="true"
-										/>
-										Events
-									</button>
-								</Link>,
 								<Link key={`${event._id}-2`} to={`/event/${event._id}/edit`}>
 									<button
 										type="button"
 										className="pull-right marginR btn btn-primary btn-sm"
 									>
 										Edit Event
+									</button>
+								</Link>,
+								<Link key={`${event._id}-2`} to={`/event/${event._id}/checkin`}>
+									<button
+										type="button"
+										className="pull-right marginR btn btn-primary btn-sm"
+									>
+										Checkin
 									</button>
 								</Link>
 							]}

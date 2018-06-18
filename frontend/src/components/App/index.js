@@ -14,6 +14,7 @@ import Member from '../Member';
 import Events from '../Events';
 import Event from '../Event';
 import EditCreateEvent from '../Edit-CreateEvent';
+import EventCheckin from '../EventCheckin';
 import Credentials from '../Credentials';
 import Permissions from '../Permissions';
 import Permission from '../Permission';
@@ -23,7 +24,7 @@ import Dev from '../Dev';
 import Login from '../Login';
 import Logout from '../Logout';
 import SignUp from '../Signup';
-import { localStorageChanged, clearFlashMessages } from '../../actions';
+import { sessionStorageChanged, clearFlashMessages, fetchProfile } from '../../actions';
 
 fontawesome.library.add(faFacebook, faGithub, faTwitter, faEnvelope, faCalendar, faCoffee, faHeart);
 
@@ -34,8 +35,9 @@ class App extends Component {
 		history: PropTypes.shape({
 			listen: PropTypes.func
 		}).isRequired,
+		fetchProfile: PropTypes.func.isRequired,
 		clearFlashMessages: PropTypes.func.isRequired,
-		localStorageChanged: PropTypes.func.isRequired
+		sessionStorageChanged: PropTypes.func.isRequired
 	};
 
 	static defaultProps = {
@@ -45,10 +47,20 @@ class App extends Component {
 
 	constructor(props) {
 		super(props);
-		window.addEventListener('storage', this.props.localStorageChanged);
+		window.addEventListener('storage', this.props.sessionStorageChanged);
 		this.props.history.listen(() => this.props.clearFlashMessages());
 		console.log('App props:', this.props);
 	}
+
+	componentWillMount = async () => {
+		try {
+			const { fetchProfile: getUser } = this.props;
+			const response = await getUser();
+			console.log('Sign in response:', response);
+		} catch (error) {
+			console.error('Sign in error:', error);
+		}
+	};
 
 	render() {
 		const { token, user } = this.props;
@@ -83,6 +95,14 @@ class App extends Component {
 							path={routes.EDIT_EVENT}
 							type="edit"
 							component={EditCreateEvent}
+						/>
+						<ProtectedRoute
+							token={token}
+							user={user}
+							exact
+							path={routes.CHECKIN_EVENT}
+							roles={['events']}
+							component={EventCheckin}
 						/>
 						<ProtectedRoute
 							token={token}
@@ -129,5 +149,5 @@ const mapStateToProps = state => ({
 });
 
 export default withRouter(
-	connect(mapStateToProps, { localStorageChanged, clearFlashMessages })(App)
+	connect(mapStateToProps, { sessionStorageChanged, clearFlashMessages, fetchProfile })(App)
 );

@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 // Helper functions
-export const getToken = () => localStorage.getItem('token');
-export const getCurrentUser = () => JSON.parse(localStorage.getItem('user'));
+export const getToken = () => sessionStorage.getItem('token');
+export const getCurrentUser = () => JSON.parse(sessionStorage.getItem('user'));
 const makeDispatcher = (type, ...argNames) => (...args) => {
 	const action = { type };
 	argNames.forEach((arg, index) => {
@@ -98,6 +98,24 @@ export const fetchMember = async (id, params) => {
 		});
 		return response;
 	} catch (error) {
+		console.error('Fetch Member error:', error);
+		throw error.response.data;
+	}
+};
+
+export const fetchProfile = params => async dispatch => {
+	try {
+		const user = getCurrentUser();
+		if (!user || (Object.keys(user).length === 0 && user.constructor === Object)) {
+			dispatch(setUser(null));
+			return null;
+		}
+		const response = fetchMember(user._id, params);
+		console.log('Got fetch profile response:', response);
+		dispatch(setUser(response));
+		return response;
+	} catch (error) {
+		console.error('Fetch Profile error:', error);
 		throw error.response.data;
 	}
 };
@@ -369,7 +387,7 @@ export const deleteJob = async id => {
 	}
 };
 
-export const localStorageChanged = e => dispatch => {
+export const sessionStorageChanged = e => dispatch => {
 	console.log('Local storage changed event:', e);
 	dispatch(setToken(getToken()));
 	dispatch(setUser(getCurrentUser()));
