@@ -52,7 +52,7 @@ export default (pass: any) => {
 };
 
 export const auth = () => (req: Request, res: Response, next: NextFunction) =>
-	passport.authenticate('jwt', { session: false }, (err, data, info) => {
+	passport.authenticate('jwt', { session: true }, (err, data, info) => {
 		req.user = data;
 		err || info ? errorRes(res, 401, 'Unauthorized') : next();
 	})(req, res, next);

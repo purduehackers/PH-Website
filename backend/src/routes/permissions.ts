@@ -144,63 +144,60 @@ router.delete('/:id/member/:memberID', auth(), hasPermissions(['permissions']), 
 		if (!ObjectId.isValid(id)) return errorRes(res, 400, 'Invalid permision ID');
 		if (!ObjectId.isValid(memberID)) return errorRes(res, 400, 'Invalid member ID');
 
-		try {
-			let [[member, permission], e] = await to(
-				Promise.all([Member.findById(memberID).exec(), Permission.findById(id).exec()])
-			);
+		let [[member, permission], e] = await to(
+			Promise.all([Member.findById(memberID).exec(), Permission.findById(id).exec()])
+		);
 
-			if (!member) return errorRes(res, 400, 'Member not found');
-			if (!permission) return errorRes(res, 400, 'Permission not found');
-			if (e) {
-				console.error(e.message);
-				return errorRes(res, 500, e.message);
-			}
-
-			[[member, permission], e] = await to(
-				Promise.all([
-					Member.findByIdAndUpdate(
-						member._id,
-						{
-							$pull: {
-								permissions: permission._id
-							}
-						},
-						{ new: true }
-					).exec(),
-					Permission.findByIdAndUpdate(
-						permission._id,
-						{
-							$pull: {
-								members: {
-									member: member._id
-								}
-							}
-						},
-						{ new: true }
-					)
-						.populate({
-							path: 'members.member',
-							model: Member
-						})
-						.populate({
-							path: 'members.recordedBy',
-							model: Member
-						})
-						.exec()
-				])
-			);
-
-			if (e) {
-				console.error(e.message);
-				return errorRes(res, 500, 'Error adding permission to member');
-			}
-			return successRes(res, {
-				permission,
-				member
-			});
-		} catch (error) {
-			console.error(error.message);
-			return errorRes(res, 500, error);
+		if (!member) return errorRes(res, 400, 'Member not found');
+		if (!permission) return errorRes(res, 400, 'Permission not found');
+		if (e) {
+			console.error(e.message);
+			return errorRes(res, 500, e.message);
 		}
+
+		[[member, permission], e] = await to(
+			Promise.all([
+				Member.findByIdAndUpdate(
+					member._id,
+					{
+						$pull: {
+							permissions: permission._id
+						}
+					},
+					{ new: true }
+				).exec(),
+				Permission.findByIdAndUpdate(
+					permission._id,
+					{
+						$pull: {
+							members: {
+								member: member._id
+							}
+						}
+					},
+					{ new: true }
+				)
+					.populate({
+						path: 'members.member',
+						model: Member
+					})
+					.populate({
+						path: 'members.recordedBy',
+						model: Member
+					})
+					.exec()
+			])
+		);
+
+		if (e) {
+			console.error(e.message);
+			return errorRes(res, 500, 'Error adding member to permission');
+		}
+
+		return successRes(res, {
+			permission,
+			member
+		});
+
 	}
 );

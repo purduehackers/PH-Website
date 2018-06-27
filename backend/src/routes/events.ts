@@ -1,9 +1,9 @@
 import * as express from 'express';
 // import * as paginate from 'express-paginate';
-import * as passport from 'passport';
+import { isEmail, isMobilePhone } from 'validator';
 import { ObjectId } from 'mongodb';
 import { IEventModel, Event } from '../models/event';
-import { Member } from '../models/member';
+import { Member, IMemberModel } from '../models/member';
 import { auth } from '../middleware/passport';
 import { successRes, errorRes } from '../utils';
 export const router = express.Router();
@@ -80,8 +80,10 @@ router.get('/:id', async (req, res, next) => {
 	}
 });
 
+// TODO: Change to put request
 router.post('/:id', async (req, res, next) => {
 	try {
+		if (!ObjectId.isValid(req.params.id)) return errorRes(res, 400, 'Invalid event ID');
 		const { name, privateEvent, eventTime, location, facebook } = req.body;
 		const eventBuilder = {};
 		if (!name) return errorRes(res, 400, 'Event must have a name');
@@ -115,10 +117,96 @@ router.post('/:id', async (req, res, next) => {
 
 router.delete('/:id', async (req, res, next) => {
 	try {
+		if (!ObjectId.isValid(req.params.id)) return errorRes(res, 400, 'Invalid event ID');
 		const event = await Event.findById(req.params.id).exec();
 		if (!event) return errorRes(res, 400, 'Event does not exist');
 		await event.remove();
 		return successRes(res, event.toJSON());
+	} catch (error) {
+		return errorRes(res, 500, error);
+	}
+});
+
+router.post('/:id/checkin', async (req, res, next) => {
+	try {
+		const { name, email, memberID } = req.body;
+		if (!ObjectId.isValid(req.params.id)) return errorRes(res, 400, 'Invalid event ID');
+		const event = await Event.findById(req.params.id)
+			.populate({
+				path: 'members',
+				model: Member
+			})
+			.exec();
+		if (!event) return errorRes(res, 400, 'Event does not exist');
+		let member: IMemberModel = null;
+
+		// Search by memberID
+		if (memberID) {
+			const m = await Member.findById(memberID).exec();
+			if (m && m.email === email) member = m;
+		}
+
+		// No ID, so search by name and email
+		if (!member) {
+			if (!name) return errorRes(res, 400, 'Invalid name');
+			if (!isEmail(email)) return errorRes(res, 400, 'Invalid email');
+			const m = await Member.findOne({
+				name,
+				email
+			}).exec();
+			member = m;
+		}
+
+		// New Member
+		if (!member) {
+			if (await Member.findOne({ email }).exec())
+				return errorRes(res, 400, 'A member with a different name is associated with this email');
+			member = new Member({
+				name,
+				email
+			});
+
+			await member.save();
+			// TODO: Send welcome email when member is created
+		}
+		// Existing Member, If account not setup, send creation email
+		else {
+			if (member.graduationYear === 0) {
+				// TODO: Send welcome email when member is created
+				// $this->emailAccountCreated($member, $event);
+			}
+		}
+
+		// Check if Repeat
+		if (event.members.some(m => m._id.equals(member._id)))
+			return errorRes(res, 400, 'Member already checked in');
+
+		event.members.push(member);
+		member.events.push(event);
+		await Promise.all([event.save(), member.save()]);
+
+		return successRes(res, event);
+	} catch (error) {
+		return errorRes(res, 500, error);
+	}
+});
+
+router.delete('/:id/checkin/:memberID', async (req, res, next) => {
+	try {
+		const { id, memberID } = req.params;
+		if (!ObjectId.isValid(id)) return errorRes(res, 400, 'Invalid event ID');
+		if (!ObjectId.isValid(memberID)) return errorRes(res, 400, 'Invalid member ID');
+		const [event, member] = await Promise.all([
+			Event.findById(id).exec(),
+			Member.findById(memberID).exec()
+		]);
+		if (!event) return errorRes(res, 400, 'Event does not exist');
+		if (!member) return errorRes(res, 400, 'Member does not exist');
+
+		// Remove member and event fom each other
+		member.update({});
+
+		return successRes(res, event);
 	} catch (error) {
 		return errorRes(res, 500, error);
 	}

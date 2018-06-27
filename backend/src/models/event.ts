@@ -1,4 +1,5 @@
 import { Document, Schema, model } from 'mongoose';
+import { IMemberModel } from './member';
 
 export interface IEventModel extends Document {
 	name: string;
@@ -6,6 +7,7 @@ export interface IEventModel extends Document {
 	facebook: string;
 	eventTime: Date;
 	privateEvent: boolean;
+	members: IMemberModel[];
 }
 
 const schema = new Schema(

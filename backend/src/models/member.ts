@@ -97,7 +97,6 @@ const schema = new Schema(
 		major: {
 			type: String
 		},
-
 		picture: {
 			type: String
 		},

@@ -1,8 +1,9 @@
 import * as express from 'express';
 import { Member } from '../models/member';
-import { IPermissionModel, Permission } from '../models/permission';
+import { Permission } from '../models/permission';
 import * as jwt from 'jsonwebtoken';
 import * as validator from 'validator';
+import { auth } from '../middleware/passport';
 import { successRes, errorRes, createAccount } from '../utils';
 export const router = express.Router();
 
@@ -65,7 +66,15 @@ router.post('/login', async (req, res, next) => {
 		delete u.password;
 
 		// If user is found and password is right create a token
-		const token = jwt.sign(u, CONFIG.SECRET);
+		const token = jwt.sign(
+			{
+				_id: u._id,
+				name: u.name,
+				email: u.email,
+				graduationYear: u.graduationYear
+			},
+			CONFIG.SECRET
+		);
 
 		return successRes(res, {
 			user: u,

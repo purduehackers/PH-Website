@@ -33,18 +33,18 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(
-	session({
-		secret: SECRET,
-		resave: false,
-		saveUninitialized: true,
-		cookie: {
-			secure: false
-		}
-	})
-);
+app.use(session({
+	name: 'PH-token',
+	secret: SECRET,
+	resave: false,
+	saveUninitialized: true,
+	cookie: {
+		secure: false,
+		httpOnly: true
+	}
+}));
 app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.session());
 app.use(cors());
 
 app.use(paginate.middleware(20, 50));
