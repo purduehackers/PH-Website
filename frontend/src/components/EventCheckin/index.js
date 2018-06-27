@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { hasPermission, formatDate, shortName } from '../../constants';
-import { sendFlashMessage, clearFlashMessages, fetchEvent } from '../../actions';
-import { MembersAttendedTable, CustomRedirect } from '../Common';
+import { hasPermission, shortName } from '../../constants';
+import { sendFlashMessage, clearFlashMessages, fetchEvent, checkinEvent } from '../../actions';
+import { CustomRedirect } from '../Common';
 
 // TODO: Add autocomplete to input tags
 
@@ -29,9 +29,12 @@ class EventCheckinPage extends Component {
 		super(props);
 		this.state = {
 			event: null,
-			loading: true
+			loading: true,
+			name: '',
+			email: '',
+			graduationYear: 0
 		};
-		console.log('EventPage props:', this.props);
+		console.log('EventCheckinPage props:', this.props);
 	}
 
 	componentDidMount = async () => {
@@ -54,13 +57,32 @@ class EventCheckinPage extends Component {
 
 	onChange = e => this.setState({ [e.target.id]: e.target.value });
 
+	checkinMember = async e => {
+		e.preventDefault();
+		const { name, email, event } = this.state;
+		const { flash } = this.props;
+		try {
+			if (!event) return flash('Event does not exist');
+			await checkinEvent(event._id, name, email);
+			this.setState({
+				name: '',
+				email: '',
+				graduationYear: 0
+			});
+			return flash(`Checked in member: ${name}`, 'green');
+		} catch (error) {
+			console.error('EventCheckinPage error:', error);
+			return flash(error.error);
+		}
+	};
+
 	render() {
-		const { event, loading } = this.state;
+		const { event, loading, name, email, graduationYear } = this.state;
 		const { user } = this.props;
 		if (loading) return <span>Loading...</span>;
 		if (!loading && !event) return <CustomRedirect msgRed="Event not found" />;
 		if (event.privateEvent && !hasPermission(user, 'events'))
-			return <CustomRedirect msgRed="You are not authorized to view this event" />;
+			return <CustomRedirect msgRed="You are not authorized to view this page" />;
 		return (
 			<div>
 				<Helmet>
@@ -81,23 +103,25 @@ class EventCheckinPage extends Component {
 							<div id="checkinForm" className="panel-body validate" autoComplete="off">
 								<div className="input-group">
 									<span className="input-group-addon" id="memberNameTitle">
-										Name:{' '}
+										Name:
 									</span>
 									<input
 										type="text"
-										id="memberName"
-										name="memberName"
+										id="name"
+										name="name"
 										className="form-control membersautocomplete"
 										placeholder="Member Name"
-										autoComplete="off"
-										data-bvalidator="required"
-										data-bvalidator-msg="Please enter your full name"
+										value={name}
+										onChange={this.onChange}
+										pattern="[a-zA-Z]+ [a-zA-Z ]+"
+										title="Please enter first and last name"
+										required
 									/>
 									<span className="input-group-btn">
 										<button
 											className="btn btn-primary"
 											type="button"
-											onClick="checkinMember();"
+											onClick={this.checkinMember}
 										>
 											Checkin
 										</button>
@@ -106,67 +130,39 @@ class EventCheckinPage extends Component {
 								<br />
 								<div className="input-group">
 									<span className="input-group-addon" id="memberEmailTitle">
-										Email:{' '}
+										Email:
 									</span>
 									<input
 										type="text"
-										id="memberEmail"
-										name="memberEmail"
+										id="email"
+										name="email"
 										className="form-control membersautocomplete"
 										placeholder="Member Email"
 										data-bvalidator="required,email"
 										data-bvalidator-msg="An email is required for your account."
+										value={email}
+										onChange={this.onChange}
 									/>
-								</div>
-								<br />
-								<div className="input-group">
-									<span className="input-group-addon" id="memberPhoneTitle">
-										Cell Phone #:{' '}
-									</span>
-									<input
-										type="text"
-										id="memberPhone"
-										name="memberPhone"
-										className="form-control membersautocomplete"
-										placeholder="Cell Phone Number"
-										data-bvalidator="minlength[10]"
-										data-bvalidator-msg="Please enter a valid cell phone # (with area code)"
-									/>
-								</div>
-								<span className="pull-left" style={{ fontSize: '9px' }}>
-									Your phone number is kept private and is only used for notifications.
-								</span>
-								<br />
-								<div className="input-group">
-									<span className="input-group-addon" id="memberAttendedTitle">
-										Number Events Attended:{' '}
-									</span>
-									<input
-										type="text"
-										id="memberAttended"
-										className="form-control"
-										readOnly
-									/>
-									<span id="hasRegistered" className="input-group-btn" />
 								</div>
 								<br />
 								<div className="input-group">
 									<span className="input-group-addon" id="graduationYearTitle">
-										Graduation Year:{' '}
+										Graduation Year:
 									</span>
 									<input
 										type="text"
 										id="graduationYear"
 										className="form-control"
 										readOnly
+										value={graduationYear}
 									/>
 								</div>
 								<br />
 								<button
 									className="btn btn-primary"
 									type="button"
-									onClick="checkinMember();"
-									style={{ float: 'right' }}
+									onClick={this.checkinMember}
+									style={{ float: 'center' }}
 								>
 									Checkin
 								</button>

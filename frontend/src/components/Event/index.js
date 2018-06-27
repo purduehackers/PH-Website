@@ -85,7 +85,7 @@ class EventPage extends Component {
 										Edit Event
 									</button>
 								</Link>,
-								<Link key={`${event._id}-2`} to={`/event/${event._id}/checkin`}>
+								<Link key={`${event._id}-3`} to={`/event/${event._id}/checkin`}>
 									<button
 										type="button"
 										className="pull-right marginR btn btn-primary btn-sm"

@@ -222,6 +222,27 @@ export const deleteEvent = async id => {
 	}
 };
 
+export const checkinEvent = async (id, name, email) => {
+	try {
+		const token = getToken();
+		const {
+			data: { response }
+		} = await axios.post(
+			`/api/events/${id}/checkin`,
+			{
+				name,
+				email
+			},
+			{
+				headers: { Authorization: `Bearer ${token}` }
+			}
+		);
+		return response;
+	} catch (error) {
+		throw error.response.data;
+	}
+};
+
 export const fetchCredentials = async params => {
 	try {
 		const token = getToken();

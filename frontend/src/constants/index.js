@@ -7,7 +7,9 @@ export const formatDate = date =>
 	});
 
 export const hasPermission = (user, name) =>
-	user && user.permissions.some(per => per.name === name || per.name === 'admin');
+	user &&
+	(Object.keys(user).length !== 0 && user.constructor === Object) &&
+	user.permissions.some(per => per.name === name || per.name === 'admin');
 
 export const isAdmin = user => hasPermission(user, 'admin');
 
