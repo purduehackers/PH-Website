@@ -22,6 +22,4 @@ const schema = new Schema(
 	{ timestamps: true }
 );
 
-// schema.index({ loc: '2dsphere' });
-
 export const Location = model<ILocationModel>('Location', schema, 'locations');
