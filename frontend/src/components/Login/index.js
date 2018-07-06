@@ -22,20 +22,23 @@ class LoginPage extends Component {
 		console.log('Login props:', this.props);
 		this.state = {
 			email: (this.props.user && this.props.user.email) || '',
-			password: ''
+			password: '',
+			rememberMe: false
 		};
 	}
 
 	onChange = e => this.setState({ [e.target.id]: e.target.value });
 
+	onClick = () => this.setState({ rememberMe: !this.state.rememberMe });
+
 	onSubmit = async e => {
 		e.preventDefault();
-		const { email, password } = this.state;
+		const { email, password, rememberMe } = this.state;
 		const { flash } = this.props;
 		try {
 			if (!email) return flash('Please enter your email');
 			if (!password) return flash('Please enter your password');
-			const { user } = await this.props.signIn(email, password);
+			const { user } = await this.props.signIn(email, password, rememberMe);
 			console.log('Signed in user:', user);
 			this.props.history.push('/');
 			return flash(`Welcome ${user.name}!`, 'green');
@@ -74,10 +77,10 @@ class LoginPage extends Component {
 							<input type="submit" value="Sign In" />
 							<br />
 							<br />
-							<input type="checkbox" name="remember" /> Remember Me
+							<input type="checkbox" name="remember" onClick={this.onClick} /> Remember Me
 							<br />
 							<br />
-							Forgot your password?{' '}
+							Forgot your password?
 							<a href="{{ action('AuthController@getForgot') }}">Click Here</a>
 						</form>
 					</div>

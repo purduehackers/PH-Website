@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { getStorage } from '../constants';
 
 // Helper functions
-export const getToken = () => sessionStorage.getItem('token');
-export const getCurrentUser = () => JSON.parse(sessionStorage.getItem('user'));
+export const getToken = () => getStorage().getItem('token');
+export const getCurrentUser = () => JSON.parse(getStorage().getItem('user'));
 const makeDispatcher = (type, ...argNames) => (...args) => {
 	const action = { type };
 	argNames.forEach((arg, index) => {
@@ -14,6 +15,7 @@ const makeDispatcher = (type, ...argNames) => (...args) => {
 // Actions
 export const AUTH_USER_SET = 'AUTH_USER_SET';
 export const AUTH_TOKEN_SET = 'AUTH_TOKEN_SET';
+export const AUTH_REMEMBER_ME_SET = 'AUTH_REMEMBER_ME_SET';
 
 export const FLASH_GREEN_SET = 'FLASH_GREEN_SET';
 export const FLASH_RED_SET = 'FLASH_RED_SET';
@@ -21,6 +23,7 @@ export const FLASH_RED_SET = 'FLASH_RED_SET';
 // Dispatchers
 const setUser = makeDispatcher(AUTH_USER_SET, 'user');
 const setToken = makeDispatcher(AUTH_TOKEN_SET, 'token');
+const setRememberMe = makeDispatcher(AUTH_REMEMBER_ME_SET, 'rememberMe');
 
 const setGreenFlash = makeDispatcher(FLASH_GREEN_SET, 'msgGreen');
 const setRedFlash = makeDispatcher(FLASH_RED_SET, 'msgRed');
@@ -40,7 +43,7 @@ export const signUp = newUser => async dispatch => {
 	}
 };
 
-export const signIn = (email, password) => async dispatch => {
+export const signIn = (email, password, rememberMe) => async dispatch => {
 	try {
 		const {
 			data: { response }
@@ -50,17 +53,23 @@ export const signIn = (email, password) => async dispatch => {
 		});
 		dispatch(setToken(response.token));
 		dispatch(setUser(response.user));
+		dispatch(setRememberMe(rememberMe));
 		return response;
 	} catch (error) {
 		throw error.response.data;
 	}
 };
 
-export const signOut = () => dispatch => {
-	console.log('Signing out');
-	dispatch(setToken(null));
-	dispatch(setUser(null));
-	console.log('Signed out');
+export const signOut = () => async dispatch => {
+	try {
+		console.log('Signing out');
+		dispatch(setToken(null));
+		dispatch(setUser(null));
+		dispatch(setRememberMe(false));
+		console.log('Signed out');
+	} catch (error) {
+		throw error;
+	}
 };
 
 export const sendFlashMessage = (msg, type = 'red') => dispatch => {
@@ -106,13 +115,20 @@ export const fetchMember = async (id, params) => {
 export const fetchProfile = params => async dispatch => {
 	try {
 		const user = getCurrentUser();
+		const token = getToken();
 		if (!user || (Object.keys(user).length === 0 && user.constructor === Object)) {
 			dispatch(setUser(null));
+			dispatch(setToken(null));
 			return null;
 		}
-		const response = fetchMember(user._id, params);
-		console.log('Got fetch profile response:', response);
-		dispatch(setUser(response));
+		const {
+			data: { response }
+		} = await axios.get('/api/auth/me', {
+			params,
+			headers: { Authorization: `Bearer ${token}` }
+		});
+		dispatch(setUser(response.user));
+		dispatch(setToken(response.token));
 		return response;
 	} catch (error) {
 		console.error('Fetch Profile error:', error);
@@ -408,7 +424,7 @@ export const deleteJob = async id => {
 	}
 };
 
-export const sessionStorageChanged = e => dispatch => {
+export const storageChanged = e => dispatch => {
 	console.log('Local storage changed event:', e);
 	dispatch(setToken(getToken()));
 	dispatch(setUser(getCurrentUser()));

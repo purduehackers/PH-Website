@@ -18,6 +18,13 @@ export const memberMatches = (user, id) =>
 
 export const shortName = name => name.substr(0, 32);
 
+const storage = () => (localStorage.getItem('token') ? localStorage : sessionStorage);
+let _storage = storage();
+export const getStorage = () => _storage;
+export const setStorage = store => {
+	_storage = store;
+};
+
 export default {
 	HOME: '/',
 	LOGIN: '/login',

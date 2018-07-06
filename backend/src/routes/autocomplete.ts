@@ -33,7 +33,8 @@ router.get('/locations', async (req, res) => {
 		const { term, field } = req.query;
 		if (!term) return errorRes(res, 400, 'Must have a search term');
 		if (!field) return errorRes(res, 400, 'Must have a search field');
-		if (field !== 'name' && field !== 'city') return errorRes(res, 400, 'Location fields can only be either "name" or "city"');
+		if (field !== 'name' && field !== 'city')
+			return errorRes(res, 400, 'Location fields can only be either "name" or "city"');
 		const regex = new RegExp(escapeRegEx(term));
 		const locations = await Location.find({
 			[field]: { $regex: regex, $options: 'i' }

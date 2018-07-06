@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+// import Downshift from 'downshift';
 import { hasPermission, shortName } from '../../constants';
 import { sendFlashMessage, clearFlashMessages, fetchEvent, checkinEvent } from '../../actions';
 import { CustomRedirect } from '../Common';
@@ -33,6 +34,8 @@ class EventCheckinPage extends Component {
 			name: '',
 			email: '',
 			graduationYear: 0
+			// membersFromName: [],
+			// membersFromEmail: []
 		};
 		console.log('EventCheckinPage props:', this.props);
 	}
@@ -77,7 +80,15 @@ class EventCheckinPage extends Component {
 	};
 
 	render() {
-		const { event, loading, name, email, graduationYear } = this.state;
+		const {
+			event,
+			loading,
+			name,
+			email,
+			graduationYear
+			// membersFromName,
+			// membersFromEmail
+		} = this.state;
 		const { user } = this.props;
 		if (loading) return <span>Loading...</span>;
 		if (!loading && !event) return <CustomRedirect msgRed="Event not found" />;

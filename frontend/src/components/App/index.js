@@ -24,7 +24,7 @@ import Dev from '../Dev';
 import Login from '../Login';
 import Logout from '../Logout';
 import SignUp from '../Signup';
-import { sessionStorageChanged, clearFlashMessages, fetchProfile } from '../../actions';
+import { storageChanged, clearFlashMessages, fetchProfile } from '../../actions';
 
 fontawesome.library.add(faFacebook, faGithub, faTwitter, faEnvelope, faCalendar, faCoffee, faHeart);
 
@@ -37,7 +37,7 @@ class App extends Component {
 		}).isRequired,
 		fetchProfile: PropTypes.func.isRequired,
 		clearFlashMessages: PropTypes.func.isRequired,
-		sessionStorageChanged: PropTypes.func.isRequired
+		storageChanged: PropTypes.func.isRequired
 	};
 
 	static defaultProps = {
@@ -47,15 +47,14 @@ class App extends Component {
 
 	constructor(props) {
 		super(props);
-		window.addEventListener('storage', this.props.sessionStorageChanged);
+		window.addEventListener('storage', this.props.storageChanged);
 		this.props.history.listen(() => this.props.clearFlashMessages());
 		console.log('App props:', this.props);
 	}
 
 	componentWillMount = async () => {
 		try {
-			const { fetchProfile: getUser } = this.props;
-			const response = await getUser();
+			const response = await this.props.fetchProfile();
 			console.log('Sign in response:', response);
 		} catch (error) {
 			console.error('Sign in error:', error);
@@ -149,5 +148,5 @@ const mapStateToProps = state => ({
 });
 
 export default withRouter(
-	connect(mapStateToProps, { sessionStorageChanged, clearFlashMessages, fetchProfile })(App)
+	connect(mapStateToProps, { storageChanged, clearFlashMessages, fetchProfile })(App)
 );

@@ -1,16 +1,18 @@
-import { AUTH_USER_SET, AUTH_TOKEN_SET } from '../actions';
+import { AUTH_USER_SET, AUTH_TOKEN_SET, AUTH_REMEMBER_ME_SET } from '../actions';
+import { getStorage, setStorage } from '../constants';
 
 export default (
 	state = {
-		token: sessionStorage.getItem('token') || null,
-		user: JSON.parse(sessionStorage.getItem('user')) || null
+		token: getStorage().getItem('token') || null,
+		user: JSON.parse(getStorage().getItem('user')) || null,
+		rememberMe: false
 	},
 	action
 ) => {
 	switch (action.type) {
 		case AUTH_USER_SET: {
 			if (action.user) {
-				sessionStorage.setItem('user', JSON.stringify(action.user));
+				getStorage().setItem('user', JSON.stringify(action.user));
 				return {
 					...state,
 					user: {
@@ -20,7 +22,7 @@ export default (
 				};
 			}
 
-			sessionStorage.removeItem('user');
+			getStorage().removeItem('user');
 			return {
 				...state,
 				user: null
@@ -28,13 +30,37 @@ export default (
 		}
 		case AUTH_TOKEN_SET: {
 			action.token
-				? sessionStorage.setItem('token', action.token)
-				: sessionStorage.removeItem('token');
+				? getStorage().setItem('token', action.token)
+				: getStorage().removeItem('token');
 			return {
 				...state,
 				token: action.token
 			};
 		}
+		case AUTH_REMEMBER_ME_SET: {
+			if (action.rememberMe) {
+				const token = getStorage().getItem('token');
+				const user = getStorage().getItem('user');
+				getStorage().removeItem('token');
+				getStorage().removeItem('user');
+				setStorage(localStorage);
+				token && getStorage().setItem('token', token);
+				user && getStorage().setItem('user', user);
+			} else {
+				const token = getStorage().getItem('token');
+				const user = getStorage().getItem('user');
+				getStorage().removeItem('token');
+				getStorage().removeItem('user');
+				setStorage(sessionStorage);
+				token && getStorage().setItem('token', token);
+				user && getStorage().setItem('user', user);
+			}
+			return {
+				...state,
+				rememberMe: action.rememberMe
+			};
+		}
+
 		default:
 			return state;
 	}

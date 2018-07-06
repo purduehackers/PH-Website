@@ -85,3 +85,31 @@ router.post('/login', async (req, res, next) => {
 		return errorRes(res, 500, error);
 	}
 });
+
+router.get('/me', auth(), async (req, res) => {
+	try {
+		const user = await Member.findById(req.user._id)
+			.populate({ path: 'permissions', model: Permission })
+			.exec();
+		if (!user) return errorRes(res, 401, 'Member not found.');
+
+		// If user is found and password is right create a token
+		const token = jwt.sign(
+			{
+				_id: user._id,
+				name: user.name,
+				email: user.email,
+				graduationYear: user.graduationYear
+			},
+			CONFIG.SECRET
+		);
+
+		return successRes(res, {
+			user,
+			token
+		});
+	} catch (error) {
+		console.error(error);
+		return errorRes(res, 500, error);
+	}
+});

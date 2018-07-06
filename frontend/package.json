@@ -21,6 +21,7 @@
 		"@fortawesome/fontawesome-free-solid": "^5.0.12",
 		"@fortawesome/react-fontawesome": "^0.0.19",
 		"axios": "^0.18.0",
+		"downshift": "^2.0.10",
 		"history": "^4.7.2",
 		"prop-types": "^15.6.1",
 		"react": "^16.2.0",
