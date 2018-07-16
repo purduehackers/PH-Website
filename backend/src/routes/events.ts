@@ -203,8 +203,14 @@ router.delete('/:id/checkin/:memberID', async (req, res, next) => {
 		if (!event) return errorRes(res, 400, 'Event does not exist');
 		if (!member) return errorRes(res, 400, 'Member does not exist');
 
+		// Check if not already checked in
+		if (!event.members.some(m => m._id.equals(member._id)))
+			return errorRes(res, 400, 'Member is not checked in to this event');
+
 		// Remove member and event fom each other
-		member.update({});
+		event.members = event.members.filter(m => !m._id.equals(member._id));
+		member.events = member.events.filter(e => !e._id.equals(event._id));
+		await Promise.all([event.save(), member.save()]);
 
 		return successRes(res, event);
 	} catch (error) {
