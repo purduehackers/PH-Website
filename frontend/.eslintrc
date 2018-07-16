@@ -3,7 +3,7 @@
 	"extends": "airbnb",
 	"plugins": ["import", "prettier", "react"],
 	"rules": {
-		"indent": ["warn", "tab", { "SwitchCase": 1 }],
+		"indent": "off",
 		"no-tabs": "off",
 		"react/jsx-indent": ["error", "tab"],
 		"react/jsx-filename-extension": [

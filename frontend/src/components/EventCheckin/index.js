@@ -3,9 +3,16 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-// import Downshift from 'downshift';
+import Downshift from 'downshift';
 import { hasPermission, shortName } from '../../constants';
-import { sendFlashMessage, clearFlashMessages, fetchEvent, checkinEvent } from '../../actions';
+import {
+	sendFlashMessage,
+	clearFlashMessages,
+	fetchEvent,
+	checkinEvent,
+	checkoutEvent,
+	autocompleteMembers
+} from '../../actions';
 import { CustomRedirect } from '../Common';
 
 // TODO: Add autocomplete to input tags
@@ -31,11 +38,8 @@ class EventCheckinPage extends Component {
 		this.state = {
 			event: null,
 			loading: true,
-			name: '',
-			email: '',
-			graduationYear: 0
-			// membersFromName: [],
-			// membersFromEmail: []
+			members: [],
+			selectedMember: null
 		};
 		console.log('EventCheckinPage props:', this.props);
 	}
@@ -60,19 +64,49 @@ class EventCheckinPage extends Component {
 
 	onChange = e => this.setState({ [e.target.id]: e.target.value });
 
+	onInputChange = async (e, field) => {
+		const { flash } = this.props;
+		try {
+			const response = await autocompleteMembers({
+				term: e.target.value,
+				field
+			});
+			console.log('Autocomplete for:', field, response);
+			return this.setState({ members: response });
+		} catch (error) {
+			console.error('EventCheckinPage error:', error);
+			return flash(error.error);
+		}
+	};
+
 	checkinMember = async e => {
 		e.preventDefault();
-		const { name, email, event } = this.state;
+		const { selectedMember, event } = this.state;
 		const { flash } = this.props;
 		try {
 			if (!event) return flash('Event does not exist');
-			await checkinEvent(event._id, name, email);
-			this.setState({
-				name: '',
-				email: '',
-				graduationYear: 0
-			});
-			return flash(`Checked in member: ${name}`, 'green');
+			if (!selectedMember) return flash('Please provide your name and email');
+			console.log('Selected Member:', selectedMember);
+			await checkinEvent(event._id, selectedMember.name, selectedMember.email);
+			this.setState({ selectedMember: null });
+			return flash(`Checked in member: ${selectedMember.name}`, 'green');
+		} catch (error) {
+			console.error('EventCheckinPage error:', error);
+			return flash(error.error);
+		}
+	};
+
+	checkoutMember = async e => {
+		e.preventDefault();
+		const { selectedMember, event } = this.state;
+		const { flash } = this.props;
+		try {
+			if (!event) return flash('Event does not exist');
+			if (!selectedMember) return flash('Please provide your name and email');
+			console.log('Selected Member:', selectedMember);
+			await checkoutEvent(event._id, selectedMember._id);
+			this.setState({ selectedMember: null });
+			return flash(`Checked out member: ${selectedMember.name}`, 'green');
 		} catch (error) {
 			console.error('EventCheckinPage error:', error);
 			return flash(error.error);
@@ -80,15 +114,7 @@ class EventCheckinPage extends Component {
 	};
 
 	render() {
-		const {
-			event,
-			loading,
-			name,
-			email,
-			graduationYear
-			// membersFromName,
-			// membersFromEmail
-		} = this.state;
+		const { event, loading, members, selectedMember } = this.state;
 		const { user } = this.props;
 		if (loading) return <span>Loading...</span>;
 		if (!loading && !event) return <CustomRedirect msgRed="Event not found" />;
@@ -112,49 +138,159 @@ class EventCheckinPage extends Component {
 						</h3>
 						<div className="panel panel-default">
 							<div id="checkinForm" className="panel-body validate" autoComplete="off">
-								<div className="input-group">
-									<span className="input-group-addon" id="memberNameTitle">
-										Name:
-									</span>
-									<input
-										type="text"
-										id="name"
-										name="name"
-										className="form-control membersautocomplete"
-										placeholder="Member Name"
-										value={name}
-										onChange={this.onChange}
-										pattern="[a-zA-Z]+ [a-zA-Z ]+"
-										title="Please enter first and last name"
-										required
-									/>
-									<span className="input-group-btn">
-										<button
-											className="btn btn-primary"
-											type="button"
-											onClick={this.checkinMember}
-										>
-											Checkin
-										</button>
-									</span>
-								</div>
+								<Downshift
+									selectedItem={selectedMember}
+									onChange={selection => this.setState({ selectedMember: selection })}
+									itemToString={item => (item ? item.name : '')}
+								>
+									{({
+										selectedItem,
+										getInputProps,
+										getItemProps,
+										inputValue,
+										highlightedIndex,
+										isOpen
+									}) => (
+										<div>
+											<div className="input-group">
+												<span className="input-group-addon" id="memberNameTitle">
+													Name:
+												</span>
+												<input
+													{...getInputProps({
+														onChange: async e => {
+															const { value } = e.target;
+															if (!value) return;
+															await this.onInputChange(e, 'name');
+														},
+														id: 'name',
+														name: 'name',
+														className: 'form-control membersautocomplete',
+														placeholder: 'Member Name',
+														pattern: '([a-zA-Z]+ )+[a-zA-Z]+',
+														title: 'Please enter first and last name'
+													})}
+												/>
+												<span className="input-group-btn">
+													<button
+														className="btn btn-primary"
+														type="button"
+														onClick={this.checkinMember}
+													>
+														Checkin
+													</button>
+												</span>
+											</div>
+											{isOpen &&
+												members.length && (
+													<div>
+														{members
+															.filter(
+																item =>
+																	!inputValue || item.name.includes(inputValue)
+															)
+															.map((item, index) => (
+																<div
+																	{...getItemProps({
+																		key: item.name,
+																		index,
+																		item,
+																		style: {
+																			backgroundColor:
+																				highlightedIndex === index
+																					? 'lightgray'
+																					: 'white',
+																			fontWeight:
+																				selectedItem === item
+																					? 'bold'
+																					: 'normal'
+																		}
+																	})}
+																>
+																	{item.name}
+																</div>
+															))}
+													</div>
+												)}
+										</div>
+									)}
+								</Downshift>
 								<br />
-								<div className="input-group">
-									<span className="input-group-addon" id="memberEmailTitle">
-										Email:
-									</span>
-									<input
-										type="text"
-										id="email"
-										name="email"
-										className="form-control membersautocomplete"
-										placeholder="Member Email"
-										data-bvalidator="required,email"
-										data-bvalidator-msg="An email is required for your account."
-										value={email}
-										onChange={this.onChange}
-									/>
-								</div>
+								<Downshift
+									selectedItem={selectedMember}
+									onChange={selection => this.setState({ selectedMember: selection })}
+									itemToString={item => (item ? item.email : '')}
+								>
+									{({
+										selectedItem,
+										getInputProps,
+										getItemProps,
+										inputValue,
+										highlightedIndex,
+										isOpen
+									}) => (
+										<div>
+											<div className="input-group">
+												<span className="input-group-addon" id="memberEmailTitle">
+													Email:
+												</span>
+												<input
+													{...getInputProps({
+														onChange: async e => {
+															const { value } = e.target;
+															if (!value) return;
+															await this.onInputChange(e, 'email');
+														},
+														id: 'email',
+														name: 'email',
+														className: 'form-control',
+														placeholder: 'Member Email'
+													})}
+												/>
+												<span className="input-group-btn">
+													<button
+														className="btn btn-primary"
+														type="button"
+														onClick={this.checkinMember}
+													>
+														Checkin
+													</button>
+												</span>
+											</div>
+											{isOpen &&
+												members.length && (
+													<div>
+														{members
+															.filter(
+																item =>
+																	!inputValue || item.email.includes(inputValue)
+															)
+															.map((item, index) => (
+																<div
+																	{...getItemProps({
+																		key: item.email,
+																		index,
+																		item,
+																		style: {
+																			backgroundColor:
+																				highlightedIndex === index
+																					? 'lightgray'
+																					: 'white',
+																			fontWeight:
+																				selectedItem === item
+																					? 'bold'
+																					: 'normal'
+																		}
+																	})}
+																>
+																	{item.email}
+																</div>
+															))}
+													</div>
+												)}
+										</div>
+									)}
+								</Downshift>
 								<br />
 								<div className="input-group">
 									<span className="input-group-addon" id="graduationYearTitle">
@@ -165,7 +301,7 @@ class EventCheckinPage extends Component {
 										id="graduationYear"
 										className="form-control"
 										readOnly
-										value={graduationYear}
+										value={selectedMember ? selectedMember.graduationYear : ''}
 									/>
 								</div>
 								<br />
@@ -176,6 +312,14 @@ class EventCheckinPage extends Component {
 									style={{ float: 'center' }}
 								>
 									Checkin
+								</button>
+								<button
+									className="btn btn-danger"
+									type="button"
+									onClick={this.checkoutMember}
+									style={{ float: 'center' }}
+								>
+									Checkout
 								</button>
 							</div>
 						</div>

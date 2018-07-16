@@ -259,6 +259,20 @@ export const checkinEvent = async (id, name, email) => {
 	}
 };
 
+export const checkoutEvent = async (id, memberID) => {
+	try {
+		const token = getToken();
+		const {
+			data: { response }
+		} = await axios.delete(`/api/events/${id}/checkin/${memberID}`, {
+			headers: { Authorization: `Bearer ${token}` }
+		});
+		return response;
+	} catch (error) {
+		throw error.response.data;
+	}
+};
+
 export const fetchCredentials = async params => {
 	try {
 		const token = getToken();
@@ -416,6 +430,36 @@ export const deleteJob = async id => {
 		const {
 			data: { response }
 		} = await axios.delete(`/api/jobs/${id}`, {
+			headers: { Authorization: `Bearer ${token}` }
+		});
+		return response;
+	} catch (error) {
+		throw error.response.data;
+	}
+};
+
+export const autocompleteMembers = async params => {
+	try {
+		const token = getToken();
+		const {
+			data: { response }
+		} = await axios.get('/api/autocomplete/members/', {
+			params,
+			headers: { Authorization: `Bearer ${token}` }
+		});
+		return response;
+	} catch (error) {
+		throw error.response.data;
+	}
+};
+
+export const autocompleteLocations = async params => {
+	try {
+		const token = getToken();
+		const {
+			data: { response }
+		} = await axios.get('/api/autocomplete/locations/', {
+			params,
 			headers: { Authorization: `Bearer ${token}` }
 		});
 		return response;

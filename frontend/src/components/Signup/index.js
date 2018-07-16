@@ -79,7 +79,7 @@ class SignupPage extends Component {
 									value={this.state.name}
 									className="form-control"
 									onChange={this.onChange}
-									pattern="[a-zA-Z]+ [a-zA-Z ]+"
+									pattern="([a-zA-Z]+ )+[a-zA-Z]+"
 									title="Please enter first and last name"
 									required
 								/>
