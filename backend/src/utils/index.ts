@@ -40,7 +40,8 @@ export const memberMatches = (user: IMemberModel, id: ObjectId | string) =>
 		user._id === id ||
 		(typeof user._id.equals === 'function' && user._id.equals(id)));
 
-export const escapeRegEx = str => str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+export const escapeRegEx = (str: string) =>
+	str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
 
 export function to<T, U = any>(
 	promise: Promise<T>,

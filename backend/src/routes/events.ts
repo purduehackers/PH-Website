@@ -160,7 +160,11 @@ router.post('/:id/checkin', async (req, res, next) => {
 		// New Member
 		if (!member) {
 			if (await Member.findOne({ email }).exec())
-				return errorRes(res, 400, 'A member with a different name is associated with this email');
+				return errorRes(
+					res,
+					400,
+					'A member with a different name is associated with this email'
+				);
 			member = new Member({
 				name,
 				email
@@ -187,10 +191,12 @@ router.post('/:id/checkin', async (req, res, next) => {
 
 		return successRes(res, event);
 	} catch (error) {
+		console.error('Error:', error);
 		return errorRes(res, 500, error);
 	}
 });
 
+// TODO: Checkout member based on their name and email
 router.delete('/:id/checkin/:memberID', async (req, res, next) => {
 	try {
 		const { id, memberID } = req.params;
@@ -214,6 +220,7 @@ router.delete('/:id/checkin/:memberID', async (req, res, next) => {
 
 		return successRes(res, event);
 	} catch (error) {
+		console.error('Error:', error);
 		return errorRes(res, 500, error);
 	}
 });

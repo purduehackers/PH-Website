@@ -14,7 +14,7 @@ router.get('/members', async (req, res) => {
 			if (path === field) contains = true;
 		});
 		if (!contains) return errorRes(res, 400, 'Invalid member field');
-		const regex = new RegExp(escapeRegEx(term));
+		const regex = new RegExp(escapeRegEx(term), 'i');
 		const members = await Member.find({
 			[field]: { $regex: regex, $options: 'i' }
 		})
