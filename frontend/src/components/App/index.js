@@ -11,6 +11,7 @@ import { ProtectedRoute, NotFound, Footer, FlashMessage, Navigation } from '../C
 import Home from '../Home';
 import Members from '../Members';
 import Member from '../Member';
+import EditProfile from '../EditProfile';
 import Events from '../Events';
 import Event from '../Event';
 import EditCreateEvent from '../Edit-CreateEvent';
@@ -79,6 +80,13 @@ class App extends Component {
 						<Route exact path={routes.MEMBER} component={Member} />
 						<Route exact path={routes.EVENTS} component={Events} />
 						<Route exact path={routes.EVENT} component={Event} />
+						<ProtectedRoute
+							token={token}
+							user={user}
+							exact
+							path={routes.EDIT_PROFILE}
+							component={EditProfile}
+						/>
 						<ProtectedRoute
 							token={token}
 							user={user}

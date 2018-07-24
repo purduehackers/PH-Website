@@ -158,7 +158,7 @@ class MemberPage extends Component {
 							Member - {member.name}
 							{memberMatched && (
 								<React.Fragment>
-									<Link to={`/members/${member._id}`} className="pull-right">
+									<Link to={`/member/${member._id}/edit`} className="pull-right">
 										<button type="button" className="btn btn-primary btn-sm">
 											Edit Profile
 										</button>

@@ -39,6 +39,8 @@ class EventCheckinPage extends Component {
 			event: null,
 			loading: true,
 			members: [],
+			name: '',
+			email: '',
 			selectedMember: null
 		};
 		console.log('EventCheckinPage props:', this.props);
@@ -67,29 +69,53 @@ class EventCheckinPage extends Component {
 	onInputChange = async (e, field) => {
 		const { flash } = this.props;
 		try {
-			const response = await autocompleteMembers({
-				term: e.target.value,
-				field
-			});
-			console.log('Autocomplete for:', field, response);
-			return this.setState({ members: response });
+			// const response = await autocompleteMembers({
+			// 	term: e.target.value,
+			// 	field
+			// });
+			// console.log('Autocomplete for:', field, response);
+			// return this.setState({ members: response });
+
+			const { value, id } = e.target;
+			console.log('ID:', id, '\tValue:', value);
+			this.setState({ [id]: value });
+			if (value) {
+				const response = await autocompleteMembers({
+					term: value,
+					field
+				});
+				console.log('Autocomplete for:', field, response);
+				return this.setState({ members: response });
+			}
+			return null;
 		} catch (error) {
 			console.error('EventCheckinPage error:', error);
 			return flash(error.error);
 		}
 	};
 
+	onSelectionChange = async selection => {
+		console.log('Selection:', selection);
+		const nextState = { selectedMember: selection };
+		if (selection.name) nextState.name = selection.name;
+		if (selection.email) nextState.email = selection.email;
+		console.log('Next State:', selection);
+		this.setState(nextState);
+	};
+
 	checkinMember = async e => {
 		e.preventDefault();
-		const { selectedMember, event } = this.state;
-		const { flash } = this.props;
+		const { name, email, event } = this.state;
+		const { flash, clear } = this.props;
 		try {
+			clear();
 			if (!event) return flash('Event does not exist');
-			if (!selectedMember) return flash('Please provide your name and email');
-			console.log('Selected Member:', selectedMember);
-			await checkinEvent(event._id, selectedMember.name, selectedMember.email);
-			this.setState({ selectedMember: null });
-			return flash(`Checked in member: ${selectedMember.name}`, 'green');
+			if (!name) return flash('Please provide your name');
+			if (!email) return flash('Please provide your email');
+			console.log('Checking in member:', name, '\t', email);
+			await checkinEvent(event._id, name, email);
+			this.setState({ selectedMember: null, name: '', email: '' });
+			return flash(`Checked in member: ${name}`, 'green');
 		} catch (error) {
 			console.error('EventCheckinPage error:', error);
 			return flash(error.error);
@@ -99,13 +125,14 @@ class EventCheckinPage extends Component {
 	checkoutMember = async e => {
 		e.preventDefault();
 		const { selectedMember, event } = this.state;
-		const { flash } = this.props;
+		const { flash, clear } = this.props;
 		try {
+			clear();
 			if (!event) return flash('Event does not exist');
 			if (!selectedMember) return flash('Please provide your name and email');
 			console.log('Selected Member:', selectedMember);
 			await checkoutEvent(event._id, selectedMember._id);
-			this.setState({ selectedMember: null });
+			this.setState({ selectedMember: null, name: '', email: '' });
 			return flash(`Checked out member: ${selectedMember.name}`, 'green');
 		} catch (error) {
 			console.error('EventCheckinPage error:', error);
@@ -114,7 +141,7 @@ class EventCheckinPage extends Component {
 	};
 
 	render() {
-		const { event, loading, members, selectedMember } = this.state;
+		const { event, loading, selectedMember, members, name, email } = this.state;
 		const { user } = this.props;
 		if (loading) return <span>Loading...</span>;
 		if (!loading && !event) return <CustomRedirect msgRed="Event not found" />;
@@ -139,8 +166,9 @@ class EventCheckinPage extends Component {
 						<div className="panel panel-default">
 							<div id="checkinForm" className="panel-body validate" autoComplete="off">
 								<Downshift
+									inputValue={name}
 									selectedItem={selectedMember}
-									onChange={selection => this.setState({ selectedMember: selection })}
+									onChange={this.onSelectionChange}
 									itemToString={item => (item ? item.name : '')}
 								>
 									{({
@@ -158,11 +186,7 @@ class EventCheckinPage extends Component {
 												</span>
 												<input
 													{...getInputProps({
-														onChange: async e => {
-															const { value } = e.target;
-															if (!value) return;
-															await this.onInputChange(e, 'name');
-														},
+														onChange: e => this.onInputChange(e, 'name'),
 														id: 'name',
 														name: 'name',
 														className: 'form-control membersautocomplete',
@@ -171,15 +195,6 @@ class EventCheckinPage extends Component {
 														title: 'Please enter first and last name'
 													})}
 												/>
-												<span className="input-group-btn">
-													<button
-														className="btn btn-primary"
-														type="button"
-														onClick={this.checkinMember}
-													>
-														Checkin
-													</button>
-												</span>
 											</div>
 											{isOpen &&
 												members.length && (
@@ -217,8 +232,9 @@ class EventCheckinPage extends Component {
 								</Downshift>
 								<br />
 								<Downshift
+									inputValue={email}
 									selectedItem={selectedMember}
-									onChange={selection => this.setState({ selectedMember: selection })}
+									onChange={this.onSelectionChange}
 									itemToString={item => (item ? item.email : '')}
 								>
 									{({
@@ -236,26 +252,13 @@ class EventCheckinPage extends Component {
 												</span>
 												<input
 													{...getInputProps({
-														onChange: async e => {
-															const { value } = e.target;
-															if (!value) return;
-															await this.onInputChange(e, 'email');
-														},
+														onChange: e => this.onInputChange(e, 'email'),
 														id: 'email',
 														name: 'email',
 														className: 'form-control',
 														placeholder: 'Member Email'
 													})}
 												/>
-												<span className="input-group-btn">
-													<button
-														className="btn btn-primary"
-														type="button"
-														onClick={this.checkinMember}
-													>
-														Checkin
-													</button>
-												</span>
 											</div>
 											{isOpen &&
 												members.length && (

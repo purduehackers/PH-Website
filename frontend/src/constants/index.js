@@ -30,7 +30,7 @@ export default {
 	LOGIN: '/login',
 	LOGOUT: '/logout',
 	SIGNUP: '/signup',
-	PROFILE: '/profile',
+	EDIT_PROFILE: '/member/:id/edit',
 	EVENTS: '/events',
 	EVENT: '/event/:id',
 	CREATE_EVENT: '/events/create',
