@@ -65,3 +65,6 @@ dump/
 phdump/
 
 .DS_Store
+
+# GCloud Service Key
+purduehackers.json

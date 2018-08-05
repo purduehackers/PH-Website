@@ -2,15 +2,24 @@ import * as express from 'express';
 // import * as paginate from 'express-paginate';
 import * as passport from 'passport';
 import { ObjectId } from 'mongodb';
-import { model } from 'mongoose';
+import { model, connection } from 'mongoose';
+import * as Multer from 'multer';
+import { isEmail, normalizeEmail, isMobilePhone, isURL } from 'validator';
 import { Member } from '../models/member';
 import { IEventModel, Event } from '../models/event';
 import { ILocationModel, Location } from '../models/location';
 import { IPermissionModel, Permission } from '../models/permission';
 import { auth } from '../middleware/passport';
-import { successRes, errorRes } from '../utils';
+import { successRes, errorRes, memberMatches, s, uploadToStorage } from '../utils';
 import { Job } from '../models/job';
+
 export const router = express.Router();
+const multer = Multer({
+	storage: Multer.memoryStorage(),
+	limits: {
+		fileSize: 5 * 1024 * 1024 // no larger than 5mb, you can change as needed.
+	}
+});
 
 // TODO: Add auth to routes
 // TODO: Add permissions to routes
@@ -100,6 +109,106 @@ router.get('/:id', async (req, res, next) => {
 			.exec();
 		return successRes(res, user);
 	} catch (error) {
+		return errorRes(res, 500, error);
+	}
+});
+
+router.put('/:id', auth(), multer.any(), async (req, res, next) => {
+	try {
+		if (!ObjectId.isValid(req.params.id)) return errorRes(res, 400, 'Invalid member ID');
+		if (!memberMatches(req.user as any, req.params.id))
+			return errorRes(res, 401, 'You are unauthorized to edit this profile');
+		// console.log('User:', req.user);
+		// console.log('Body:', req.body);
+		// console.log('Files:', req.files);
+		const files: Express.Multer.File[] = req.files
+			? (req.files as Express.Multer.File[])
+			: new Array<Express.Multer.File>();
+		const {
+			name,
+			email,
+			password,
+			passwordConfirm,
+			graduationYear,
+			privateProfile,
+			unsubscribed,
+			phone,
+			major,
+			facebook,
+			gender,
+			github,
+			linkedin,
+			website,
+			description,
+			devpost,
+			resumeLink
+		} = req.body;
+		if (!name) return errorRes(res, 400, 'Please provide your first and last name');
+		if (!email) return errorRes(res, 400, 'Please provide your email');
+		if (!password) return errorRes(res, 400, 'A password is required');
+		if (!passwordConfirm) return errorRes(res, 400, 'Please confirm your password');
+		if (!graduationYear || !parseInt(graduationYear, 10))
+			return errorRes(res, 400, 'Please provide a valid graduation year');
+		if (
+			gender &&
+			gender !== 'Male' &&
+			gender !== 'Female' &&
+			gender !== 'Other' &&
+			gender !== 'No'
+		)
+			return errorRes(res, 400, 'Please provide a valid gender');
+		if (
+			major &&
+			major !== 'Computer Science' &&
+			major !== 'Computer Graphics Technology' &&
+			major !== 'Computer Information Technology' &&
+			major !== 'Electrical Computer Engineering' &&
+			major !== 'Electrical Engineering' &&
+			major !== 'First Year Engineering' &&
+			major !== 'Math' &&
+			major !== 'Mechanical Engineering' &&
+			major !== 'Other'
+		)
+			return errorRes(res, 400, 'Please provide a valid major');
+		if (phone && !isMobilePhone(phone, ['en-US'] as any))
+			return errorRes(res, 400, 'Invalid phone number: ' + phone);
+		if (password !== passwordConfirm) return errorRes(res, 400, 'Passwords does not match');
+		if (facebook && !/(facebook|fb)/.test(facebook))
+			return errorRes(res, 400, 'Invalid Facebook URL');
+		if (github && !/github/.test(github)) return errorRes(res, 400, 'Invalid GitHub URL');
+		if (linkedin && !/linkedin/.test(linkedin)) return errorRes(res, 400, 'Invalid LinkedIn URL');
+		if (devpost && !/devpost/.test(devpost)) return errorRes(res, 400, 'Invalid Devpost URL');
+		if (website && !isURL(website)) return errorRes(res, 400, 'Invalid website URL');
+		const member = await Member.findById(req.params.id).exec();
+		if (!member) return errorRes(res, 400, 'Member not found');
+		const picture = files.find(file => file.fieldname === 'picture');
+		const resume = files.find(file => file.fieldname === 'resume');
+		if (picture) member.picture = await uploadToStorage(picture, 'pictures', member);
+		if (resume) member.resume = await uploadToStorage(resume, 'resumes', member);
+		member.name = name;
+		member.email = email;
+		member.password = password;
+		member.graduationYear = parseInt(graduationYear, 10);
+		member.privateProfile = privateProfile;
+		member.unsubscribed = unsubscribed;
+		member.phone = phone;
+		member.major = major;
+		member.facebook = facebook;
+		member.gender = gender;
+		member.github = github;
+		member.linkedin = linkedin;
+		member.website = website;
+		member.description = description;
+		member.devpost = devpost;
+		member.resumeLink = resumeLink;
+
+		await member.save();
+		const m = member.toJSON();
+		delete m.password;
+		// console.log('GFS:', gfs);
+		return successRes(res, m);
+	} catch (error) {
+		console.error(error);
 		return errorRes(res, 500, error);
 	}
 });

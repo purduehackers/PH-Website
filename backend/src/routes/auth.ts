@@ -4,7 +4,7 @@ import { Permission } from '../models/permission';
 import * as jwt from 'jsonwebtoken';
 import * as validator from 'validator';
 import { auth } from '../middleware/passport';
-import { successRes, errorRes, createAccount } from '../utils';
+import { successRes, errorRes } from '../utils';
 export const router = express.Router();
 
 router.post('/signup', async (req, res, next) => {
@@ -31,12 +31,12 @@ router.post('/signup', async (req, res, next) => {
 				'An account already exists with that email. Please use your Purdue Hackers account password if you have one'
 			);
 
-		user = await createAccount(
+		user = new Member({
 			name,
-			validator.normalizeEmail(email) as string,
+			email: validator.normalizeEmail(email),
 			password,
 			graduationYear
-		);
+		});
 		await user.save();
 		const u = user.toJSON();
 		delete u.password;

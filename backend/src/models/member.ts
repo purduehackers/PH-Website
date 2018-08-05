@@ -25,11 +25,9 @@ export interface IMemberModel extends Document {
 	memberStatus: string;
 	permissions: IPermissionModel[];
 	events: IEventModel[];
-	gender: string[];
+	gender: string;
 	unsubscribed: boolean;
 	privateProfile: boolean;
-	emailPublic: string;
-	emailEdu: string;
 	phone: string;
 	setupEmailSent: Date;
 	major: string;
@@ -41,6 +39,7 @@ export interface IMemberModel extends Document {
 	devpost: string;
 	website: string;
 	resume: string;
+	resumeLink: string;
 	createdAt: Date;
 	updatedAt: Date;
 	authenticatedAt: Date;
@@ -85,51 +84,20 @@ const schema = new Schema(
 			type: Boolean,
 			default: false
 		},
-		emailPublic: {
-			type: String
-		},
-		emailEdu: {
-			type: String
-		},
-		phone: {
-			type: String
-		},
-		major: {
-			type: String
-		},
-		picture: {
-			type: String
-		},
-		description: {
-			type: String
-		},
-		facebook: {
-			type: String
-		},
-		github: {
-			type: String
-		},
-		linkedin: {
-			type: String
-		},
-		devpost: {
-			type: String
-		},
-		website: {
-			type: String
-		},
-		resume: {
-			type: String
-		},
-		authenticatedAt: {
-			type: Date
-		},
-		setupEmailSent: {
-			type: Date
-		},
-		rememberToken: {
-			type: String
-		},
+		phone: { type: String },
+		major: { type: String },
+		picture: { type: String },
+		description: { type: String },
+		facebook: { type: String },
+		github: { type: String },
+		linkedin: { type: String },
+		devpost: { type: String },
+		website: { type: String },
+		resume: { type: String },
+		resumeLink: { type: String },
+		authenticatedAt: { type: String },
+		setupEmailSent: { type: String },
+		rememberToken: { type: String },
 		permissions: {
 			type: [Schema.Types.ObjectId],
 			ref: 'Permission',

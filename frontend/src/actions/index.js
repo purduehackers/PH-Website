@@ -136,6 +136,27 @@ export const fetchProfile = params => async dispatch => {
 	}
 };
 
+export const updateProfile = (id, member) => async dispatch => {
+	try {
+		const user = getCurrentUser();
+		if (!user || (Object.keys(user).length === 0 && user.constructor === Object)) {
+			dispatch(setUser(null));
+			dispatch(setToken(null));
+			return null;
+		}
+		const token = getToken();
+		const {
+			data: { response }
+		} = await axios.put(`/api/members/${id}`, member, {
+			headers: { Authorization: `Bearer ${token}` }
+		});
+		// if (user._id === id) dispatch(setUser(response));
+		return response;
+	} catch (error) {
+		throw error.response.data;
+	}
+};
+
 export const fetchMemberEvents = async (id, params) => {
 	try {
 		const token = getToken();

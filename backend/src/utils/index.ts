@@ -1,6 +1,15 @@
-import { IMemberModel, Member } from '../models/member';
 import { Request, Response } from 'express';
 import { ObjectId } from 'mongodb';
+import * as GoogleCloudStorage from '@google-cloud/storage';
+import { IMemberModel, Member } from '../models/member';
+
+const storage = GoogleCloudStorage({
+	projectId: 'purduehackers-212319',
+	keyFilename: 'purduehackers.json'
+});
+
+const bucket = storage.bucket('purduehackers');
+bucket.makePublic();
 
 export const successRes = (res: Response, response: any) => res.json({ status: 200, response });
 
@@ -9,25 +18,6 @@ export const errorRes = (res: Response, status: number, error: any) =>
 		status,
 		error
 	});
-
-export const createAccount = async (
-	name: string,
-	email: string,
-	password: string,
-	graduationYear: number
-) => {
-	const memberBuilder = {
-		name,
-		email,
-		emailPublic: email,
-		password,
-		graduationYear
-	};
-
-	if (email.endsWith('.edu')) Object.assign(memberBuilder, { emailEdu: email });
-
-	return new Member(memberBuilder);
-};
 
 export const hasPermission = (user: IMemberModel, name: string) =>
 	user.permissions.some(per => per.name === name || per.name === 'admin');
@@ -53,3 +43,34 @@ export function to<T, U = any>(
 		return [null, err];
 	});
 }
+
+export const uploadToStorage = (file: Express.Multer.File, folder: string, user: IMemberModel) =>
+	new Promise<string>((resolve, reject) => {
+		if (!file) reject('No image file');
+		else if (folder === 'pictures' && !file.originalname.match(/\.(jpg|jpeg|png|gif)$/))
+			reject(`File: ${file.originalname} is an invalid image type`);
+		else if (folder === 'resume' && !file.originalname.match(/\.(png|PNG)$/))
+			reject(`File: ${file.originalname} is an invalid image type`);
+		else {
+			const fileName = `${folder}/${user.email.replace('@', '_')}`;
+			const fileUpload = bucket.file(fileName);
+
+			const blobStream = fileUpload.createWriteStream({
+				metadata: {
+					contentType: file.mimetype
+				}
+			});
+
+			blobStream.on('error', error => {
+				console.error(error);
+				reject('Something is wrong! Unable to upload at the moment.');
+			});
+
+			blobStream.on('finish', async () => {
+				// The public URL can be used to directly access the file via HTTP.
+				resolve(`https://storage.googleapis.com/purduehackers/${fileName}`);
+			});
+
+			blobStream.end(file.buffer);
+		}
+	});
