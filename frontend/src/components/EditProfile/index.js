@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import { isMobilePhone } from 'validator';
 import { sendFlashMessage, clearFlashMessages, updateProfile, fetchMember } from '../../actions';
 import { memberMatches } from '../../constants';
@@ -202,15 +203,12 @@ class EditProfilePage extends Component {
 				<div className="section-container">
 					<h3>
 						Member - {name}
-						<a
-							href="{{ action('MemberController@getMember', $member->username) }}"
-							className="pull-left"
-						>
-							<button type="button" className="btn btn-primary btn-sm">
+						<Link key={`${match.params.id}-1`} to={`/member/${match.params.id}`}>
+							<button type="button" className="pull-left btn btn-primary btn-sm">
 								<span className="glyphicon glyphicon-chevron-left" aria-hidden="true" />
 								Profile
 							</button>
-						</a>
+						</Link>
 					</h3>
 
 					<div className="panel panel-default">
