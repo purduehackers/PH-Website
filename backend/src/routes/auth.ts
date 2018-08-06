@@ -2,6 +2,7 @@ import * as express from 'express';
 import { ObjectId } from 'mongodb';
 import { isEmail, normalizeEmail, isMobilePhone, isURL } from 'validator';
 import * as jwt from 'jsonwebtoken';
+import CONFIG from '../config';
 import { Member } from '../models/member';
 import { Permission } from '../models/permission';
 import { auth } from '../middleware/passport';
@@ -162,39 +163,6 @@ router.post('/signup', multer.any(), async (req, res, next) => {
 	} catch (error) {
 		console.error(error);
 		return errorRes(res, 500, error);
-	}
-
-	try {
-
-		const picture = files.find(file => file.fieldname === 'picture');
-		const resume = files.find(file => file.fieldname === 'resume');
-		if (picture) member.picture = await uploadToStorage(picture, 'pictures', member);
-		if (resume) member.resume = await uploadToStorage(resume, 'resumes', member);
-		member.name = name;
-		member.email = email;
-		member.password = password;
-		member.graduationYear = parseInt(graduationYear, 10);
-		member.privateProfile = privateProfile;
-		member.unsubscribed = unsubscribed;
-		member.phone = phone;
-		member.major = major;
-		member.facebook = facebook;
-		member.gender = gender;
-		member.github = github;
-		member.linkedin = linkedin;
-		member.website = website;
-		member.description = description;
-		member.devpost = devpost;
-		member.resumeLink = resumeLink;
-
-		await member.save();
-		const m = member.toJSON();
-		delete m.password;
-		// console.log('GFS:', gfs);
-		return successRes(res, m);
-	} catch (error) {
-		console.error(error);
-		return errorRes(res, 500, error.message);
 	}
 });
 

@@ -10,7 +10,7 @@ import * as mongoose from 'mongoose';
 import * as passport from 'passport';
 import * as cors from 'cors';
 // tslint:disable-next-line:no-import-side-effect
-import './config';
+import CONFIG  from './config';
 import passportMiddleWare from './middleware/passport';
 import { router as auth } from './routes/auth';
 import { router as home } from './routes/home';

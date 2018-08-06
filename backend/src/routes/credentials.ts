@@ -1,6 +1,7 @@
 import * as express from 'express';
 import * as passport from 'passport';
 import { AES, enc } from 'crypto-js';
+import CONFIG from '../config';
 import { ICredentialModel, Credential } from '../models/credential';
 import { auth, hasPermissions } from '../middleware/passport';
 import { successRes, errorRes } from '../utils';

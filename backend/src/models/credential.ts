@@ -1,5 +1,6 @@
 import { AES, enc } from 'crypto-js';
 import { Document, Schema, model } from 'mongoose';
+import CONFIG from '../config';
 
 export interface ICredentialModel extends Document {
 	site: string;
