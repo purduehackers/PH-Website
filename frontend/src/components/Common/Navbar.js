@@ -4,9 +4,15 @@ import { Link } from 'react-router-dom';
 
 const CommonNav = () => (
 	<React.Fragment>
-		<Link to="/members">Members</Link>
-		<Link to="/events">Events</Link>
-		<Link to="/calendar">Calendar</Link>
+		<li>
+			<Link to="/members">Members</Link>
+		</li>
+		<li>
+			<Link to="/events">Events</Link>
+		</li>
+		<li>
+			<Link to="/calendar">Calendar</Link>
+		</li>
 	</React.Fragment>
 );
 
@@ -20,21 +26,30 @@ const Navbar = ({ auth, id }) => (
 				</Link>
 			</div>
 			<div className="collapse navbar-collapse" id="navbar">
-				<ul className="nav navbar-nav navbar-right">
+				<li className="nav navbar-nav navbar-right">
 					{auth && id ? (
 						<React.Fragment>
-							<Link to={`/member/${id}`}>Profile</Link>
+							<li>
+								<Link to={`/member/${id}`}>Profile</Link>
+							</li>
+
 							<CommonNav />
-							<Link to="/logout">Logout</Link>
+							<li>
+								<Link to="/logout">Logout</Link>
+							</li>
 						</React.Fragment>
 					) : (
 						<React.Fragment>
 							<CommonNav />
-							<Link to="/login">Login</Link>
-							<Link to="/signup">Join</Link>
+							<li>
+								<Link to="/login">Login</Link>
+							</li>
+							<li>
+								<Link to="/signup">Join</Link>
+							</li>
 						</React.Fragment>
 					)}
-				</ul>
+				</li>
 			</div>
 		</div>
 	</nav>
