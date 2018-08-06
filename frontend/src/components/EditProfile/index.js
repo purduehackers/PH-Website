@@ -162,6 +162,7 @@ class EditProfilePage extends Component {
 			console.log('EditProfile response:', response);
 			return flash('Profile Saved!', 'green');
 		} catch (error) {
+			clear();
 			console.error('EditProfile Page error:', error);
 			return flash(error.error);
 		}
@@ -214,7 +215,7 @@ class EditProfilePage extends Component {
 					<div className="panel panel-default">
 						<form className="panel-body validate" onSubmit={this.onSubmit}>
 							<p className="text-muted text-center">Fields marked with an * are required</p>
-							<label htmlFor="memberName">
+							<label htmlFor="name">
 								Full Name *
 								<div className="text-right pull-right">
 									<span style={{ fontSize: '8px' }}>
@@ -226,8 +227,8 @@ class EditProfilePage extends Component {
 							<div className="input-group">
 								<input
 									type="text"
-									name="memberName"
-									id="memberName"
+									name="name"
+									id="name"
 									placeholder="Full Name"
 									value={name}
 									onChange={this.onChange}

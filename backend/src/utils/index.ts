@@ -1,7 +1,15 @@
 import { Request, Response } from 'express';
 import { ObjectId } from 'mongodb';
 import * as GoogleCloudStorage from '@google-cloud/storage';
+import * as Multer from 'multer';
 import { IMemberModel, Member } from '../models/member';
+
+export const multer = Multer({
+	storage: Multer.memoryStorage(),
+	limits: {
+		fileSize: 5 * 1024 * 1024 // no larger than 5mb, you can change as needed.
+	}
+});
 
 const storage = GoogleCloudStorage({
 	projectId: 'purduehackers-212319',

@@ -1,25 +1,18 @@
 import * as express from 'express';
 // import * as paginate from 'express-paginate';
-import * as passport from 'passport';
 import { ObjectId } from 'mongodb';
-import { model, connection } from 'mongoose';
 import * as Multer from 'multer';
 import { isEmail, normalizeEmail, isMobilePhone, isURL } from 'validator';
+import { compareSync } from 'bcrypt';
 import { Member } from '../models/member';
 import { IEventModel, Event } from '../models/event';
-import { ILocationModel, Location } from '../models/location';
-import { IPermissionModel, Permission } from '../models/permission';
-import { auth } from '../middleware/passport';
-import { successRes, errorRes, memberMatches, s, uploadToStorage } from '../utils';
+import { Location } from '../models/location';
+import { Permission } from '../models/permission';
 import { Job } from '../models/job';
+import { auth } from '../middleware/passport';
+import { successRes, errorRes, memberMatches, uploadToStorage, multer } from '../utils';
 
 export const router = express.Router();
-const multer = Multer({
-	storage: Multer.memoryStorage(),
-	limits: {
-		fileSize: 5 * 1024 * 1024 // no larger than 5mb, you can change as needed.
-	}
-});
 
 // TODO: Add auth to routes
 // TODO: Add permissions to routes
@@ -118,9 +111,6 @@ router.put('/:id', auth(), multer.any(), async (req, res, next) => {
 		if (!ObjectId.isValid(req.params.id)) return errorRes(res, 400, 'Invalid member ID');
 		if (!memberMatches(req.user as any, req.params.id))
 			return errorRes(res, 401, 'You are unauthorized to edit this profile');
-		// console.log('User:', req.user);
-		// console.log('Body:', req.body);
-		// console.log('Files:', req.files);
 		const files: Express.Multer.File[] = req.files
 			? (req.files as Express.Multer.File[])
 			: new Array<Express.Multer.File>();
@@ -145,6 +135,7 @@ router.put('/:id', auth(), multer.any(), async (req, res, next) => {
 		} = req.body;
 		if (!name) return errorRes(res, 400, 'Please provide your first and last name');
 		if (!email) return errorRes(res, 400, 'Please provide your email');
+		if (!isEmail(email)) return errorRes(res, 400, 'Invalid email');
 		if (!password) return errorRes(res, 400, 'A password is required');
 		if (!passwordConfirm) return errorRes(res, 400, 'Please confirm your password');
 		if (!graduationYear || !parseInt(graduationYear, 10))
@@ -179,8 +170,10 @@ router.put('/:id', auth(), multer.any(), async (req, res, next) => {
 		if (linkedin && !/linkedin/.test(linkedin)) return errorRes(res, 400, 'Invalid LinkedIn URL');
 		if (devpost && !/devpost/.test(devpost)) return errorRes(res, 400, 'Invalid Devpost URL');
 		if (website && !isURL(website)) return errorRes(res, 400, 'Invalid website URL');
-		const member = await Member.findById(req.params.id).exec();
+		const member = await Member.findById(req.params.id, '+password').exec();
 		if (!member) return errorRes(res, 400, 'Member not found');
+		if (!compareSync(password, member.password)) return errorRes(res, 401, 'Incorrect password');
+
 		const picture = files.find(file => file.fieldname === 'picture');
 		const resume = files.find(file => file.fieldname === 'resume');
 		if (picture) member.picture = await uploadToStorage(picture, 'pictures', member);
@@ -209,7 +202,7 @@ router.put('/:id', auth(), multer.any(), async (req, res, next) => {
 		return successRes(res, m);
 	} catch (error) {
 		console.error(error);
-		return errorRes(res, 500, error);
+		return errorRes(res, 500, error.message);
 	}
 });
 

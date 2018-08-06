@@ -128,7 +128,9 @@ schema.pre('save', async function(next) {
 });
 
 schema.methods.comparePassword = function(password: string) {
-	return bcrypt.compareSync(password, this.password);
+	const member = this as IMemberModel;
+	console.log(member);
+	return bcrypt.compareSync(password, member.password);
 };
 
 export const Member = model<IMemberModel>('Member', schema, 'members');
