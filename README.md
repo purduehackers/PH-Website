@@ -3,8 +3,10 @@ http://www.purduehackers.com/
 
 # Getting started
 ### Prerequisites
+* [NodeJS](https://nodejs.org/en/)
 * [MongoDB](https://docs.mongodb.com/manual/installation/)
 * [Yarn](https://yarnpkg.com/en/docs/install)
+* [Homebrew](https://brew.sh/) *Only on Mac
 
 ### Setup
 * `sh setup.sh`
@@ -21,14 +23,12 @@ http://www.purduehackers.com/
 
 ## Technologies used:
 #### Frontend:
-* [NodeJS](https://nodejs.org/en/)
 * [ReactJS](https://reactjs.org/)
 * [ReduxJS](https://redux.js.org/)
 * [ReactRouter](https://github.com/ReactTraining/react-router)
 * [Yarn](https://yarnpkg.com/en/docs/install)
 
 #### Backend:
-* [NodeJS](https://nodejs.org/en/)
 * [TypeScript](https://www.typescriptlang.org/)
 * [MongoDB](https://docs.mongodb.com/manual/installation/)
 * [ExpressJS](https://expressjs.com/)
