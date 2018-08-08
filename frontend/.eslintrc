@@ -26,6 +26,8 @@
 		"curly": "off",
 		"object-curly-newline": "off",
 		"no-confusing-arrow": "off",
+		"no-return-assign": "off",
+		"no-param-reassign": "off",
 		"no-unused-expressions": "off",
 		"no-nested-ternary": "off",
 		"import/first": 0,

@@ -1,8 +1,7 @@
 import * as express from 'express';
-import * as passport from 'passport';
 import { AES, enc } from 'crypto-js';
 import CONFIG from '../config';
-import { ICredentialModel, Credential } from '../models/credential';
+import { Credential } from '../models/credential';
 import { auth, hasPermissions } from '../middleware/passport';
 import { successRes, errorRes } from '../utils';
 export const router = express.Router();
@@ -10,7 +9,7 @@ export const router = express.Router();
 router.get('/', auth(), hasPermissions(['credentials']), async (req, res, next) => {
 	try {
 		const credentials = await Credential.find().exec();
-		return successRes(res, credentials);
+		return successRes(res, { credentials, secret: CONFIG.CREDENTIAL_SECRET });
 	} catch (error) {
 		console.error(error.message);
 		return errorRes(res, 500, error.message);
@@ -30,8 +29,7 @@ router.post('/', auth(), hasPermissions(['credentials']), async (req, res, next)
 			description
 		});
 		await credential.save();
-		credential.password = AES.decrypt(credential.password, CONFIG.SECRET).toString(enc.Utf8);
-		return successRes(res, credential);
+		return successRes(res, { credential, secret: CONFIG.CREDENTIAL_SECRET });
 	} catch (error) {
 		console.error(error);
 		return errorRes(res, 500, error);
@@ -41,7 +39,7 @@ router.post('/', auth(), hasPermissions(['credentials']), async (req, res, next)
 router.get('/:id', auth(), hasPermissions(['credentials']), async (req, res, next) => {
 	try {
 		const credential = await Credential.findById(req.params.id).exec();
-		return successRes(res, credential);
+		return successRes(res, { credential, secret: CONFIG.CREDENTIAL_SECRET });
 	} catch (error) {
 		return errorRes(res, 500, error);
 	}

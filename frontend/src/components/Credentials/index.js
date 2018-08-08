@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import CryptoJS from 'crypto-js';
+import AES from 'crypto-js/aes';
+import ENC from 'crypto-js/enc-utf8';
 import {
 	fetchCredentials,
 	addCredential,
@@ -31,7 +34,14 @@ class CredentialsPage extends Component {
 		const { flash, clear } = this.props;
 		try {
 			clear();
-			const credentials = await fetchCredentials();
+			const { credentials, secret } = await fetchCredentials();
+			credentials.forEach(
+				credential =>
+					(credential.password = AES.decrypt(credential.password, secret).toString(
+						CryptoJS.enc.Utf8
+					))
+			);
+			console.log('Fetched credentials:', credentials, secret);
 			this.setState({ credentials });
 		} catch (error) {
 			console.error('Credentials error:', error);
@@ -50,12 +60,14 @@ class CredentialsPage extends Component {
 			if (!site || !username || !password)
 				return flash('Error: Please provide site, username, and password');
 
-			const credential = await addCredential({
+			const { credential, secret } = await addCredential({
 				site,
 				username,
 				password,
 				description
 			});
+
+			credential.password = AES.decrypt(credential.password, secret).toString(CryptoJS.enc.Utf8);
 
 			this.setState({
 				credentials: [...this.state.credentials, credential],

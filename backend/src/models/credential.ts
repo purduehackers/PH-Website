@@ -34,7 +34,7 @@ schema.pre('save', function(next) {
 	const cred = this as ICredentialModel;
 	if (this.isModified('password') || this.isNew) {
 		try {
-			cred.password = AES.encrypt(cred.password, CONFIG.SECRET).toString();
+			cred.password = AES.encrypt(cred.password, CONFIG.CREDENTIAL_SECRET, {}).toString();
 		} catch (error) {
 			console.error(error);
 			throw error;
@@ -47,7 +47,9 @@ schema.pre('save', function(next) {
 // tslint:disable-next-line:only-arrow-functions
 schema.post('findOne', function(err, credential: ICredentialModel, next) {
 	try {
-		credential.password = AES.decrypt(credential.password, CONFIG.SECRET).toString(enc.Utf8);
+		credential.password = AES.decrypt(credential.password, CONFIG.CREDENTIAL_SECRET).toString(
+			enc.Utf8
+		);
 		next();
 	} catch (error) {
 		console.error(error);
