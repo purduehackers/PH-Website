@@ -26,7 +26,7 @@ const Navbar = ({ auth, id }) => (
 				</Link>
 			</div>
 			<div className="collapse navbar-collapse" id="navbar">
-				<li className="nav navbar-nav navbar-right">
+				<ul className="nav navbar-nav navbar-right">
 					{auth && id ? (
 						<React.Fragment>
 							<li>
@@ -49,7 +49,7 @@ const Navbar = ({ auth, id }) => (
 							</li>
 						</React.Fragment>
 					)}
-				</li>
+				</ul>
 			</div>
 		</div>
 	</nav>
