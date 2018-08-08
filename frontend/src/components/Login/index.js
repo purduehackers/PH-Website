@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { signIn, sendFlashMessage } from '../../actions';
 import PropTypes from 'prop-types';
+import { signIn, sendFlashMessage } from '../../actions';
+import routes from '../../constants';
 
 class LoginPage extends Component {
 	static propTypes = {
@@ -81,7 +82,7 @@ class LoginPage extends Component {
 							<br />
 							<br />
 							Forgot your password?
-							<a href="{{ action('AuthController@getForgot') }}">Click Here</a>
+							<a href={routes.FORGOT_PASSWORD}>Click Here</a>
 						</form>
 					</div>
 				</div>

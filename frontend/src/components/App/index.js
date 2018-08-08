@@ -25,6 +25,8 @@ import Dev from '../Dev';
 import Login from '../Login';
 import Logout from '../Logout';
 import SignUp from '../Signup';
+import ForgotPassword from '../ForgotPassword';
+import ResetPassword from '../ResetPassword';
 import { storageChanged, clearFlashMessages, fetchProfile } from '../../actions';
 
 fontawesome.library.add(faFacebook, faGithub, faTwitter, faEnvelope, faCalendar, faCoffee, faHeart);
@@ -65,7 +67,7 @@ class App extends Component {
 	render() {
 		const { token, user } = this.props;
 		return (
-			<div>
+			<React.Fragment>
 				<Navigation auth={!!token} id={user ? user._id : null} />
 				<div className="pageWrap">
 					<FlashMessage />
@@ -74,6 +76,8 @@ class App extends Component {
 						<Route exact path={routes.LOGIN} component={Login} />
 						<Route exact path={routes.LOGOUT} component={Logout} />
 						<Route exact path={routes.SIGNUP} component={SignUp} />
+						<Route exact path={routes.FORGOT_PASSWORD} component={ForgotPassword} />
+						<Route exact path={routes.RESET_PASSWORD} component={ResetPassword} />
 						<Route exact path={routes.CALENDAR} component={Calendar} />
 						<Route exact path={routes.DEV} component={Dev} />
 						<Route exact path={routes.MEMBERS} component={Members} />
@@ -146,7 +150,7 @@ class App extends Component {
 					</Switch>
 				</div>
 				<Footer />
-			</div>
+			</React.Fragment>
 		);
 	}
 }

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { isMobilePhone } from 'validator';
 import { sendFlashMessage, clearFlashMessages, updateProfile, fetchMember } from '../../actions';
-import { memberMatches } from '../../constants';
+import routes, { memberMatches } from '../../constants';
 import { CustomRedirect } from '../Common';
 
 class EditProfilePage extends Component {
@@ -21,29 +21,6 @@ class EditProfilePage extends Component {
 
 	constructor(props) {
 		super(props);
-		// const { user } = this.props;
-		// this.state = {
-		// 	name: (user && user.name) || '',
-		// 	email: (user && user.email) || '',
-		// 	password: '',
-		// 	passwordConfirm: '',
-		// 	graduationYear: user ? user.graduationYear : new Date().getFullYear() + 4,
-		// 	privateProfile: user ? user.privateProfile : false,
-		// 	unsubscribed: user ? user.unsubscribed : false,
-		// 	picture: (user && user.picture) || '',
-		// 	gender: (user && user.gender) || '',
-		// 	phone: (user && user.phone) || '',
-		// 	major: (user && user.major) || '',
-		// 	description: (user && user.description) || '',
-		// 	facebook: (user && user.facebook) || '',
-		// 	github: (user && user.github) || '',
-		// 	linkedin: (user && user.linkedin) || '',
-		// 	devpost: (user && user.devpost) || '',
-		// 	website: (user && user.website) || '',
-		// 	resume: (user && user.resume) || null,
-		// 	resumeLink: (user && user.resumeLink) || '',
-		// 	resumeType: user && user.resume ? 'File' : 'Link'
-		// };
 		this.state = {
 			member: null,
 			loading: true,
@@ -557,7 +534,7 @@ class EditProfilePage extends Component {
 							)}
 							<br />
 							<br />
-							<a href="{{ $member->reset_url() }}" className="btn btn-warning pull-left">
+							<a href={routes.FORGOT_PASSWORD} className="btn btn-warning pull-left">
 								Reset Password
 							</a>
 							<input

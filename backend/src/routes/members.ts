@@ -2,7 +2,7 @@ import * as express from 'express';
 // import * as paginate from 'express-paginate';
 import { ObjectId } from 'mongodb';
 import * as Multer from 'multer';
-import { isEmail, normalizeEmail, isMobilePhone, isURL } from 'validator';
+import { isEmail, isMobilePhone, isURL } from 'validator';
 import { compareSync } from 'bcrypt';
 import { Member } from '../models/member';
 import { IEventModel, Event } from '../models/event';
@@ -198,7 +198,6 @@ router.put('/:id', auth(), multer.any(), async (req, res, next) => {
 		await member.save();
 		const m = member.toJSON();
 		delete m.password;
-		// console.log('GFS:', gfs);
 		return successRes(res, m);
 	} catch (error) {
 		console.error(error);
@@ -221,7 +220,7 @@ router.get('/:id/events', async (req, res, next) => {
 		const publicEvents = events ? events.filter((event: IEventModel) => !event.privateEvent) : [];
 		return successRes(res, publicEvents);
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		return errorRes(res, 500, error);
 	}
 });
@@ -240,7 +239,7 @@ router.get('/:id/locations', async (req, res, next) => {
 		const { locations } = member;
 		return successRes(res, locations || []);
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		return errorRes(res, 500, error);
 	}
 });
@@ -252,7 +251,7 @@ router.get('/:id/jobs', async (req, res, next) => {
 			.exec();
 		return successRes(res, jobs);
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		return errorRes(res, 500, error);
 	}
 });

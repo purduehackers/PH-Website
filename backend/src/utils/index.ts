@@ -3,13 +3,8 @@ import { ObjectId } from 'mongodb';
 import * as GoogleCloudStorage from '@google-cloud/storage';
 import * as Multer from 'multer';
 import { IMemberModel, Member } from '../models/member';
+export * from './email';
 
-export const multer = Multer({
-	storage: Multer.memoryStorage(),
-	limits: {
-		fileSize: 5 * 1024 * 1024 // no larger than 5mb, you can change as needed.
-	}
-});
 
 const storage = GoogleCloudStorage({
 	projectId: 'purduehackers-212319',
@@ -17,6 +12,13 @@ const storage = GoogleCloudStorage({
 });
 
 const bucket = storage.bucket('purduehackers');
+
+export const multer = Multer({
+	storage: Multer.memoryStorage(),
+	limits: {
+		fileSize: 5 * 1024 * 1024 // no larger than 5mb, you can change as needed.
+	}
+});
 
 export const successRes = (res: Response, response: any) => res.json({ status: 200, response });
 

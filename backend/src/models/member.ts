@@ -44,6 +44,7 @@ export interface IMemberModel extends Document {
 	updatedAt: Date;
 	authenticatedAt: Date;
 	rememberToken: string;
+	resetPasswordToken: string;
 	comparePassword(password: string): boolean;
 }
 
@@ -98,6 +99,7 @@ const schema = new Schema(
 		authenticatedAt: { type: String },
 		setupEmailSent: { type: String },
 		rememberToken: { type: String },
+		resetPasswordToken: { type: String },
 		permissions: {
 			type: [Schema.Types.ObjectId],
 			ref: 'Permission',
@@ -129,7 +131,6 @@ schema.pre('save', async function(next) {
 
 schema.methods.comparePassword = function(password: string) {
 	const member = this as IMemberModel;
-	console.log(member);
 	return bcrypt.compareSync(password, member.password);
 };
 

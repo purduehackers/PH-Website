@@ -1,12 +1,12 @@
 import * as express from 'express';
 import { ObjectId } from 'mongodb';
-import { isEmail, normalizeEmail, isMobilePhone, isURL } from 'validator';
+import { isEmail, isMobilePhone, isURL } from 'validator';
 import * as jwt from 'jsonwebtoken';
 import CONFIG from '../config';
 import { Member } from '../models/member';
 import { Permission } from '../models/permission';
 import { auth } from '../middleware/passport';
-import { successRes, errorRes, multer, uploadToStorage } from '../utils';
+import { successRes, errorRes, multer, uploadToStorage, sendResetEmail } from '../utils';
 
 export const router = express.Router();
 
@@ -132,7 +132,7 @@ router.post('/signup', multer.any(), async (req, res, next) => {
 
 		user = new Member({
 			name,
-			email: normalizeEmail(email),
+			email,
 			password,
 			graduationYear
 		});
@@ -152,10 +152,12 @@ router.post('/signup', multer.any(), async (req, res, next) => {
 		user.devpost = devpost;
 		user.resumeLink = resumeLink;
 
+		console.log('Saving user:', user);
+
 		await user.save();
 		const u = user.toJSON();
 		delete u.password;
-		const token = jwt.sign(u, CONFIG.SECRET);
+		const token = jwt.sign(u, CONFIG.SECRET, { expiresIn: '7 days' });
 		return successRes(res, {
 			user: u,
 			token
@@ -188,7 +190,8 @@ router.post('/login', async (req, res, next) => {
 				email: u.email,
 				graduationYear: u.graduationYear
 			},
-			CONFIG.SECRET
+			CONFIG.SECRET,
+			{ expiresIn: '7 days' }
 		);
 
 		return successRes(res, {
@@ -216,13 +219,69 @@ router.get('/me', auth(), async (req, res) => {
 				email: user.email,
 				graduationYear: user.graduationYear
 			},
-			CONFIG.SECRET
+			CONFIG.SECRET,
+			{ expiresIn: '7 days' }
 		);
 
 		return successRes(res, {
 			user,
 			token
 		});
+	} catch (error) {
+		console.error(error);
+		return errorRes(res, 500, error);
+	}
+});
+
+router.post('/forgot', async (req, res) => {
+	try {
+		const { email } = req.body;
+		if (!email || !isEmail(email)) return errorRes(res, 400, 'Please provide a valid email');
+		const member = await Member.findOne({ email }).exec();
+		if (!member) return errorRes(res, 400, `There is no member with the email: ${email}`);
+		const token = jwt.sign({ id: member._id }, CONFIG.SECRET, { expiresIn: '2 days' });
+		member.resetPasswordToken = token;
+		await member.save();
+		const resetUrl =
+			CONFIG.NODE_ENV === 'development'
+				? `http://localhost:3000/reset?token=${token}`
+				: `https://www.purduehackers.com/reset?token=${token}`;
+		const response = await sendResetEmail(member, resetUrl);
+		return successRes(res, `A link to reset your password has been sent to: ${email}`);
+	} catch (error) {
+		console.error(error);
+		return errorRes(res, 500, error);
+	}
+});
+
+router.post('/reset', async (req, res) => {
+	try {
+		const { password, passwordConfirm, token } = req.body;
+		if (!password || password.length < 5)
+			return errorRes(res, 400, 'A password longer than 5 characters is required');
+		if (!passwordConfirm) return errorRes(res, 400, 'Please confirm your password');
+		if (passwordConfirm !== password) return errorRes(res, 400, 'Passwords did not match');
+		if (!token) return errorRes(res, 401, 'Invalid reset password token');
+		let payload;
+		try {
+			payload = jwt.verify(token, CONFIG.SECRET) as object;
+		} catch (error) {
+			return errorRes(res, 400, 'Invalid reset password token');
+		}
+		if (!payload) return errorRes(res, 400, 'Invalid reset password token');
+		const { id } = payload;
+		if (!id || !ObjectId.isValid(id))
+			return errorRes(res, 400, 'Reset password token corresponds to an invalid member');
+		const member = await Member.findById(id).exec();
+		if (!member)
+			return errorRes(res, 400, 'Reset password token corresponds to a non existing member');
+
+		if (member.resetPasswordToken !== token)
+			return errorRes(res, 401, 'Wrong reset password token for this member');
+		member.password = password;
+		member.resetPasswordToken = '';
+		await member.save();
+		return successRes(res, `Successfully changed password for: ${member.name}`);
 	} catch (error) {
 		console.error(error);
 		return errorRes(res, 500, error);

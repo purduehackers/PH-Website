@@ -38,7 +38,6 @@ export const signUp = newUser => async dispatch => {
 		dispatch(setUser(response.user));
 		return response;
 	} catch (error) {
-		console.error('Signin error', error.response.data);
 		throw error.response.data;
 	}
 };
@@ -62,13 +61,33 @@ export const signIn = (email, password, rememberMe) => async dispatch => {
 
 export const signOut = () => async dispatch => {
 	try {
-		console.log('Signing out');
 		dispatch(setToken(null));
 		dispatch(setUser(null));
 		dispatch(setRememberMe(false));
-		console.log('Signed out');
 	} catch (error) {
 		throw error;
+	}
+};
+
+export const forgotPassword = async email => {
+	try {
+		const {
+			data: { response }
+		} = await axios.post('/api/auth/forgot', { email });
+		return response;
+	} catch (error) {
+		throw error.response.data;
+	}
+};
+
+export const resetPassword = async (password, passwordConfirm, token) => {
+	try {
+		const {
+			data: { response }
+		} = await axios.post('/api/auth/reset', { password, passwordConfirm, token });
+		return response;
+	} catch (error) {
+		throw error.response.data;
 	}
 };
 
@@ -107,7 +126,6 @@ export const fetchMember = async (id, params) => {
 		});
 		return response;
 	} catch (error) {
-		console.error('Fetch Member error:', error);
 		throw error.response.data;
 	}
 };
@@ -131,7 +149,6 @@ export const fetchProfile = params => async dispatch => {
 		dispatch(setToken(response.token));
 		return response;
 	} catch (error) {
-		console.error('Fetch Profile error:', error);
 		throw error.response.data;
 	}
 };
@@ -150,7 +167,7 @@ export const updateProfile = (id, member) => async dispatch => {
 		} = await axios.put(`/api/members/${id}`, member, {
 			headers: { Authorization: `Bearer ${token}` }
 		});
-		// if (user._id === id) dispatch(setUser(response));
+		if (user._id === id) dispatch(setUser(response));
 		return response;
 	} catch (error) {
 		throw error.response.data;

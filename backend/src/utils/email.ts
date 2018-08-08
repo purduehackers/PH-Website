@@ -21,8 +21,8 @@ const accountCreatedTemplate = compile(
 export const sendResetEmail = async (
 	{ email, name }: { email: string; name: string },
 	resetUrl: string
-) => {
-	return transport.sendMail({
+) =>
+	transport.sendMail({
 		from: `"${CONFIG.ORG_NAME}" <${CONFIG.EMAIL}>`, // sender address
 		to: email, // list of receivers
 		subject: 'Reset your Purdue Hackers account password', // Subject line
@@ -38,7 +38,6 @@ export const sendResetEmail = async (
 			}
 		]
 	});
-};
 
 export const sendAccountCreatedEmail = async (
 	{ email, name }: { email: string; name: string },
