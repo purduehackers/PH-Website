@@ -3,11 +3,12 @@
 	"version": "0.0.0",
 	"private": true,
 	"scripts": {
-		"format": "./node_modules/.bin/prettier --write \"{src,__}/**/*.ts\" --find-config-path",
-		"build": "./node_modules/.bin/tsc",
-		"watch": "./node_modules/.bin/tsc -w",
-		"serve": "./node_modules/.bin/nodemon dist/index.js",
-		"start": "tsc --watch | nodemon --inspect ./dist/index.js --watch dist"
+		"format": "prettier --write \"{src,__}/**/*.ts\" --find-config-path",
+		"build": "tsc",
+		"watch": "tsc -w",
+		"serve": "nodemon dist/index.js",
+		"dev": "nodemon",
+		"start": "ts-node --inspect=5858 src/index.ts"
 	},
 	"dependencies": {
 		"@google-cloud/storage": "^1.7.0",
@@ -58,6 +59,7 @@
 		"concurrently": "^3.5.1",
 		"nodemon": "^1.17.3",
 		"prettier": "^1.12.1",
+		"ts-node": "^7.0.0",
 		"tslint": "^5.10.0",
 		"tslint-config-prettier": "^1.12.0",
 		"tslint-config-standard": "^7.0.0",
