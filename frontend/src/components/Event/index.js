@@ -2,10 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
 import { hasPermission, formatDate, shortName } from '../../constants';
 import { sendFlashMessage, clearFlashMessages, fetchEvent } from '../../actions';
-import { MembersAttendedTable, CustomRedirect } from '../Common';
+import { MembersAttendedTable, CustomRedirect, Header } from '../Common';
 
 // TODO: Add autocomplete to input tags
 
@@ -63,9 +62,7 @@ class EventPage extends Component {
 			return <CustomRedirect msgRed="You are not authorized to view this event" />;
 		return (
 			<div>
-				<Helmet>
-					<title>{shortName(event.name)}</title>
-				</Helmet>
+				<Header message={shortName(event.name)} />
 				<div className="section">
 					<div className="section-container">
 						<h3>

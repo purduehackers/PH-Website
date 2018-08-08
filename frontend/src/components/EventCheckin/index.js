@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
 import Downshift from 'downshift';
 import { hasPermission, shortName } from '../../constants';
 import {
@@ -13,7 +12,7 @@ import {
 	checkoutEvent,
 	autocompleteMembers
 } from '../../actions';
-import { CustomRedirect } from '../Common';
+import { CustomRedirect, Header } from '../Common';
 
 // TODO: Add autocomplete to input tags
 
@@ -149,9 +148,7 @@ class EventCheckinPage extends Component {
 			return <CustomRedirect msgRed="You are not authorized to view this page" />;
 		return (
 			<div>
-				<Helmet>
-					<title>{shortName(event.name)}</title>
-				</Helmet>
+				<Header message={shortName(event.name)} />
 				<div className="section">
 					<div className="section-container">
 						<h3>

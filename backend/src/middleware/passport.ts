@@ -3,7 +3,7 @@ import { Strategy, ExtractJwt } from 'passport-jwt';
 import { Request, Response, NextFunction } from 'express';
 import CONFIG from '../config';
 import { Member, IMemberModel } from '../models/member';
-import { IPermissionModel, Permission } from '../models/permission';
+import { Permission } from '../models/permission';
 import { errorRes, hasPermission } from '../utils';
 
 passport.serializeUser<any, any>((user, done) => {

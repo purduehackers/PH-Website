@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
 import routes, { memberMatches, formatDate } from '../../constants';
 import {
 	fetchMember,
@@ -13,7 +12,13 @@ import {
 	sendFlashMessage,
 	clearFlashMessages
 } from '../../actions';
-import { SocialMediaPanel, EventsAttendedTable, ProfilePanel, CustomRedirect } from '../Common';
+import {
+	SocialMediaPanel,
+	EventsAttendedTable,
+	ProfilePanel,
+	CustomRedirect,
+	Header
+} from '../Common';
 
 // TODO: Add autocomplete to input tags
 
@@ -149,9 +154,7 @@ class MemberPage extends Component {
 		if (!member) return <span>Loading...</span>;
 		return (
 			<div>
-				<Helmet>
-					<title>{member.name} -- Purdue Hackers</title>
-				</Helmet>
+				<Header message={member.name} />
 				<div className="section">
 					<div className="section-container">
 						<h3>

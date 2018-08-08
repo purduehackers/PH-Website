@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { signIn, sendFlashMessage } from '../../actions';
 import routes from '../../constants';
+import { Header } from '../Common';
 
 class LoginPage extends Component {
 	static propTypes = {
@@ -53,6 +54,7 @@ class LoginPage extends Component {
 		return (
 			<div className="section">
 				<div className="section-container">
+					<Header message="Login" />
 					<h3>Login</h3>
 
 					<div className="panel panel-default">

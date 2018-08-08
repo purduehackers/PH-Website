@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
 import { hasPermission, shortName } from '../../constants';
 import {
 	sendFlashMessage,
@@ -12,7 +11,7 @@ import {
 	updateEvent,
 	deleteEvent
 } from '../../actions';
-import { CustomRedirect } from '../Common';
+import { CustomRedirect, Header } from '../Common';
 
 // TODO: Add autocomplete to input tags
 
@@ -162,9 +161,7 @@ class EditEventPage extends Component {
 		const canEdit = type === 'edit' && hasPermission(user, 'events');
 		return (
 			<div>
-				<Helmet>
-					<title>{shortName(name)}</title>
-				</Helmet>
+				<Header message={shortName(name)} />
 				<div className="section">
 					<div className="section-container">
 						<h3>

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEmail } from 'validator';
 import { sendFlashMessage, clearFlashMessages, forgotPassword } from '../../actions';
+import { Header } from '../Common';
 
 class ForgotPasswordPage extends Component {
 	static propTypes = {
@@ -40,6 +41,7 @@ class ForgotPasswordPage extends Component {
 		return (
 			<div className="section">
 				<div className="section-container">
+					<Header message="Forgot Password" />
 					<h3>Forgot Your Password</h3>
 					<div className="panel panel-default">
 						<form className="panel-body validate" onSubmit={this.onSubmit}>

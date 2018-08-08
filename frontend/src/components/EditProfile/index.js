@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { isMobilePhone } from 'validator';
 import { sendFlashMessage, clearFlashMessages, updateProfile, fetchMember } from '../../actions';
 import routes, { memberMatches } from '../../constants';
-import { CustomRedirect } from '../Common';
+import { CustomRedirect, Header } from '../Common';
 
 class EditProfilePage extends Component {
 	static propTypes = {
@@ -179,6 +179,7 @@ class EditProfilePage extends Component {
 		return (
 			<div className="section">
 				<div className="section-container">
+					<Header message={name} />
 					<h3>
 						Member - {name}
 						<Link key={`${match.params.id}-1`} to={`/member/${match.params.id}`}>

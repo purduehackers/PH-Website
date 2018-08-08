@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isMobilePhone } from 'validator';
 import { sendFlashMessage, clearFlashMessages, signUp } from '../../actions';
+import { Header } from '../Common';
 
 class SignUpPage extends Component {
 	static propTypes = {
@@ -130,6 +131,7 @@ class SignUpPage extends Component {
 		return (
 			<div className="section">
 				<div className="section-container">
+					<Header message="Signup" />
 					<h3>Join Purdue Hackers</h3>
 					<div className="panel panel-default">
 						<form className="panel-body validate" onSubmit={this.onSubmit}>

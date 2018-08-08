@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { EventTable } from '../Common';
+import { EventTable, Header } from '../Common';
 import routes, { hasPermission } from '../../constants';
 import { fetchEvents } from '../../actions';
 
@@ -41,6 +41,7 @@ class EventsPage extends Component {
 		return (
 			<div className="section">
 				<div className="section-container">
+					<Header message="Events" />
 					<h3>
 						Events
 						<Link to={routes.HACKATHONS} className="pull-left">

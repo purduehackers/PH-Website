@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Home = () => (
+export default () => (
 	<React.Fragment>
 		<div className="section about">
 			<div className="section-container">
@@ -96,5 +96,3 @@ const Home = () => (
 		</div>
 	</React.Fragment>
 );
-
-export default Home;
