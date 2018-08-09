@@ -1,9 +1,11 @@
 import { Document, Schema, model } from 'mongoose';
+import { IMemberModel } from './member';
 
 export interface ILocationModel extends Document {
 	loc: any;
 	name: string;
 	city: string;
+	members: IMemberModel[];
 }
 
 const schema = new Schema(
@@ -17,6 +19,11 @@ const schema = new Schema(
 		},
 		city: {
 			type: String
+		},
+		members: {
+			type: [Schema.Types.ObjectId],
+			ref: 'Member',
+			default: []
 		}
 	},
 	{ timestamps: true }

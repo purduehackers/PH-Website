@@ -1,8 +1,9 @@
 import * as bcrypt from 'bcrypt';
 import { Document, Schema, model } from 'mongoose';
-import { Location } from './location';
+import { ILocationModel } from './location';
 import { IEventModel } from './event';
 import { IPermissionModel } from './permission';
+import { IMemberLocationModel, MemberLocationSchema } from './memberLocation';
 
 export const memberStatuses = {
 	MEMBER: 'Member',
@@ -25,6 +26,7 @@ export interface IMemberModel extends Document {
 	memberStatus: string;
 	permissions: IPermissionModel[];
 	events: IEventModel[];
+	locations: IMemberLocationModel[];
 	gender: string;
 	unsubscribed: boolean;
 	privateProfile: boolean;
@@ -109,7 +111,8 @@ const schema = new Schema(
 			type: [Schema.Types.ObjectId],
 			ref: 'Event',
 			default: []
-		}
+		},
+		locations: [MemberLocationSchema]
 	},
 	{ timestamps: true }
 );

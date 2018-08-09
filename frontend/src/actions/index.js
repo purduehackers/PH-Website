@@ -476,6 +476,20 @@ export const deleteJob = async id => {
 	}
 };
 
+export const fetchLocations = async () => {
+	try {
+		const token = getToken();
+		const {
+			data: { response }
+		} = await axios.get('/api/locations', {
+			headers: { Authorization: `Bearer ${token}` }
+		});
+		return response;
+	} catch (error) {
+		throw error.response.data;
+	}
+};
+
 export const autocompleteMembers = async params => {
 	try {
 		const token = getToken();

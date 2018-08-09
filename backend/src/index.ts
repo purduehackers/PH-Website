@@ -10,13 +10,14 @@ import * as mongoose from 'mongoose';
 import * as passport from 'passport';
 import * as cors from 'cors';
 // tslint:disable-next-line:no-import-side-effect
-import CONFIG  from './config';
+import CONFIG from './config';
 import passportMiddleWare from './middleware/passport';
 import { router as auth } from './routes/auth';
 import { router as home } from './routes/home';
 import { router as members } from './routes/members';
 import { router as events } from './routes/events';
 import { router as jobs } from './routes/jobs';
+import { router as locations } from './routes/locations';
 import { router as credentials } from './routes/credentials';
 import { router as permissions } from './routes/permissions';
 import { router as autocomplete } from './routes/autocomplete';
@@ -33,20 +34,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-// app.use(
-// 	session({
-// 		name: 'PH-token',
-// 		secret: SECRET,
-// 		resave: false,
-// 		saveUninitialized: true,
-// 		cookie: {
-// 			secure: false,
-// 			httpOnly: true
-// 		}
-// 	})
-// );
 app.use(passport.initialize());
-// app.use(passport.session());
 app.use(cors());
 
 app.use(paginate.middleware(20, 50));
@@ -55,6 +43,7 @@ app.use('/api/auth', auth);
 app.use('/api/members', members);
 app.use('/api/events', events);
 app.use('/api/jobs', jobs);
+app.use('/api/locations', locations);
 app.use('/api/credentials', credentials);
 app.use('/api/permissions', permissions);
 app.use('/api/autocomplete', autocomplete);

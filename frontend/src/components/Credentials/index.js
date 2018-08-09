@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import CryptoJS from 'crypto-js';
 import AES from 'crypto-js/aes';
 import ENC from 'crypto-js/enc-utf8';
 import {
@@ -37,9 +36,7 @@ class CredentialsPage extends Component {
 			const { credentials, secret } = await fetchCredentials();
 			credentials.forEach(
 				credential =>
-					(credential.password = AES.decrypt(credential.password, secret).toString(
-						CryptoJS.enc.Utf8
-					))
+					(credential.password = AES.decrypt(credential.password, secret).toString(ENC))
 			);
 			console.log('Fetched credentials:', credentials, secret);
 			this.setState({ credentials });
@@ -67,7 +64,7 @@ class CredentialsPage extends Component {
 				description
 			});
 
-			credential.password = AES.decrypt(credential.password, secret).toString(CryptoJS.enc.Utf8);
+			credential.password = AES.decrypt(credential.password, secret).toString(ENC);
 
 			this.setState({
 				credentials: [...this.state.credentials, credential],
