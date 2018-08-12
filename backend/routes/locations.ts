@@ -9,10 +9,9 @@ export const router = express.Router();
 router.get('/', async (req, res) => {
 	try {
 		const locations = await Location.find()
-			// .populate({
-			// 	path: 'members',
-			// 	model: Member
-			// })
+			.populate({
+				path: 'members.member'
+			})
 			.exec();
 		return successRes(res, locations);
 	} catch (error) {
@@ -23,13 +22,38 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
 	try {
-		if (!ObjectId.isValid(req.params.id)) return errorRes(res, 400, 'Invalid location ID');
+		if (!ObjectId.isValid(req.params.id))
+			return errorRes(res, 400, 'Invalid location ID');
 		const location = await Location.findById(req.params.id)
 			.populate({
-				path: 'members',
-				model: Member
+				path: 'members.member'
 			})
 			.exec();
+		console.log(location);
+		return successRes(res, location);
+	} catch (error) {
+		console.error(error);
+		return errorRes(res, 500, error);
+	}
+});
+
+router.post('/:id', async (req, res) => {
+	try {
+		if (!ObjectId.isValid(req.params.id))
+			return errorRes(res, 400, 'Invalid location ID');
+		const { name, city } = req.body;
+		if (!name) return errorRes(res, 400, 'Must provide a name');
+		if (!city) return errorRes(res, 400, 'Must provide a city');
+		const location = await Location.findById(req.params.id)
+			.populate({
+				path: 'members.member'
+			})
+			.exec();
+		if (!location) return errorRes(res, 400, 'Location does not exist');
+		location.name = name;
+		location.city = city;
+		await location.save();
+		console.log(location);
 		return successRes(res, location);
 	} catch (error) {
 		console.error(error);

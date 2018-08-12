@@ -5,7 +5,13 @@ export interface ILocationModel extends Document {
 	loc: any;
 	name: string;
 	city: string;
-	members: IMemberModel[];
+	members: [
+		{
+			member: IMemberModel;
+			dateStart: Date;
+			dateEnd: Date;
+		}
+	];
 }
 
 const schema = new Schema(
@@ -20,11 +26,16 @@ const schema = new Schema(
 		city: {
 			type: String
 		},
-		members: {
-			type: [Schema.Types.ObjectId],
-			ref: 'Member',
-			default: []
-		}
+		members: [
+			{
+				member: {
+					type: Schema.Types.ObjectId,
+					ref: 'Member'
+				},
+				dateStart: Date,
+				dateEnd: Date
+			}
+		]
 	},
 	{ timestamps: true }
 );

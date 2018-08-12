@@ -555,8 +555,11 @@ const mapStateToProps = state => ({
 	...state.sessionState
 });
 
-export default connect(mapStateToProps, {
-	flash: sendFlashMessage,
-	clear: clearFlashMessages,
-	updateProfile
-})(EditProfilePage);
+export default connect(
+	mapStateToProps,
+	{
+		flash: sendFlashMessage,
+		clear: clearFlashMessages,
+		updateProfile
+	}
+)(EditProfilePage);

@@ -3,7 +3,6 @@ import { Document, Schema, model } from 'mongoose';
 import { ILocationModel } from './location';
 import { IEventModel } from './event';
 import { IPermissionModel } from './permission';
-import { IMemberLocationModel, MemberLocationSchema } from './memberLocation';
 
 export const memberStatuses = {
 	MEMBER: 'Member',
@@ -26,7 +25,13 @@ export interface IMemberModel extends Document {
 	memberStatus: string;
 	permissions: IPermissionModel[];
 	events: IEventModel[];
-	locations: IMemberLocationModel[];
+	locations: [
+		{
+			location: ILocationModel;
+			dateStart: Date;
+			dateEnd: Date;
+		}
+	];
 	gender: string;
 	unsubscribed: boolean;
 	privateProfile: boolean;
@@ -112,7 +117,16 @@ const schema = new Schema(
 			ref: 'Event',
 			default: []
 		},
-		locations: [MemberLocationSchema]
+		locations: [
+			{
+				location: {
+					type: Schema.Types.ObjectId,
+					ref: 'Location'
+				},
+				dateStart: Date,
+				dateEnd: Date
+			}
+		]
 	},
 	{ timestamps: true }
 );

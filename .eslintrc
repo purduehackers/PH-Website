@@ -25,6 +25,22 @@
 				"useTabs": true,
 				"parser": "typescript"
 			}
-		]
+		],
+		"no-underscore-dangle": "off",
+		"import/prefer-default-export": "off",
+		"no-console": "off",
+		"function-paren-newline": "off",
+		"arrow-parens": "off",
+		"curly": "off",
+		"object-curly-newline": "off",
+		"no-confusing-arrow": "off",
+		"no-return-assign": "off",
+		"no-param-reassign": "off",
+		"no-unused-expressions": "off",
+		"no-nested-ternary": "off",
+		"import/first": 0,
+		"no-mixed-spaces-and-tabs": "error",
+		"newline-per-chained-call": ["error", { "ignoreChainWithDepth": 2 }],
+		"comma-dangle": "off"
 	}
 }

@@ -8,9 +8,9 @@
 		"watch": "tsc -w",
 		"start": "nodemon dist/index.js",
 		"dev":
-			"nodemon -i \"**/*.test.ts\" -i \"**/*.spec.ts\" -i \"node_modules\" -w src -e ts -x \"npm run server\"",
+			"nodemon -i \"**/*.test.ts\" -i \"**/*.spec.ts\" -i \"node_modules\" -w backend -e ts -x \"npm run server\"",
 		"deploy": "gcloud app deploy",
-		"server": "ts-node --inspect=5858 index.ts"
+		"server": "ts-node --inspect=5858 backend/index.ts"
 	},
 	"dependencies": {
 		"@google-cloud/storage": "^1.7.0",

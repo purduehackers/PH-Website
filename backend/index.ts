@@ -21,9 +21,10 @@ import { router as autocomplete } from './routes/autocomplete';
 
 export const app = express();
 export const server = http.createServer(app);
-const { PORT, DB, MONGO_USER, MONGO_PASSWORD } = CONFIG;
+const { NODE_ENV, PORT, DB, MONGO_USER, MONGO_PASSWORD } = CONFIG;
 
-mongoose.connect(DB, { user: MONGO_USER, pass: MONGO_PASSWORD });
+if (NODE_ENV !== 'production') mongoose.connect(DB);
+else mongoose.connect(DB, { user: MONGO_USER, pass: MONGO_PASSWORD });
 
 passportMiddleWare(passport);
 
@@ -47,5 +48,7 @@ app.use('/api/autocomplete', autocomplete);
 
 // Serves react app, only used in production
 app.use(express.static(join(__dirname, '../frontend/build')));
-app.get('*', (req, res) => res.sendFile(resolve(__dirname, '../frontend/build/index.html')));
+app.get('*', (req, res) =>
+	res.sendFile(resolve(__dirname, '../frontend/build/index.html'))
+);
 server.listen(PORT, () => console.log(`Listening on port: ${PORT}`));

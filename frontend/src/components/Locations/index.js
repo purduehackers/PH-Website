@@ -7,7 +7,10 @@ import { Header } from '../Common';
 class Locations extends Component {
 	static propTypes = {
 		flash: PropTypes.func.isRequired,
-		clear: PropTypes.func.isRequired
+		clear: PropTypes.func.isRequired,
+		history: PropTypes.shape({
+			push: PropTypes.func
+		}).isRequired
 	};
 
 	constructor(props) {
@@ -29,6 +32,8 @@ class Locations extends Component {
 			console.error('LocationsPage error:', error);
 		}
 	};
+
+	onClick = id => () => this.props.history.push(`/location/${id}`);
 
 	render() {
 		const { locations } = this.state;
@@ -55,7 +60,7 @@ class Locations extends Component {
 							</thead>
 							<tbody>
 								{locations.map(location => (
-									<tr onClick={location._id}>
+									<tr onClick={this.onClick(location._id)}>
 										<td>{location.name}</td>
 										<td>{location.city}</td>
 										<td>{location.members.length}</td>
@@ -74,6 +79,7 @@ const mapStateToProps = state => ({
 	...state.sessionState
 });
 
-export default connect(mapStateToProps, { flash: sendFlashMessage, clear: clearFlashMessages })(
-	Locations
-);
+export default connect(
+	mapStateToProps,
+	{ flash: sendFlashMessage, clear: clearFlashMessages }
+)(Locations);

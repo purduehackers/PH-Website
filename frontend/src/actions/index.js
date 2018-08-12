@@ -490,6 +490,38 @@ export const fetchLocations = async () => {
 	}
 };
 
+export const fetchLocation = async id => {
+	try {
+		const token = getToken();
+		const {
+			data: { response }
+		} = await axios.get(`/api/locations/${id}`, {
+			headers: { Authorization: `Bearer ${token}` }
+		});
+		return response;
+	} catch (error) {
+		throw error.response.data;
+	}
+};
+
+export const updateLocation = async (id, name, city) => {
+	try {
+		const token = getToken();
+		const {
+			data: { response }
+		} = await axios.post(
+			`/api/locations/${id}`,
+			{ name, city },
+			{
+				headers: { Authorization: `Bearer ${token}` }
+			}
+		);
+		return response;
+	} catch (error) {
+		throw error.response.data;
+	}
+};
+
 export const autocompleteMembers = async params => {
 	try {
 		const token = getToken();
