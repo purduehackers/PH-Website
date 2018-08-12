@@ -1,15 +1,12 @@
 import * as express from 'express';
 import * as cookieParser from 'cookie-parser';
-import * as bodyParser from 'body-parser';
-import * as session from 'express-session';
 import * as paginate from 'express-paginate';
 import * as http from 'http';
 import * as logger from 'morgan';
-import * as path from 'path';
 import * as mongoose from 'mongoose';
 import * as passport from 'passport';
 import * as cors from 'cors';
-// tslint:disable-next-line:no-import-side-effect
+import { join, resolve } from 'path';
 import CONFIG from './config';
 import passportMiddleWare from './middleware/passport';
 import { router as auth } from './routes/auth';
@@ -24,9 +21,9 @@ import { router as autocomplete } from './routes/autocomplete';
 
 export const app = express();
 export const server = http.createServer(app);
-const { PORT, DB, SECRET } = CONFIG;
+const { PORT, DB, MONGO_USER, MONGO_PASSWORD } = CONFIG;
 
-mongoose.connect(DB);
+mongoose.connect(DB, { user: MONGO_USER, pass: MONGO_PASSWORD });
 
 passportMiddleWare(passport);
 
@@ -49,11 +46,6 @@ app.use('/api/permissions', permissions);
 app.use('/api/autocomplete', autocomplete);
 
 // Serves react app, only used in production
-app.use(express.static(path.join(__dirname, '../../frontend/build')));
-app.get('*', (req, res) =>
-	res.sendFile(path.resolve(__dirname, '../../frontend/build/index.html'))
-);
-
-server.listen(PORT, () => {
-	console.log(`Listening on port: ${PORT}`);
-});
+app.use(express.static(join(__dirname, '../frontend/build')));
+app.get('*', (req, res) => res.sendFile(resolve(__dirname, '../frontend/build/index.html')));
+server.listen(PORT, () => console.log(`Listening on port: ${PORT}`));

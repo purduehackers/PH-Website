@@ -14,5 +14,5 @@
 		"emitDecoratorMetadata": true
 	},
 	"compileOnSave": true,
-	"include": ["src"]
+	"include": ["backend"]
 }

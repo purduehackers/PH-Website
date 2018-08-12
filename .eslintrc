@@ -1,0 +1,30 @@
+{
+	"env": {
+		"browser": true,
+		"commonjs": true,
+		"node": true
+	},
+	"parserOptions": {
+		"ecmaVersion": 2017
+	},
+	"parser": "typescript-eslint-parser",
+	"extends": "eslint:recommended",
+	"plugins": ["prettier", "typescript"],
+	"rules": {
+		"indent": "off",
+		"no-tabs": "off",
+		"linebreak-style": ["error", "unix"],
+		"quotes": ["error", "single"],
+		"semi": ["error", "always"],
+		"prettier/prettier": [
+			"error",
+			{
+				"singleQuote": true,
+				"printWidth": 100,
+				"tabWidth": 4,
+				"useTabs": true,
+				"parser": "typescript"
+			}
+		]
+	}
+}
