@@ -10,7 +10,13 @@ import { Location } from '../models/location';
 import { Permission } from '../models/permission';
 import { Job } from '../models/job';
 import { auth } from '../middleware/passport';
-import { successRes, errorRes, memberMatches, uploadToStorage, multer } from '../utils';
+import {
+	successRes,
+	errorRes,
+	memberMatches,
+	uploadToStorage,
+	multer
+} from '../utils';
 
 export const router = express.Router();
 
@@ -79,7 +85,7 @@ router.get('/', async (req, res, next) => {
 				model: Permission
 			})
 			.sort({ [sortBy]: order })
-			.limit(100)
+			// .limit(100)
 			.lean()
 			.exec();
 
@@ -92,7 +98,8 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:id', async (req, res, next) => {
 	try {
-		if (!ObjectId.isValid(req.params.id)) return errorRes(res, 400, 'Invalid member ID');
+		if (!ObjectId.isValid(req.params.id))
+			return errorRes(res, 400, 'Invalid member ID');
 		const user = await Member.findById(new ObjectId(req.params.id))
 			.populate({
 				path: 'permissions',
@@ -108,9 +115,14 @@ router.get('/:id', async (req, res, next) => {
 
 router.put('/:id', auth(), multer.any(), async (req, res, next) => {
 	try {
-		if (!ObjectId.isValid(req.params.id)) return errorRes(res, 400, 'Invalid member ID');
+		if (!ObjectId.isValid(req.params.id))
+			return errorRes(res, 400, 'Invalid member ID');
 		if (!memberMatches(req.user as any, req.params.id))
-			return errorRes(res, 401, 'You are unauthorized to edit this profile');
+			return errorRes(
+				res,
+				401,
+				'You are unauthorized to edit this profile'
+			);
 		const files: Express.Multer.File[] = req.files
 			? (req.files as Express.Multer.File[])
 			: new Array<Express.Multer.File>();
@@ -133,11 +145,17 @@ router.put('/:id', auth(), multer.any(), async (req, res, next) => {
 			devpost,
 			resumeLink
 		} = req.body;
-		if (!name) return errorRes(res, 400, 'Please provide your first and last name');
+		if (!name)
+			return errorRes(
+				res,
+				400,
+				'Please provide your first and last name'
+			);
 		if (!email) return errorRes(res, 400, 'Please provide your email');
 		if (!isEmail(email)) return errorRes(res, 400, 'Invalid email');
 		if (!password) return errorRes(res, 400, 'A password is required');
-		if (!passwordConfirm) return errorRes(res, 400, 'Please confirm your password');
+		if (!passwordConfirm)
+			return errorRes(res, 400, 'Please confirm your password');
 		if (!graduationYear || !parseInt(graduationYear, 10))
 			return errorRes(res, 400, 'Please provide a valid graduation year');
 		if (
@@ -163,21 +181,29 @@ router.put('/:id', auth(), multer.any(), async (req, res, next) => {
 			return errorRes(res, 400, 'Please provide a valid major');
 		if (phone && !isMobilePhone(phone, ['en-US'] as any))
 			return errorRes(res, 400, 'Invalid phone number: ' + phone);
-		if (password !== passwordConfirm) return errorRes(res, 400, 'Passwords does not match');
+		if (password !== passwordConfirm)
+			return errorRes(res, 400, 'Passwords does not match');
 		if (facebook && !/(facebook|fb)/.test(facebook))
 			return errorRes(res, 400, 'Invalid Facebook URL');
-		if (github && !/github/.test(github)) return errorRes(res, 400, 'Invalid GitHub URL');
-		if (linkedin && !/linkedin/.test(linkedin)) return errorRes(res, 400, 'Invalid LinkedIn URL');
-		if (devpost && !/devpost/.test(devpost)) return errorRes(res, 400, 'Invalid Devpost URL');
-		if (website && !isURL(website)) return errorRes(res, 400, 'Invalid website URL');
+		if (github && !/github/.test(github))
+			return errorRes(res, 400, 'Invalid GitHub URL');
+		if (linkedin && !/linkedin/.test(linkedin))
+			return errorRes(res, 400, 'Invalid LinkedIn URL');
+		if (devpost && !/devpost/.test(devpost))
+			return errorRes(res, 400, 'Invalid Devpost URL');
+		if (website && !isURL(website))
+			return errorRes(res, 400, 'Invalid website URL');
 		const member = await Member.findById(req.params.id, '+password').exec();
 		if (!member) return errorRes(res, 400, 'Member not found');
-		if (!compareSync(password, member.password)) return errorRes(res, 401, 'Incorrect password');
+		if (!compareSync(password, member.password))
+			return errorRes(res, 401, 'Incorrect password');
 
 		const picture = files.find(file => file.fieldname === 'picture');
 		const resume = files.find(file => file.fieldname === 'resume');
-		if (picture) member.picture = await uploadToStorage(picture, 'pictures', member);
-		if (resume) member.resume = await uploadToStorage(resume, 'resumes', member);
+		if (picture)
+			member.picture = await uploadToStorage(picture, 'pictures', member);
+		if (resume)
+			member.resume = await uploadToStorage(resume, 'resumes', member);
 		member.name = name;
 		member.email = email;
 		member.password = password;
@@ -207,7 +233,8 @@ router.put('/:id', auth(), multer.any(), async (req, res, next) => {
 
 router.get('/:id/events', async (req, res, next) => {
 	try {
-		if (!ObjectId.isValid(req.params.id)) return errorRes(res, 400, 'Invalid member ID');
+		if (!ObjectId.isValid(req.params.id))
+			return errorRes(res, 400, 'Invalid member ID');
 		const member = await Member.findById(req.params.id)
 			.populate({
 				path: 'events',
@@ -217,7 +244,9 @@ router.get('/:id/events', async (req, res, next) => {
 			.exec();
 		if (!member) return successRes(res, []);
 		const { events } = member;
-		const publicEvents = events ? events.filter((event: IEventModel) => !event.privateEvent) : [];
+		const publicEvents = events
+			? events.filter((event: IEventModel) => !event.privateEvent)
+			: [];
 		return successRes(res, publicEvents);
 	} catch (error) {
 		console.error(error);
@@ -227,7 +256,8 @@ router.get('/:id/events', async (req, res, next) => {
 
 router.get('/:id/locations', async (req, res, next) => {
 	try {
-		if (!ObjectId.isValid(req.params.id)) return errorRes(res, 400, 'Invalid member ID');
+		if (!ObjectId.isValid(req.params.id))
+			return errorRes(res, 400, 'Invalid member ID');
 		const member = await Member.findById(req.params.id)
 			.populate({
 				path: 'locations.location',

@@ -36,8 +36,10 @@ class MemberPage extends Component {
 		clear: PropTypes.func.isRequired,
 		user: PropTypes.shape({
 			permissions: PropTypes.array
-		}).isRequired
+		})
 	};
+
+	static defaultProps = { user: null };
 
 	constructor(props) {
 		super(props);

@@ -158,7 +158,7 @@ class LocationPage extends Component {
 								<tbody>
 									{members && members.length ? (
 										members.map(member => (
-											<tr onClick={this.onClick(member.member._id)}>
+											<tr key={member._id} onClick={this.onClick(member.member._id)}>
 												<td>{member.member.name}</td>
 												<td>{formatDate(member.dateStart)}</td>
 												<td>{formatDate(member.dateEnd)}</td>
@@ -185,7 +185,6 @@ const mapStateToProps = state => ({
 	...state.sessionState
 });
 
-export default connect(
-	mapStateToProps,
-	{ flash: sendFlashMessage, clear: clearFlashMessages }
-)(LocationPage);
+export default connect(mapStateToProps, { flash: sendFlashMessage, clear: clearFlashMessages })(
+	LocationPage
+);

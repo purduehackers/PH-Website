@@ -22,10 +22,10 @@ export default class extends React.Component {
 				key={marker._id}
 				position={{ lat: marker.loc_lat, lng: marker.loc_lng }}
 				onClick={this.toggleOpen}
-				onMouseOver={this.setOpen(true)}
-				onFocus={this.setOpen(true)}
-				onMouseOut={this.setOpen(false)}
-				onBlur={this.setOpen(false)}
+				// onMouseOver={this.setOpen(true)}
+				// onFocus={this.setOpen(true)}
+				// onMouseOut={this.setOpen(false)}
+				// onBlur={this.setOpen(false)}
 			>
 				{isOpen && (
 					<InfoWindow>

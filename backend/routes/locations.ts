@@ -1,9 +1,9 @@
 import * as express from 'express';
 import { ObjectId } from 'mongodb';
-import { IPermissionModel, Permission } from '../models/permission';
 import { Location } from '../models/location';
+import { successRes, errorRes, to, hasPermission } from '../utils';
+import { auth, hasPermissions } from '../middleware/passport';
 import { Member } from '../models/member';
-import { successRes, errorRes, to } from '../utils';
 export const router = express.Router();
 
 router.get('/', async (req, res) => {
@@ -13,6 +13,7 @@ router.get('/', async (req, res) => {
 				path: 'members.member'
 			})
 			.exec();
+
 		return successRes(res, locations);
 	} catch (error) {
 		console.error(error);
@@ -37,7 +38,7 @@ router.get('/:id', async (req, res) => {
 	}
 });
 
-router.post('/:id', async (req, res) => {
+router.post('/:id', auth(), hasPermissions(['admin']), async (req, res) => {
 	try {
 		if (!ObjectId.isValid(req.params.id))
 			return errorRes(res, 400, 'Invalid location ID');
