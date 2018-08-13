@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { formatDate, hasPermission } from '../../constants';
 
-class MemberTable extends Component {
+export default class extends Component {
 	static propTypes = {
 		members: PropTypes.array.isRequired,
 		push: PropTypes.func.isRequired,
-		user: PropTypes.object.isRequired
+		user: PropTypes.object
 	};
+
+	static defaultProps = { user: null };
 
 	onClick = id => () => this.props.push(`/member/${id}`);
 
@@ -44,5 +46,3 @@ class MemberTable extends Component {
 		);
 	}
 }
-
-export default MemberTable;

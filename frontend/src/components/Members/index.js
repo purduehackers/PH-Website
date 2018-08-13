@@ -14,24 +14,27 @@ class MembersPage extends Component {
 		history: PropTypes.shape({
 			push: PropTypes.func
 		}).isRequired,
-		user: PropTypes.object.isRequired
+		user: PropTypes.object
 	};
+
+	static defaultProps = { user: null };
 
 	constructor(props) {
 		super(props);
 		this.state = {
-			members: []
+			members: [],
+			loading: true
 		};
 	}
 
 	componentDidMount = async () => {
 		const { members } = await fetchMembers({});
 		console.log('MembersPage fetched members:', members);
-		this.setState({ members });
+		this.setState({ members, loading: false });
 	};
 
 	render() {
-		const { members } = this.state;
+		const { members, loading } = this.state;
 		const { user } = this.props;
 		return (
 			<div className="section">
@@ -66,7 +69,11 @@ class MembersPage extends Component {
 							</Link>
 						)}
 					</h3>
-					<MemberTable members={members} push={this.props.history.push} user={user} />
+					{loading ? (
+						<span>Loading...</span>
+					) : (
+						<MemberTable members={members} push={this.props.history.push} user={user} />
+					)}
 				</div>
 			</div>
 		);
@@ -77,7 +84,4 @@ const mapStateToProps = state => ({
 	...state.sessionState
 });
 
-export default connect(
-	mapStateToProps,
-	{}
-)(MembersPage);
+export default connect(mapStateToProps, {})(MembersPage);

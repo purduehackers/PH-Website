@@ -1,10 +1,15 @@
-export const formatDate = date =>
+const dateToString = date =>
 	new Date(date).toLocaleDateString('en-US', {
 		year: 'numeric',
 		month: 'short',
 		day: 'numeric',
 		weekday: 'short'
 	});
+
+export const formatDate = date => {
+	const str = dateToString(date);
+	return str !== 'Invalid Date' ? str : 'Current';
+};
 
 export const hasPermission = (user, name) =>
 	user &&

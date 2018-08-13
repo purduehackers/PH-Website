@@ -70,10 +70,7 @@ class EventsPage extends Component {
 						)}
 					</h3>
 					{loading ? (
-						<div>
-							<hr />
-							<span>Loading...</span>
-						</div>
+						<span>Loading...</span>
 					) : (
 						<EventTable events={events} push={this.props.history.push} allowed={allowed} />
 					)}
@@ -87,7 +84,4 @@ const mapStateToProps = state => ({
 	...state.sessionState
 });
 
-export default connect(
-	mapStateToProps,
-	{}
-)(EventsPage);
+export default connect(mapStateToProps, {})(EventsPage);
