@@ -20,6 +20,7 @@ import Credentials from '../Credentials';
 import Permissions from '../Permissions';
 import Permission from '../Permission';
 import Locations from '../Locations';
+import LocationsMap from '../LocationsMap';
 import Location from '../Location';
 import Calendar from '../Calendar';
 import AnvilWifi from '../AnvilWifi';
@@ -81,6 +82,7 @@ class App extends Component {
 						<Route exact path={routes.FORGOT_PASSWORD} component={ForgotPassword} />
 						<Route exact path={routes.RESET_PASSWORD} component={ResetPassword} />
 						<Route exact path={routes.LOCATIONS} component={Locations} />
+						<Route exact path={routes.LOCATIONS_MAP} component={LocationsMap} />
 						<Route exact path={routes.LOCATION} component={Location} />
 						<Route exact path={routes.CALENDAR} component={Calendar} />
 						<Route exact path={routes.DEV} component={Dev} />

@@ -46,7 +46,7 @@ class MembersPage extends Component {
 										Graphs
 									</button>
 								</Link>
-								<Link to={routes.LOCATIONS} className="pull-left">
+								<Link to={routes.LOCATIONS_MAP} className="pull-left">
 									<button type="button" className="btn btn-primary btn-sm">
 										Map
 									</button>
@@ -77,4 +77,7 @@ const mapStateToProps = state => ({
 	...state.sessionState
 });
 
-export default connect(mapStateToProps, {})(MembersPage);
+export default connect(
+	mapStateToProps,
+	{}
+)(MembersPage);

@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import routes from '../../constants';
 import { sendFlashMessage, clearFlashMessages, fetchLocations } from '../../actions';
 import { Header } from '../Common';
 
-class Locations extends Component {
+class LocationsPage extends Component {
 	static propTypes = {
 		flash: PropTypes.func.isRequired,
 		clear: PropTypes.func.isRequired,
@@ -43,11 +45,11 @@ class Locations extends Component {
 					<Header message="Locations" />
 					<h3>
 						Purdue Hackers Around The Globe
-						<a href="{{ action('LocationController@getMap') }}" className="pull-right">
+						<Link to={routes.LOCATIONS_MAP} className="pull-right">
 							<button type="button" className="btn btn-primary btn-sm">
 								Map
 							</button>
-						</a>
+						</Link>
 					</h3>
 					<div className="panel panel-default">
 						<table className="table table-bordered table-hover table-clickable panel-body sortableTable">
@@ -82,4 +84,4 @@ const mapStateToProps = state => ({
 export default connect(
 	mapStateToProps,
 	{ flash: sendFlashMessage, clear: clearFlashMessages }
-)(Locations);
+)(LocationsPage);

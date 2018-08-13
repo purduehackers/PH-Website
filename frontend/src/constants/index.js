@@ -46,6 +46,7 @@ export default {
 	PERMISSION: '/permission/:id',
 	CREDENTIALS: '/credentials',
 	LOCATIONS: '/locations',
+	LOCATIONS_MAP: '/locations/map',
 	LOCATION: '/location/:id',
 	HACKATHONS: '/hackathons',
 	PROJECTS: '/projects',

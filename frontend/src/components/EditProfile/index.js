@@ -518,6 +518,7 @@ class EditProfilePage extends Component {
 													? resume.webkitRelativePath
 													: resume
 											}
+											rel="noopener noreferrer"
 											target="_blank"
 											className="form-control"
 										>
