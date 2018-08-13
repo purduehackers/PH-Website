@@ -20,9 +20,9 @@ export default class extends React.Component {
 		return (
 			<Marker
 				key={marker._id}
-				position={{ lat: marker.loc_lat, lng: marker.loc_lng }}
+				position={{ lat: marker.lat, lng: marker.lng }}
 				onClick={this.toggleOpen}
-				// onMouseOver={this.setOpen(true)}
+				onMouseOver={this.setOpen(true)}
 				// onFocus={this.setOpen(true)}
 				// onMouseOut={this.setOpen(false)}
 				// onBlur={this.setOpen(false)}

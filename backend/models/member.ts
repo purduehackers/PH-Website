@@ -1,8 +1,8 @@
 import * as bcrypt from 'bcrypt';
 import { Document, Schema, model } from 'mongoose';
-import { ILocationModel } from './location';
 import { IEventModel } from './event';
 import { IPermissionModel } from './permission';
+import { IJobModel } from './job';
 
 export const memberStatuses = {
 	MEMBER: 'Member',
@@ -25,13 +25,7 @@ export interface IMemberModel extends Document {
 	memberStatus: string;
 	permissions: IPermissionModel[];
 	events: IEventModel[];
-	locations: [
-		{
-			location: ILocationModel;
-			dateStart: Date;
-			dateEnd: Date;
-		}
-	];
+	jobs: IJobModel[];
 	gender: string;
 	unsubscribed: boolean;
 	privateProfile: boolean;
@@ -117,16 +111,11 @@ const schema = new Schema(
 			ref: 'Event',
 			default: []
 		},
-		locations: [
-			{
-				location: {
-					type: Schema.Types.ObjectId,
-					ref: 'Location'
-				},
-				dateStart: Date,
-				dateEnd: Date
-			}
-		]
+		jobs: {
+			type: [Schema.Types.ObjectId],
+			ref: 'Job',
+			default: []
+		}
 	},
 	{ timestamps: true }
 );

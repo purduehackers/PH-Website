@@ -42,25 +42,27 @@ class MembersPage extends Component {
 					<Header message="Members" />
 					<h3>
 						Members
-						{hasPermission(user, 'members') && (
-							<React.Fragment>
+						<React.Fragment>
+							{hasPermission(user, 'members') && (
 								<Link to={routes.REPORTS} className="pull-left marginR">
 									<button type="button" className="btn btn-primary btn-sm">
 										Graphs
 									</button>
 								</Link>
-								<Link to={routes.LOCATIONS_MAP} className="pull-left">
-									<button type="button" className="btn btn-primary btn-sm">
-										Map
-									</button>
-								</Link>
+							)}
+							<Link to={routes.LOCATIONS_MAP} className="pull-left">
+								<button type="button" className="btn btn-primary btn-sm">
+									Map
+								</button>
+							</Link>
+							{hasPermission(user, 'members') && (
 								<Link to="#" className="pull-right">
 									<button type="button" className="btn btn-primary btn-sm">
 										{members && members.length} members
 									</button>
 								</Link>
-							</React.Fragment>
-						)}
+							)}
+						</React.Fragment>
 						{hasPermission(user, 'members') && (
 							<Link to={routes.PERMISSIONS} className="pull-right marginR">
 								<button type="button" className="btn btn-primary btn-sm">

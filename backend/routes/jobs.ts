@@ -1,5 +1,6 @@
 import * as express from 'express';
 import { ObjectId } from 'mongodb';
+import axios from 'axios';
 import { ILocationModel, Location } from '../models/location';
 import { Member } from '../models/member';
 import { Job } from '../models/job';
@@ -8,12 +9,13 @@ import { successRes, errorRes, memberMatches } from '../utils';
 import { IPermissionModel, Permission } from '../models/permission';
 export const router = express.Router();
 
-// TODO: Add auth to routes
-// TODO: Add permissions to routes
+// TODO: Deprecate jobs route and merge with locations
 
-router.get('/', auth(), async (req, res, next) => {
+router.get('/', async (req, res, next) => {
 	try {
-		const jobs = await Job.find().exec();
+		const jobs = await Job.find()
+			.populate(['member', 'location'])
+			.exec();
 		return successRes(res, jobs);
 	} catch (error) {
 		console.error(error.message);
@@ -27,9 +29,12 @@ router.post('/', auth(), async (req, res, next) => {
 		if (!name) return errorRes(res, 400, 'Job must have a name');
 		if (!city) return errorRes(res, 400, 'Job must have a city');
 		if (!start) return errorRes(res, 400, 'Job must have a start date');
-		if (isNaN(Date.parse(start))) return errorRes(res, 400, 'Invalid start date');
-		if (end && isNaN(Date.parse(end))) return errorRes(res, 400, 'Invalid end date');
-		if (!ObjectId.isValid(memberID)) return errorRes(res, 400, 'Invalid member id');
+		if (isNaN(Date.parse(start)))
+			return errorRes(res, 400, 'Invalid start date');
+		if (end && isNaN(Date.parse(end)))
+			return errorRes(res, 400, 'Invalid end date');
+		if (!ObjectId.isValid(memberID))
+			return errorRes(res, 400, 'Invalid member id');
 
 		let [location, member] = await Promise.all([
 			Location.findOne({ name, city }).exec(),
@@ -41,18 +46,42 @@ router.post('/', auth(), async (req, res, next) => {
 				.exec()
 		]);
 		if (!member) return errorRes(res, 400, 'Member does not exist');
-		if (!memberMatches(member, req.user as any)) return errorRes(res, 401, 'Unauthorized');
+		if (!memberMatches(member, req.user._id))
+			return errorRes(res, 401, 'Unauthorized');
 
 		if (!location) {
 			location = new Location({
 				name,
 				city
 			});
-			await location.save();
+			const { data } = await axios.get(
+				'https://maps.googleapis.com/maps/api/geocode/json',
+				{
+					params: {
+						address: `${name}, ${city}`
+					}
+				}
+			);
+			if (data.results.length) {
+				location.lat = data.results[0].geometry.location.lat;
+				location.lng = data.results[0].geometry.location.lng;
+			}
 		}
+
+		const contains = location.members.some(m =>
+			member._id.equals(m.member._id)
+		);
+		if (!contains)
+			location.members.push({
+				member,
+				dateStart: new Date(start),
+				dateEnd: end ? new Date(end) : null
+			});
+
+		await location.save();
 		const job = new Job({
-			location: location._id,
-			member: member._id,
+			location,
+			member,
 			start: new Date(start),
 			end: end ? new Date(end) : null
 		});
@@ -65,7 +94,7 @@ router.post('/', auth(), async (req, res, next) => {
 	}
 });
 
-router.get('/:id', auth(), async (req, res, next) => {
+router.get('/:id', async (req, res, next) => {
 	try {
 		const job = await Job.findById(req.params.id).exec();
 		return successRes(res, job);
@@ -88,24 +117,30 @@ router.delete('/:id', auth(), async (req, res, next) => {
 			.exec();
 		if (!job) return errorRes(res, 400, 'Job not found');
 
-		if (!memberMatches(job.member, req.user as any)) return errorRes(res, 401, 'Unauthorized');
+		if (!memberMatches(job.member, req.user._id))
+			return errorRes(res, 401, 'Unauthorized');
 		const jo = await job.remove();
 
 		// Remove if there are no more jobs that reference location of job that was just deleted
 		const jobs = await Job.find()
 			.populate('location')
 			.exec();
+			
 		const locations = jobs
 			.filter(
-				j => j.location.name === job.location.name && j.location.city === job.location.city
+				j =>
+					j.location.name === job.location.name &&
+					j.location.city === job.location.city
 			)
 			.map(j => j.location);
 
 		// No other job is in the same location as the one just deleted, so delete the location
-		if (!locations.length) await Location.findByIdAndRemove((job.location as any)._id).exec();
+		if (!locations.length)
+			await Location.findByIdAndRemove((job.location as any)._id).exec();
 
 		return successRes(res, job);
 	} catch (error) {
+		console.error('Error:', error);
 		return errorRes(res, 500, error);
 	}
 });

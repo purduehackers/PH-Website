@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import routes from '../../constants';
-import { sendFlashMessage, clearFlashMessages, fetchLocations } from '../../actions';
+import { sendFlashMessage, clearFlashMessages, fetchJobs } from '../../actions';
 import { Header, MembersMap } from '../Common';
 
 class LocationsMapPage extends Component {
@@ -23,7 +23,8 @@ class LocationsMapPage extends Component {
 		const { flash, clear } = this.props;
 		try {
 			clear();
-			const locations = await fetchLocations();
+			const jobs = await fetchJobs();
+			const locations = jobs.map(job => job.location);
 			console.log('Fetched locations:', locations);
 			this.setState({ locations });
 		} catch (error) {

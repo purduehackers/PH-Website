@@ -17,7 +17,7 @@ export default compose(
 )(props => (
 	<GoogleMap defaultZoom={3} defaultCenter={{ lat: 40.4237, lng: -86.9212 }}>
 		<MarkerClusterer onClick={props.onMarkerClustererClick} enableRetinaIcons>
-			{props.markers.map(marker => <MarkerInfo key={marker._id} marker={marker} />)}
+			{props.markers.map((marker, i) => <MarkerInfo key={`marker:${i}`} marker={marker} />)}
 		</MarkerClusterer>
 	</GoogleMap>
 ));

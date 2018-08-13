@@ -12,8 +12,8 @@ export interface ILocationModel extends Document {
 			dateEnd: Date;
 		}
 	];
-	loc_lat: number;
-	loc_lng: number;
+	lat: number;
+	lng: number;
 }
 
 const schema = new Schema(
@@ -38,8 +38,8 @@ const schema = new Schema(
 				dateEnd: Date
 			}
 		],
-		loc_lat: { type: Number, default: 0 },
-		loc_lng: { type: Number, default: 0 }
+		lat: { type: Number, default: 0 },
+		lng: { type: Number, default: 0 }
 	},
 	{ timestamps: true }
 );

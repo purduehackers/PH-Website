@@ -7,6 +7,7 @@ const dateToString = date =>
 	});
 
 export const formatDate = date => {
+	if (!date) return 'Current';
 	const str = dateToString(date);
 	return str !== 'Invalid Date' ? str : 'Current';
 };

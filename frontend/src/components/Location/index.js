@@ -49,6 +49,7 @@ class LocationPage extends Component {
 		try {
 			clear();
 			const location = await fetchLocation(id);
+			console.log('Fetched Location:', location);
 			this.setState({ location, ...location, loading: false });
 		} catch (error) {
 			this.setState({ loading: false });

@@ -1,8 +1,11 @@
 import * as nodemailer from 'nodemailer';
 import { join } from 'path';
 import { readFileSync } from 'fs';
+import * as jwt from 'jsonwebtoken';
 import { compile } from 'handlebars';
 import CONFIG from '../config';
+import { IEventModel } from '../models/event';
+import { IMemberModel } from '../models/member';
 
 const transport = nodemailer.createTransport({
 	service: CONFIG.EMAIL_SERVICE,
@@ -12,13 +15,15 @@ const transport = nodemailer.createTransport({
 	}
 });
 
-const resetTemplate = compile(readFileSync(join(__dirname, '../emails', 'reset.hbs'), 'utf8'));
+const resetTemplate = compile(
+	readFileSync(join(__dirname, '../emails', 'reset.hbs'), 'utf8')
+);
 
 const accountCreatedTemplate = compile(
 	readFileSync(join(__dirname, '../emails', 'accountCreated.hbs'), 'utf8')
 );
 
-export const sendResetEmail = async (
+const _sendResetEmail = async (
 	{ email, name }: { email: string; name: string },
 	resetUrl: string
 ) =>
@@ -39,10 +44,23 @@ export const sendResetEmail = async (
 		]
 	});
 
-export const sendAccountCreatedEmail = async (
+export const sendResetEmail = async (member: IMemberModel) => {
+	const token = jwt.sign({ id: member._id }, CONFIG.SECRET, {
+		expiresIn: '2 days'
+	});
+	member.resetPasswordToken = token;
+	await member.save();
+	const resetUrl =
+		CONFIG.NODE_ENV === 'development'
+			? `http://localhost:3000/reset?token=${token}`
+			: `https://www.purduehackers.com/reset?token=${token}`;
+	return await _sendResetEmail(member, resetUrl);
+};
+
+const _sendAccountCreatedEmail = async (
 	{ email, name }: { email: string; name: string },
 	eventName: string,
-	eventDate: string,
+	eventDate: Date,
 	resetUrl: string
 ) =>
 	transport.sendMail({
@@ -63,3 +81,24 @@ export const sendAccountCreatedEmail = async (
 			}
 		]
 	});
+
+export const sendAccountCreatedEmail = async (
+	member: IMemberModel,
+	event: IEventModel
+) => {
+	const token = jwt.sign({ id: member._id }, CONFIG.SECRET, {
+		expiresIn: '2 days'
+	});
+	member.resetPasswordToken = token;
+	await member.save();
+	const resetUrl =
+		CONFIG.NODE_ENV === 'development'
+			? `http://localhost:3000/reset?token=${token}`
+			: `https://www.purduehackers.com/reset?token=${token}`;
+	return await _sendAccountCreatedEmail(
+		member,
+		event.name,
+		event.eventTime,
+		resetUrl
+	);
+};

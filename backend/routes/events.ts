@@ -5,7 +5,7 @@ import { ObjectId } from 'mongodb';
 import { IEventModel, Event } from '../models/event';
 import { Member, IMemberModel } from '../models/member';
 import { auth } from '../middleware/passport';
-import { successRes, errorRes } from '../utils';
+import { successRes, errorRes, sendAccountCreatedEmail } from '../utils';
 export const router = express.Router();
 
 // TODO: Add auth to routes
@@ -46,7 +46,10 @@ router.post('/', async (req, res, next) => {
 		if (!location) return errorRes(res, 400, 'Event must have a name');
 		const time = Date.parse(eventTime);
 		if (isNaN(time)) return errorRes(res, 400, 'Invalid event time');
-		if (facebook && !facebook.match('((http|https)://)?(www[.])?facebook.com.*'))
+		if (
+			facebook &&
+			!facebook.match('((http|https)://)?(www[.])?facebook.com.*')
+		)
 			return errorRes(res, 400, 'Must specify a url from Facebook');
 
 		const event = new Event({
@@ -67,7 +70,8 @@ router.post('/', async (req, res, next) => {
 
 router.get('/:id', async (req, res, next) => {
 	try {
-		if (!ObjectId.isValid(req.params.id)) return errorRes(res, 400, 'Invalid event ID');
+		if (!ObjectId.isValid(req.params.id))
+			return errorRes(res, 400, 'Invalid event ID');
 		const user = await Event.findById(req.params.id)
 			.populate({
 				path: 'members',
@@ -83,7 +87,8 @@ router.get('/:id', async (req, res, next) => {
 // TODO: Change to put request
 router.post('/:id', async (req, res, next) => {
 	try {
-		if (!ObjectId.isValid(req.params.id)) return errorRes(res, 400, 'Invalid event ID');
+		if (!ObjectId.isValid(req.params.id))
+			return errorRes(res, 400, 'Invalid event ID');
 		const { name, privateEvent, eventTime, location, facebook } = req.body;
 		const eventBuilder = {};
 		if (!name) return errorRes(res, 400, 'Event must have a name');
@@ -117,7 +122,8 @@ router.post('/:id', async (req, res, next) => {
 
 router.delete('/:id', async (req, res, next) => {
 	try {
-		if (!ObjectId.isValid(req.params.id)) return errorRes(res, 400, 'Invalid event ID');
+		if (!ObjectId.isValid(req.params.id))
+			return errorRes(res, 400, 'Invalid event ID');
 		const event = await Event.findById(req.params.id).exec();
 		if (!event) return errorRes(res, 400, 'Event does not exist');
 		await event.remove();
@@ -130,7 +136,8 @@ router.delete('/:id', async (req, res, next) => {
 router.post('/:id/checkin', async (req, res, next) => {
 	try {
 		const { name, email, memberID } = req.body;
-		if (!ObjectId.isValid(req.params.id)) return errorRes(res, 400, 'Invalid event ID');
+		if (!ObjectId.isValid(req.params.id))
+			return errorRes(res, 400, 'Invalid event ID');
 		const event = await Event.findById(req.params.id)
 			.populate({
 				path: 'members',
@@ -177,6 +184,12 @@ router.post('/:id/checkin', async (req, res, next) => {
 		else {
 			if (member.graduationYear === 0) {
 				// TODO: Send welcome email when member is created
+				// Mail::send('emails.accountCreated', ['member'=>$member, 'event'=>$event], function ($message) use ($member) {
+				// 	$message->from('purduehackers@gmail.com', 'Purdue Hackers');
+				// 	$message->to($member->email);
+				// 	$message->subject('Welcome '.$member->name.' to Purdue Hackers!');
+				// });
+				// sendAccountCreatedEmail(member, event.name, event.eventTime)
 				// $this->emailAccountCreated($member, $event);
 			}
 		}
@@ -200,8 +213,10 @@ router.post('/:id/checkin', async (req, res, next) => {
 router.delete('/:id/checkin/:memberID', async (req, res, next) => {
 	try {
 		const { id, memberID } = req.params;
-		if (!ObjectId.isValid(id)) return errorRes(res, 400, 'Invalid event ID');
-		if (!ObjectId.isValid(memberID)) return errorRes(res, 400, 'Invalid member ID');
+		if (!ObjectId.isValid(id))
+			return errorRes(res, 400, 'Invalid event ID');
+		if (!ObjectId.isValid(memberID))
+			return errorRes(res, 400, 'Invalid member ID');
 		const [event, member] = await Promise.all([
 			Event.findById(id).exec(),
 			Member.findById(memberID).exec()

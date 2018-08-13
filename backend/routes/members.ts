@@ -9,7 +9,7 @@ import { IEventModel, Event } from '../models/event';
 import { Location } from '../models/location';
 import { Permission } from '../models/permission';
 import { Job } from '../models/job';
-import { auth } from '../middleware/passport';
+import { auth, hasPermissions } from '../middleware/passport';
 import {
 	successRes,
 	errorRes,
@@ -96,7 +96,7 @@ router.get('/', async (req, res, next) => {
 	}
 });
 
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', async (req, res) => {
 	try {
 		if (!ObjectId.isValid(req.params.id))
 			return errorRes(res, 400, 'Invalid member ID');
@@ -228,6 +228,33 @@ router.put('/:id', auth(), multer.any(), async (req, res, next) => {
 	} catch (error) {
 		console.error(error);
 		return errorRes(res, 500, error.message);
+	}
+});
+
+router.delete('/:id', auth(), hasPermissions(['admin']), async (req, res) => {
+	try {
+		if (!ObjectId.isValid(req.params.id))
+			return errorRes(res, 400, 'Invalid member ID');
+		const user = await Member.findById(new ObjectId(req.params.id))
+			.populate([
+				{
+					path: 'permissions',
+					model: 'Permission'
+				},
+				{
+					path: 'locations',
+					model: 'Location'
+				},
+				{
+					path: 'events',
+					model: 'Event'
+				}
+			])
+			.lean()
+			.exec();
+		return successRes(res, user);
+	} catch (error) {
+		return errorRes(res, 500, error);
 	}
 });
 

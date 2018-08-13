@@ -6,7 +6,13 @@ import CONFIG from '../config';
 import { Member } from '../models/member';
 import { Permission } from '../models/permission';
 import { auth } from '../middleware/passport';
-import { successRes, errorRes, multer, uploadToStorage, sendResetEmail } from '../utils';
+import {
+	successRes,
+	errorRes,
+	multer,
+	uploadToStorage,
+	sendResetEmail
+} from '../utils';
 
 export const router = express.Router();
 
@@ -79,16 +85,32 @@ router.post('/signup', multer.any(), async (req, res, next) => {
 		} = req.body;
 		const maxYear = new Date().getFullYear() + 20;
 		const graduationYear = parseInt(req.body.graduationYear, 10);
-		if (!name) return errorRes(res, 400, 'Please provide your first and last name');
+		if (!name)
+			return errorRes(
+				res,
+				400,
+				'Please provide your first and last name'
+			);
 		if (!email) return errorRes(res, 400, 'Please provide your email');
 		if (!isEmail(email)) return errorRes(res, 400, 'Invalid email');
-		if (!graduationYear) return errorRes(res, 400, 'Please provide a valid graduation year');
+		if (!graduationYear)
+			return errorRes(res, 400, 'Please provide a valid graduation year');
 		if (graduationYear < 1869 || graduationYear > maxYear)
-			return errorRes(res, 400, `Graduation year must be a number between 1869 and ${maxYear}`);
+			return errorRes(
+				res,
+				400,
+				`Graduation year must be a number between 1869 and ${maxYear}`
+			);
 		if (!password || password.length < 5)
-			return errorRes(res, 400, 'A password longer than 5 characters is required');
-		if (!passwordConfirm) return errorRes(res, 400, 'Please confirm your password');
-		if (passwordConfirm !== password) return errorRes(res, 400, 'Passwords did not match');
+			return errorRes(
+				res,
+				400,
+				'A password longer than 5 characters is required'
+			);
+		if (!passwordConfirm)
+			return errorRes(res, 400, 'Please confirm your password');
+		if (passwordConfirm !== password)
+			return errorRes(res, 400, 'Passwords did not match');
 		if (
 			gender &&
 			gender !== 'Male' &&
@@ -114,10 +136,14 @@ router.post('/signup', multer.any(), async (req, res, next) => {
 			return errorRes(res, 400, 'Invalid phone number: ' + phone);
 		if (facebook && !/(facebook|fb)/.test(facebook))
 			return errorRes(res, 400, 'Invalid Facebook URL');
-		if (github && !/github/.test(github)) return errorRes(res, 400, 'Invalid GitHub URL');
-		if (linkedin && !/linkedin/.test(linkedin)) return errorRes(res, 400, 'Invalid LinkedIn URL');
-		if (devpost && !/devpost/.test(devpost)) return errorRes(res, 400, 'Invalid Devpost URL');
-		if (website && !isURL(website)) return errorRes(res, 400, 'Invalid website URL');
+		if (github && !/github/.test(github))
+			return errorRes(res, 400, 'Invalid GitHub URL');
+		if (linkedin && !/linkedin/.test(linkedin))
+			return errorRes(res, 400, 'Invalid LinkedIn URL');
+		if (devpost && !/devpost/.test(devpost))
+			return errorRes(res, 400, 'Invalid Devpost URL');
+		if (website && !isURL(website))
+			return errorRes(res, 400, 'Invalid website URL');
 
 		let user = await Member.findOne({ email }).exec();
 		if (user)
@@ -137,8 +163,10 @@ router.post('/signup', multer.any(), async (req, res, next) => {
 			graduationYear
 		});
 
-		if (picture) user.picture = await uploadToStorage(picture, 'pictures', user);
-		if (resume) user.resume = await uploadToStorage(resume, 'resumes', user);
+		if (picture)
+			user.picture = await uploadToStorage(picture, 'pictures', user);
+		if (resume)
+			user.resume = await uploadToStorage(resume, 'resumes', user);
 		user.privateProfile = privateProfile;
 		user.unsubscribed = unsubscribed;
 		user.phone = phone;
@@ -177,7 +205,8 @@ router.post('/login', async (req, res, next) => {
 		if (!user) return errorRes(res, 401, 'Member not found.');
 
 		// Check if password matches
-		if (!user.comparePassword(password)) return errorRes(res, 401, 'Wrong password.');
+		if (!user.comparePassword(password))
+			return errorRes(res, 401, 'Wrong password.');
 
 		const u = user.toJSON();
 		delete u.password;
@@ -236,18 +265,28 @@ router.get('/me', auth(), async (req, res) => {
 router.post('/forgot', async (req, res) => {
 	try {
 		const { email } = req.body;
-		if (!email || !isEmail(email)) return errorRes(res, 400, 'Please provide a valid email');
+		if (!email || !isEmail(email))
+			return errorRes(res, 400, 'Please provide a valid email');
 		const member = await Member.findOne({ email }).exec();
-		if (!member) return errorRes(res, 400, `There is no member with the email: ${email}`);
-		const token = jwt.sign({ id: member._id }, CONFIG.SECRET, { expiresIn: '2 days' });
-		member.resetPasswordToken = token;
-		await member.save();
-		const resetUrl =
-			CONFIG.NODE_ENV === 'development'
-				? `http://localhost:3000/reset?token=${token}`
-				: `https://www.purduehackers.com/reset?token=${token}`;
-		const response = await sendResetEmail(member, resetUrl);
-		return successRes(res, `A link to reset your password has been sent to: ${email}`);
+		if (!member)
+			return errorRes(
+				res,
+				400,
+				`There is no member with the email: ${email}`
+			);
+		// const token = jwt.sign({ id: member._id }, CONFIG.SECRET, { expiresIn: '2 days' });
+		// member.resetPasswordToken = token;
+		// await member.save();
+		// const resetUrl =
+		// 	CONFIG.NODE_ENV === 'development'
+		// 		? `http://localhost:3000/reset?token=${token}`
+		// 		: `https://www.purduehackers.com/reset?token=${token}`;
+		// const response = await sendResetEmail(member, resetUrl);
+		await sendResetEmail(member);
+		return successRes(
+			res,
+			`A link to reset your password has been sent to: ${email}`
+		);
 	} catch (error) {
 		console.error(error);
 		return errorRes(res, 500, error);
@@ -258,9 +297,15 @@ router.post('/reset', async (req, res) => {
 	try {
 		const { password, passwordConfirm, token } = req.body;
 		if (!password || password.length < 5)
-			return errorRes(res, 400, 'A password longer than 5 characters is required');
-		if (!passwordConfirm) return errorRes(res, 400, 'Please confirm your password');
-		if (passwordConfirm !== password) return errorRes(res, 400, 'Passwords did not match');
+			return errorRes(
+				res,
+				400,
+				'A password longer than 5 characters is required'
+			);
+		if (!passwordConfirm)
+			return errorRes(res, 400, 'Please confirm your password');
+		if (passwordConfirm !== password)
+			return errorRes(res, 400, 'Passwords did not match');
 		if (!token) return errorRes(res, 401, 'Invalid reset password token');
 		let payload;
 		try {
@@ -271,17 +316,32 @@ router.post('/reset', async (req, res) => {
 		if (!payload) return errorRes(res, 400, 'Invalid reset password token');
 		const { id } = payload;
 		if (!id || !ObjectId.isValid(id))
-			return errorRes(res, 400, 'Reset password token corresponds to an invalid member');
+			return errorRes(
+				res,
+				400,
+				'Reset password token corresponds to an invalid member'
+			);
 		const member = await Member.findById(id).exec();
 		if (!member)
-			return errorRes(res, 400, 'Reset password token corresponds to a non existing member');
+			return errorRes(
+				res,
+				400,
+				'Reset password token corresponds to a non existing member'
+			);
 
 		if (member.resetPasswordToken !== token)
-			return errorRes(res, 401, 'Wrong reset password token for this member');
+			return errorRes(
+				res,
+				401,
+				'Wrong reset password token for this member'
+			);
 		member.password = password;
 		member.resetPasswordToken = '';
 		await member.save();
-		return successRes(res, `Successfully changed password for: ${member.name}`);
+		return successRes(
+			res,
+			`Successfully changed password for: ${member.name}`
+		);
 	} catch (error) {
 		console.error(error);
 		return errorRes(res, 500, error);

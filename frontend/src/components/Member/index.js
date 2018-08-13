@@ -101,8 +101,8 @@ class MemberPage extends Component {
 				params: { id }
 			}
 		} = this.props;
-		clear();
 		try {
+			clear();
 			console.log('About to add new location:', name, city, start.toString(), end);
 			if (!name) return flash('Location Name Required.');
 			if (!city) return flash('City Required.');
@@ -116,6 +116,7 @@ class MemberPage extends Component {
 				if (Number.isNaN(endDate)) return flash('Invalid end date');
 				if (startDate > endDate) return flash('Start date must be before end date');
 			}
+			flash('Adding Job Record...', 'green');
 			const job = await addJob({
 				name,
 				city,
@@ -124,9 +125,16 @@ class MemberPage extends Component {
 				memberID: id
 			});
 			console.log('Created job:', job);
-			this.setState({ jobs: [...this.state.jobs, job] });
+			this.setState({
+				jobs: [...this.state.jobs, job],
+				name: '',
+				city: '',
+				start: '',
+				end: ''
+			});
 			return flash('Job Record Added!', 'green');
 		} catch (error) {
+			clear();
 			console.error(error);
 			return flash(error.message || error.error);
 		}
