@@ -26,13 +26,11 @@ export interface IMemberModel extends Document {
 	memberStatus: string;
 	permissions: IPermissionModel[];
 	events: IEventModel[];
-	locations: [
-		{
-			location: ILocationModel;
-			dateStart: Date;
-			dateEnd: Date;
-		}
-	];
+	locations: {
+		location: ILocationModel;
+		dateStart: Date;
+		dateEnd: Date;
+	}[];
 	jobs: IJobModel[];
 	gender: string;
 	unsubscribed: boolean;
@@ -70,12 +68,12 @@ const schema = new Schema(
 		},
 		graduationYear: {
 			type: Number,
-			required: true
+			default: 0
 		},
 		password: {
 			type: String,
 			select: false,
-			required: true
+			default: ''
 		},
 		memberStatus: {
 			type: String,
@@ -122,8 +120,6 @@ const schema = new Schema(
 					type: Schema.Types.ObjectId,
 					ref: 'Location'
 				},
-				// dateStart: Date,
-				// dateEnd: Date
 				dateStart: Date,
 				dateEnd: Date
 			}

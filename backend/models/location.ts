@@ -5,13 +5,11 @@ export interface ILocationModel extends Document {
 	loc: any;
 	name: string;
 	city: string;
-	members: [
-		{
-			member: IMemberModel;
-			dateStart: Date;
-			dateEnd: Date;
-		}
-	];
+	members: {
+		member: IMemberModel;
+		dateStart: Date;
+		dateEnd: Date;
+	}[];
 	lat: number;
 	lng: number;
 }

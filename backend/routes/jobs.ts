@@ -1,17 +1,16 @@
 import * as express from 'express';
 import { ObjectId } from 'mongodb';
 import axios from 'axios';
-import { ILocationModel, Location } from '../models/location';
+import { Location } from '../models/location';
 import { Member } from '../models/member';
 import { Job } from '../models/job';
 import { auth, hasPermissions } from '../middleware/passport';
 import { successRes, errorRes, memberMatches } from '../utils';
-import { IPermissionModel, Permission } from '../models/permission';
 export const router = express.Router();
 
 // TODO: Deprecate jobs route and merge with locations
 
-router.get('/', async (req, res, next) => {
+router.get('/', async (req, res) => {
 	try {
 		const jobs = await Job.find()
 			.populate(['member', 'location'])
@@ -23,7 +22,7 @@ router.get('/', async (req, res, next) => {
 	}
 });
 
-router.post('/', auth(), async (req, res, next) => {
+router.post('/', auth(), async (req, res) => {
 	try {
 		const { name, city, start, end, memberID } = req.body;
 		if (!name) return errorRes(res, 400, 'Job must have a name');
@@ -111,7 +110,7 @@ router.post('/', auth(), async (req, res, next) => {
 	}
 });
 
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', async (req, res) => {
 	try {
 		const job = await Job.findById(req.params.id).exec();
 		return successRes(res, job);

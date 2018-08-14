@@ -196,7 +196,7 @@ router.post('/signup', multer.any(), async (req, res, next) => {
 	}
 });
 
-router.post('/login', async (req, res, next) => {
+router.post('/login', async (req, res) => {
 	const { email, password } = req.body;
 	try {
 		const user = await Member.findOne({ email }, '+password')

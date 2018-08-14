@@ -1,8 +1,14 @@
 import { Document, Schema, model } from 'mongoose';
+import { IMemberModel } from './member';
 
 export interface IPermissionModel extends Document {
 	name: string;
 	description: string;
+	members: {
+		member: IMemberModel;
+		recordedBy: IMemberModel;
+		dateAdded: Date;
+	}[];
 }
 
 const schema = new Schema(
@@ -17,8 +23,14 @@ const schema = new Schema(
 		},
 		members: [
 			{
-				member: Schema.Types.ObjectId,
-				recordedBy: Schema.Types.ObjectId,
+				member: {
+					type: Schema.Types.ObjectId,
+					ref: 'Member'
+				},
+				recordedBy: {
+					type: Schema.Types.ObjectId,
+					ref: 'Member'
+				},
 				dateAdded: Date
 			}
 		]
@@ -26,4 +38,8 @@ const schema = new Schema(
 	{ timestamps: true }
 );
 
-export const Permission = model<IPermissionModel>('Permission', schema, 'permissions');
+export const Permission = model<IPermissionModel>(
+	'Permission',
+	schema,
+	'permissions'
+);
