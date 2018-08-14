@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import routes, { memberMatches, formatDate } from '../../constants';
+import routes, { memberMatches, formatDate, err } from '../../constants';
 import {
 	fetchMember,
 	fetchMemberEvents,
@@ -76,13 +76,13 @@ class MemberPage extends Component {
 				console.log('MemberPage fetched events:', events);
 				this.setState({ events });
 			})
-			.catch(err => flash(err.error));
+			.catch(error => flash(err(error)));
 		fetchMemberJobs(id)
 			.then(jobs => {
 				console.log('MemberPage fetched jobs:', jobs);
 				this.setState({ jobs });
 			})
-			.catch(err => flash(err.error));
+			.catch(error => flash(err(error)));
 	};
 
 	onChange = e => this.setState({ [e.target.id]: e.target.value });
@@ -136,7 +136,7 @@ class MemberPage extends Component {
 		} catch (error) {
 			clear();
 			console.error(error);
-			return flash(error.message || error.error);
+			return flash(err(error));
 		}
 	};
 
@@ -154,7 +154,7 @@ class MemberPage extends Component {
 			return flash('Job Record Removed!', 'green');
 		} catch (error) {
 			console.error(error);
-			return flash(error.message || error.error);
+			return flash(err(error));
 		}
 	};
 

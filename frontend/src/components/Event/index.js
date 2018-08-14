@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { hasPermission, formatDate, shortName } from '../../constants';
+import { hasPermission, formatDate, shortName, err } from '../../constants';
 import { sendFlashMessage, clearFlashMessages, fetchEvent } from '../../actions';
 import { MembersAttendedTable, CustomRedirect, Header } from '../Common';
 
@@ -47,7 +47,7 @@ class EventPage extends Component {
 			this.setState({ event, loading: false });
 		} catch (error) {
 			this.setState({ loading: false });
-			flash(error.error);
+			flash(err(error));
 		}
 	};
 
@@ -124,7 +124,6 @@ const mapStateToProps = state => ({
 	...state.sessionState
 });
 
-export default connect(
-	mapStateToProps,
-	{ flash: sendFlashMessage, clear: clearFlashMessages }
-)(EventPage);
+export default connect(mapStateToProps, { flash: sendFlashMessage, clear: clearFlashMessages })(
+	EventPage
+);

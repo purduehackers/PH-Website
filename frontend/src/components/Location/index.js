@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import routes, { hasPermission, formatDate } from '../../constants';
+import routes, { hasPermission, formatDate, err } from '../../constants';
 import { sendFlashMessage, clearFlashMessages, fetchLocation, updateLocation } from '../../actions';
 import { CustomRedirect, Header } from '../Common';
 
@@ -53,7 +53,7 @@ class LocationPage extends Component {
 			this.setState({ location, ...location, loading: false });
 		} catch (error) {
 			this.setState({ loading: false });
-			flash(error.error);
+			flash(err(error));
 		}
 	};
 
@@ -80,7 +80,7 @@ class LocationPage extends Component {
 			return flash('Successfully updated location', 'green');
 		} catch (error) {
 			console.log('Edit Event Page error:', error);
-			return flash(error.message || error.error);
+			return flash(err(error));
 		}
 	};
 

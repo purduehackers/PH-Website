@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { hasPermission, shortName } from '../../constants';
+import { hasPermission, shortName, err } from '../../constants';
 import {
 	sendFlashMessage,
 	clearFlashMessages,
@@ -82,7 +82,7 @@ class EditEventPage extends Component {
 		} catch (error) {
 			console.log('Edit Event Page error:', error);
 			this.setState({ loading: false });
-			return flash(error.message || error.error);
+			return flash(err(error));
 		}
 	};
 
@@ -122,7 +122,7 @@ class EditEventPage extends Component {
 			return flash('Event created', 'green');
 		} catch (error) {
 			console.log('Edit Event Page error:', error);
-			return flash(error.message || error.error);
+			return flash(err(error));
 		}
 	};
 
@@ -137,7 +137,7 @@ class EditEventPage extends Component {
 			return flash('Successfully deleted event', 'green');
 		} catch (error) {
 			console.log('Edit Event Page error:', error);
-			return flash(error.message || error.error);
+			return flash(err(error));
 		}
 	};
 
@@ -328,7 +328,6 @@ const mapStateToProps = state => ({
 	...state.sessionState
 });
 
-export default connect(
-	mapStateToProps,
-	{ flash: sendFlashMessage, clear: clearFlashMessages }
-)(EditEventPage);
+export default connect(mapStateToProps, { flash: sendFlashMessage, clear: clearFlashMessages })(
+	EditEventPage
+);

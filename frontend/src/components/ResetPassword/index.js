@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import qs from 'qs';
 import { sendFlashMessage, clearFlashMessages, resetPassword } from '../../actions';
-import routes from '../../constants';
+import routes, { err } from '../../constants';
 import { Header } from '../Common';
 
 class ResetPasswordPage extends Component {
@@ -47,7 +47,7 @@ class ResetPasswordPage extends Component {
 			return flash(response, 'green');
 		} catch (error) {
 			console.error('EditProfile Page error:', error);
-			return flash(error.error);
+			return flash(err(error));
 		}
 	};
 

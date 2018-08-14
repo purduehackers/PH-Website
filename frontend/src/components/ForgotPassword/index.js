@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEmail } from 'validator';
 import { sendFlashMessage, clearFlashMessages, forgotPassword } from '../../actions';
+import { err } from '../../constants';
 import { Header } from '../Common';
 
 class ForgotPasswordPage extends Component {
@@ -32,7 +33,7 @@ class ForgotPasswordPage extends Component {
 		} catch (error) {
 			clear();
 			console.error('EditProfile Page error:', error);
-			return flash(error.error || 'Whoops, something went wrong!');
+			return flash(err(error));
 		}
 	};
 

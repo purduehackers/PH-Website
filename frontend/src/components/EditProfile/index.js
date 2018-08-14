@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { isMobilePhone } from 'validator';
 import { sendFlashMessage, clearFlashMessages, updateProfile, fetchMember } from '../../actions';
-import routes, { memberMatches } from '../../constants';
+import routes, { memberMatches, err } from '../../constants';
 import { CustomRedirect, Header } from '../Common';
 
 class EditProfilePage extends Component {
@@ -69,7 +69,7 @@ class EditProfilePage extends Component {
 			this.setState({ member, loading: false, ...newMember });
 		} catch (error) {
 			this.setState({ loading: false });
-			flash(error.error);
+			flash(err(error));
 		}
 	};
 
@@ -141,7 +141,7 @@ class EditProfilePage extends Component {
 		} catch (error) {
 			clear();
 			console.error('EditProfile Page error:', error);
-			return flash(error.error);
+			return flash(err(error));
 		}
 	};
 

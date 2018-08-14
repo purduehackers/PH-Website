@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { signIn, sendFlashMessage } from '../../actions';
-import routes from '../../constants';
+import routes, { err } from '../../constants';
 import { Header } from '../Common';
 
 class LoginPage extends Component {
@@ -44,8 +44,8 @@ class LoginPage extends Component {
 			console.log('Signed in user:', user);
 			this.props.history.push('/');
 			return flash(`Welcome ${user.name}!`, 'green');
-		} catch (err) {
-			return flash(err.error);
+		} catch (error) {
+			return flash(err(error));
 		}
 	};
 

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Downshift from 'downshift';
-import { hasPermission, shortName } from '../../constants';
+import { hasPermission, shortName, err } from '../../constants';
 import {
 	sendFlashMessage,
 	clearFlashMessages,
@@ -59,7 +59,7 @@ class EventCheckinPage extends Component {
 			this.setState({ event, loading: false });
 		} catch (error) {
 			this.setState({ loading: false });
-			flash(error.error);
+			flash(err(error));
 		}
 	};
 
@@ -89,7 +89,7 @@ class EventCheckinPage extends Component {
 			return null;
 		} catch (error) {
 			console.error('EventCheckinPage error:', error);
-			return flash(error.error);
+			return flash(err(error));
 		}
 	};
 
@@ -117,7 +117,7 @@ class EventCheckinPage extends Component {
 			return flash(`Checked in member: ${name}`, 'green');
 		} catch (error) {
 			console.error('EventCheckinPage error:', error);
-			return flash(error.error);
+			return flash(err(error));
 		}
 	};
 
@@ -135,7 +135,7 @@ class EventCheckinPage extends Component {
 			return flash(`Checked out member: ${selectedMember.name}`, 'green');
 		} catch (error) {
 			console.error('EventCheckinPage error:', error);
-			return flash(error.error);
+			return flash(err(error));
 		}
 	};
 

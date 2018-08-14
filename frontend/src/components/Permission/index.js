@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import routes, { formatDate, hasPermission } from '../../constants';
+import routes, { formatDate, hasPermission, err } from '../../constants';
 import {
 	sendFlashMessage,
 	clearFlashMessages,
@@ -52,7 +52,7 @@ class PermissionPage extends Component {
 		} catch (error) {
 			console.error('Permission Page error:', error);
 			this.setState({ loading: false });
-			flash(error.error);
+			flash(err(error));
 		}
 	};
 
@@ -73,7 +73,7 @@ class PermissionPage extends Component {
 			return flash('Successfully added user to this permission', 'green');
 		} catch (error) {
 			console.error('Permissions Page error:', error);
-			return flash(error.error);
+			return flash(err(error));
 		}
 	};
 
@@ -92,7 +92,7 @@ class PermissionPage extends Component {
 			return flash('Successfully removed user from this permission', 'green');
 		} catch (error) {
 			console.error('Permissions Page error:', error);
-			return flash(error.error);
+			return flash(err(error));
 		}
 	};
 
@@ -106,7 +106,7 @@ class PermissionPage extends Component {
 			return flash('Permission successfully deleted', 'green');
 		} catch (error) {
 			console.error('Permissions Page error:', error);
-			return flash(error.error);
+			return flash(err(error));
 		}
 	};
 

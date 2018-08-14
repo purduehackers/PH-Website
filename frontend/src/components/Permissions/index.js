@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { hasPermission } from '../../constants';
+import { hasPermission, err } from '../../constants';
 import {
 	sendFlashMessage,
 	clearFlashMessages,
@@ -41,7 +41,7 @@ class PermissionsPage extends Component {
 			this.setState({ permissions });
 		} catch (error) {
 			console.error('Permissions Page error:', error);
-			flash(error.error);
+			flash(err(error));
 		}
 	};
 
@@ -69,7 +69,7 @@ class PermissionsPage extends Component {
 			return flash(`Successfully added permission: ${permission.name}`, 'green');
 		} catch (error) {
 			console.error('Permissions Page error:', error);
-			return flash(error.error);
+			return flash(err(error));
 		}
 	};
 

@@ -10,6 +10,7 @@ import {
 	sendFlashMessage,
 	clearFlashMessages
 } from '../../actions';
+import { err } from '../../constants';
 import { Header } from '../Common';
 
 class CredentialsPage extends Component {
@@ -42,7 +43,7 @@ class CredentialsPage extends Component {
 			this.setState({ credentials });
 		} catch (error) {
 			console.error('Credentials error:', error);
-			flash(error.error);
+			flash(err(error));
 		}
 	};
 
@@ -75,7 +76,7 @@ class CredentialsPage extends Component {
 			});
 			return flash(`Success: Added credentials for ${credential.site}`, 'green');
 		} catch (error) {
-			return flash(error.error);
+			return flash(err(error));
 		}
 	};
 
@@ -90,7 +91,7 @@ class CredentialsPage extends Component {
 			});
 			return flash(`Success: Deleted credentials for ${credential.site}`, 'green');
 		} catch (error) {
-			return flash(error.error);
+			return flash(err(error));
 		}
 	};
 

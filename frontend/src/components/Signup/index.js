@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isMobilePhone } from 'validator';
+import { err } from '../../constants';
 import { sendFlashMessage, clearFlashMessages, signUp } from '../../actions';
 import { Header } from '../Common';
 
@@ -100,7 +101,7 @@ class SignUpPage extends Component {
 			return flash(`Welcome ${resp.user.name}!`, 'green');
 		} catch (error) {
 			console.error('EditProfile Page error:', error);
-			return flash(error.error);
+			return flash(err(error));
 		}
 	};
 

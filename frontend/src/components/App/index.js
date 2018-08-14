@@ -166,8 +166,5 @@ const mapStateToProps = state => ({
 });
 
 export default withRouter(
-	connect(
-		mapStateToProps,
-		{ storageChanged, clearFlashMessages, fetchProfile }
-	)(App)
+	connect(mapStateToProps, { storageChanged, clearFlashMessages, fetchProfile })(App)
 );
