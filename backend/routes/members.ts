@@ -231,29 +231,58 @@ router.put('/:id', auth(), multer.any(), async (req, res, next) => {
 	}
 });
 
-router.delete('/:id', auth(), hasPermissions(['admin']), async (req, res) => {
+router.delete('/:id', async (req, res) => {
 	try {
 		if (!ObjectId.isValid(req.params.id))
 			return errorRes(res, 400, 'Invalid member ID');
-		const user = await Member.findById(new ObjectId(req.params.id))
+		const member = await Member.findById(new ObjectId(req.params.id))
 			.populate([
+				// {
+				// 	path: 'permissions',
+				// 	model: 'Permission'
+				// },
+				// {
+				// 	path: 'events',
+				// 	model: 'Event'
+				// },
 				{
-					path: 'permissions',
-					model: 'Permission'
-				},
-				{
-					path: 'locations',
+					path: 'locations.location',
 					model: 'Location'
-				},
-				{
-					path: 'events',
-					model: 'Event'
 				}
+				// {
+				// 	path: 'locations',
+				// 	populate: {
+				// 		path: 'location',
+				// 		model: 'Location',
+				// 		populate: {
+				// 			path: 'members'
+				// 		}
+				// 	}
+				// }
 			])
-			.lean()
 			.exec();
-		return successRes(res, user);
+
+		// for (const event of member.events) {
+		// 	await Promise.all([
+		// 		event.update({ $pull: { members: member._id } }),
+		// 		member.update({ $pull: { events: event._id } })
+		// 	]);
+		// }
+
+		// for (const permission of member.permissions) {
+		// 	await Promise.all([
+		// 		permission.update({ $pull: { members: member._id } }),
+		// 		member.update({ $pull: { permissions: permission._id } })
+		// 	]);
+		// }
+
+		// for (const { location } of member.locations) {
+		// 	location
+		// }
+
+		return successRes(res, member);
 	} catch (error) {
+		console.error('Error:', error);
 		return errorRes(res, 500, error);
 	}
 });

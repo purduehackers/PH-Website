@@ -7,9 +7,10 @@
 		"build": "tsc && cp -r backend/emails dist/emails",
 		"watch": "tsc -w",
 		"start": "nodemon dist/index.js",
-		"dev": "nodemon -i \"**/*.test.ts\" -i \"**/*.spec.ts\" -i \"node_modules\" -w backend -e ts -x \"npm run server\"",
+		"dev":
+			"nodemon -i \"**/*.test.ts\" -i \"**/*.spec.ts\" -i \"node_modules\" -w backend -e ts -x \"npm run server\"",
 		"deploy": "gcloud app deploy",
-		"server": "ts-node --inspect=5858 backend/index.ts"
+		"server": "node --inspect -r ts-node/register backend/index.ts"
 	},
 	"dependencies": {
 		"@google-cloud/storage": "^1.7.0",

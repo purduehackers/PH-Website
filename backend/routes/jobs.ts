@@ -37,12 +37,23 @@ router.post('/', auth(), async (req, res, next) => {
 			return errorRes(res, 400, 'Invalid member id');
 
 		let [location, member] = await Promise.all([
-			Location.findOne({ name, city }).exec(),
-			Member.findById(memberID)
+			Location.findOne({ name, city })
 				.populate({
-					path: 'permissions',
-					model: Permission
+					path: 'members.member',
+					model: 'Member'
 				})
+				.exec(),
+			Member.findById(memberID)
+				.populate([
+					{
+						path: 'permissions',
+						model: 'Permission'
+					},
+					{
+						path: 'locations.location',
+						model: 'Location'
+					}
+				])
 				.exec()
 		]);
 		if (!member) return errorRes(res, 400, 'Member does not exist');
@@ -66,26 +77,32 @@ router.post('/', auth(), async (req, res, next) => {
 				location.lat = data.results[0].geometry.location.lat;
 				location.lng = data.results[0].geometry.location.lng;
 			}
+			await location.save();
 		}
 
-		const contains = location.members.some(m =>
-			member._id.equals(m.member._id)
-		);
-		if (!contains)
-			location.members.push({
-				member,
-				dateStart: new Date(start),
-				dateEnd: end ? new Date(end) : null
-			});
+		member.locations.push({
+			location,
+			dateStart: new Date(start),
+			dateEnd: end ? new Date(end) : null
+		});
 
-		await location.save();
+		await Location.findByIdAndUpdate(location._id, {
+			$push: {
+				members: {
+					member,
+					dateStart: new Date(start),
+					dateEnd: end ? new Date(end) : null
+				}
+			}
+		}).exec();
+
 		const job = new Job({
 			location,
 			member,
 			start: new Date(start),
 			end: end ? new Date(end) : null
 		});
-		await Promise.all([job.save(), member.save()]);
+		await Promise.all([job.save(), member.save(), location.save()]);
 		const ret = await job.populate('location').execPopulate();
 		return successRes(res, job.toJSON());
 	} catch (error) {
@@ -103,29 +120,55 @@ router.get('/:id', async (req, res, next) => {
 	}
 });
 
-router.delete('/:id', auth(), async (req, res, next) => {
+router.delete('/:id', auth(), async (req, res) => {
 	try {
 		const job = await Job.findById(req.params.id)
-			.populate('location')
-			.populate({
-				path: 'member',
-				populate: {
-					path: 'permissions',
-					model: Permission
+			.populate([
+				{
+					path: 'member',
+					populate: {
+						path: 'locations.location',
+						model: 'Location'
+					}
+				},
+				{
+					path: 'location',
+					populate: {
+						path: 'members.member',
+						model: 'Member'
+					}
 				}
-			})
+			])
 			.exec();
 		if (!job) return errorRes(res, 400, 'Job not found');
 
+		// Remove job from member's list of locations
+		job.member.locations = job.member.locations.filter(
+			memberLocation =>
+				!job.location._id.equals(memberLocation.location._id) &&
+				memberLocation.dateStart.getTime() !== job.start.getTime() &&
+				memberLocation.dateEnd.getTime() !== job.end.getTime()
+		) as any;
+
+		job.location.members = job.location.members.filter(
+			locationMember =>
+				!job.member._id.equals(locationMember.member._id) &&
+				locationMember.dateStart.getTime() !== job.start.getTime() &&
+				locationMember.dateEnd.getTime() !== job.end.getTime()
+		) as any;
+
+		await job.member.save();
+		await job.location.save();
+
 		if (!memberMatches(job.member, req.user._id))
 			return errorRes(res, 401, 'Unauthorized');
-		const jo = await job.remove();
+		await job.remove();
 
 		// Remove if there are no more jobs that reference location of job that was just deleted
 		const jobs = await Job.find()
 			.populate('location')
 			.exec();
-			
+
 		const locations = jobs
 			.filter(
 				j =>
@@ -136,7 +179,7 @@ router.delete('/:id', auth(), async (req, res, next) => {
 
 		// No other job is in the same location as the one just deleted, so delete the location
 		if (!locations.length)
-			await Location.findByIdAndRemove((job.location as any)._id).exec();
+			await Location.findByIdAndRemove(job.location._id).exec();
 
 		return successRes(res, job);
 	} catch (error) {

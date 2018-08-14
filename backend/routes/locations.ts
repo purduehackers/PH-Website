@@ -10,7 +10,7 @@ router.get('/', async (req, res) => {
 	try {
 		const locations = await Location.find()
 			.populate({
-				path: 'members.member'
+				path: 'members'
 			})
 			.exec();
 
@@ -30,7 +30,6 @@ router.get('/:id', async (req, res) => {
 				path: 'members.member'
 			})
 			.exec();
-		console.log(location);
 		return successRes(res, location);
 	} catch (error) {
 		console.error(error);

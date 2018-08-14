@@ -3,6 +3,7 @@ import { Document, Schema, model } from 'mongoose';
 import { IEventModel } from './event';
 import { IPermissionModel } from './permission';
 import { IJobModel } from './job';
+import { ILocationModel } from './location';
 
 export const memberStatuses = {
 	MEMBER: 'Member',
@@ -25,6 +26,13 @@ export interface IMemberModel extends Document {
 	memberStatus: string;
 	permissions: IPermissionModel[];
 	events: IEventModel[];
+	locations: [
+		{
+			location: ILocationModel;
+			dateStart: Date;
+			dateEnd: Date;
+		}
+	];
 	jobs: IJobModel[];
 	gender: string;
 	unsubscribed: boolean;
@@ -74,10 +82,7 @@ const schema = new Schema(
 			enum: [...Object.values(memberStatuses)],
 			default: memberStatuses.MEMBER
 		},
-		gender: {
-			type: String,
-			enum: [...Object.values(genders)]
-		},
+		gender: { type: String },
 		unsubscribed: {
 			type: Boolean,
 			default: false
@@ -111,6 +116,18 @@ const schema = new Schema(
 			ref: 'Event',
 			default: []
 		},
+		locations: [
+			{
+				location: {
+					type: Schema.Types.ObjectId,
+					ref: 'Location'
+				},
+				// dateStart: Date,
+				// dateEnd: Date
+				dateStart: Date,
+				dateEnd: Date
+			}
+		],
 		jobs: {
 			type: [Schema.Types.ObjectId],
 			ref: 'Job',
