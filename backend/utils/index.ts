@@ -5,7 +5,6 @@ import * as Multer from 'multer';
 import { IMemberModel, Member } from '../models/member';
 export * from './email';
 
-
 const storage = GoogleCloudStorage({
 	projectId: 'purduehackers-212319',
 	keyFilename: 'purduehackers.json'
@@ -20,7 +19,8 @@ export const multer = Multer({
 	}
 });
 
-export const successRes = (res: Response, response: any) => res.json({ status: 200, response });
+export const successRes = (res: Response, response: any) =>
+	res.json({ status: 200, response });
 
 export const errorRes = (res: Response, status: number, error: any) =>
 	res.status(status).json({
@@ -42,15 +42,31 @@ export const memberMatches = (user: IMemberModel, id: ObjectId | string) =>
 export const escapeRegEx = (str: string) =>
 	str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
 
+const dateToString = date =>
+	new Date(date).toLocaleDateString('en-US', {
+		year: 'numeric',
+		month: 'short',
+		day: 'numeric',
+		weekday: 'short'
+	});
+
+export const formatDate = date => {
+	if (!date) return 'Current';
+	const str = dateToString(date);
+	return str !== 'Invalid Date' ? str : 'Current';
+};
+
 export function to<T, U = any>(
 	promise: Promise<T>,
 	errorExt?: object
 ): Promise<[T | null, U | null]> {
-	return promise.then<[T, null]>((data: T) => [data, null]).catch<[null, U]>(err => {
-		if (errorExt) Object.assign(err, errorExt);
+	return promise
+		.then<[T, null]>((data: T) => [data, null])
+		.catch<[null, U]>(err => {
+			if (errorExt) Object.assign(err, errorExt);
 
-		return [null, err];
-	});
+			return [null, err];
+		});
 }
 
 export const uploadToStorage = async (
@@ -59,7 +75,10 @@ export const uploadToStorage = async (
 	user: IMemberModel
 ) => {
 	if (!file) return 'No image file';
-	else if (folder === 'pictures' && !file.originalname.match(/\.(jpg|jpeg|png|gif)$/))
+	else if (
+		folder === 'pictures' &&
+		!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)
+	)
 		return `File: ${file.originalname} is an invalid image type`;
 	else if (folder === 'resume' && !file.originalname.match(/\.(png|PNG)$/))
 		return `File: ${file.originalname} is an invalid image type`;

@@ -13,11 +13,11 @@ const ProfilePanel = ({ member, events, jobs }) => (
 							{member.email_public}
 						</a>
 					)}
-					{member.graduationYear && (
+					{member.graduationYear ? (
 						<div id="profile_major">
 							{member.major ? member.major : ''} Class of {member.graduationYear}
 						</div>
-					)}
+					) : null}
 					<div id="profile_badges">
 						<div className="profile_badge">
 							<div className="profile_badge_title">Events</div>

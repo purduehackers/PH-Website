@@ -12,6 +12,15 @@ export const formatDate = date => {
 	return str !== 'Invalid Date' ? str : 'Current';
 };
 
+export const err = e =>
+	!e
+		? 'Whoops, something went wrong!'
+		: e.message && typeof e.message === 'string'
+			? e.message
+			: e.error && typeof e.error === 'string'
+				? e.error
+				: 'Whoops, something went wrong!';
+
 export const hasPermission = (user, name) =>
 	user &&
 	(Object.keys(user).length !== 0 && user.constructor === Object) &&

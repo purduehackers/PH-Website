@@ -6,6 +6,7 @@ import { compile } from 'handlebars';
 import CONFIG from '../config';
 import { IEventModel } from '../models/event';
 import { IMemberModel } from '../models/member';
+import { formatDate } from './';
 
 const transport = nodemailer.createTransport({
 	service: CONFIG.EMAIL_SERVICE,
@@ -70,7 +71,7 @@ const _sendAccountCreatedEmail = async (
 		html: accountCreatedTemplate({
 			name,
 			eventName,
-			eventDate,
+			eventDate: formatDate(eventDate),
 			resetUrl
 		}),
 		attachments: [
