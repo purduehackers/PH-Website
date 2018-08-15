@@ -75,10 +75,13 @@ router.get('/', async (req, res, next) => {
 		});
 		if (!contains) sortBy = 'createdAt';
 
-		const results = await Member.find({
-			privateProfile: { $ne: 1 },
-			graduationYear: { $gt: 0 }
-		})
+		const results = await Member.find(
+			{
+				privateProfile: { $ne: 1 },
+				graduationYear: { $gt: 0 }
+			},
+			'_id name graduationYear createdAt'
+		)
 
 			.populate({
 				path: 'permissions',

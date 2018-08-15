@@ -28,7 +28,8 @@ NODE_ENV !== 'production'
 	? mongoose.connect('mongodb://localhost:27017/PH', {
 			useNewUrlParser: true
 	  })
-	: mongoose.connect(DB, {
+	:
+	mongoose.connect(DB, {
 			user: MONGO_USER,
 			pass: MONGO_PASSWORD,
 			keepAlive: 1,

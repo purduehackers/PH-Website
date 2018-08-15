@@ -83,8 +83,7 @@ class LoginPage extends Component {
 							<input type="checkbox" name="remember" onClick={this.onClick} /> Remember Me
 							<br />
 							<br />
-							Forgot your password?
-							<a href={routes.FORGOT_PASSWORD}>Click Here</a>
+							Forgot your password? <a href={routes.FORGOT_PASSWORD}>Click Here</a>
 						</form>
 					</div>
 				</div>
@@ -97,4 +96,7 @@ const mapStateToProps = state => ({
 	...state.sessionState
 });
 
-export default connect(mapStateToProps, { signIn, flash: sendFlashMessage })(LoginPage);
+export default connect(
+	mapStateToProps,
+	{ signIn, flash: sendFlashMessage }
+)(LoginPage);

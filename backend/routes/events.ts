@@ -25,7 +25,10 @@ router.get('/', async (req, res, next) => {
 		});
 		if (!contains) sortBy = 'eventTime';
 
-		const results = await Event.find({ privateEvent: { $ne: true } })
+		const results = await Event.find(
+			{ privateEvent: { $ne: true } },
+			'_id name createdAt location members'
+		)
 			.sort({ [sortBy]: order })
 			.lean()
 			.exec();
