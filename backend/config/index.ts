@@ -2,10 +2,10 @@ require('dotenv').config();
 
 const env = process.env;
 
-export default {
+const config = {
 	...env,
 	PORT: env.PORT || 5000,
-	DB: env.DB || 'mongodb://localhost:27017/PH',
+	DB: '',
 	MONGO_USER: env.MONGO_USER || 'my-user',
 	MONGO_PASSWORD: env.MONGO_PASSWORD || 'my-password',
 	SECRET: env.SECRET || 'my-secret',
@@ -19,3 +19,8 @@ export default {
 	MAILGUN_DOMAIN: env.MAILGUN_DOMAIN || 'mydomain',
 	MAILGUN_SECRET: env.MAILGUN_SECRET || 'mysecret'
 };
+
+config.DB =
+	config.NODE_ENV === 'production' ? env.DB : 'mongodb://localhost:27017/PH';
+
+export default config;

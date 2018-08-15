@@ -21,21 +21,47 @@ import { router as autocomplete } from './routes/autocomplete';
 
 export const app = express();
 export const server = http.createServer(app);
-
 const { NODE_ENV, PORT, DB, MONGO_USER, MONGO_PASSWORD } = CONFIG;
 
-NODE_ENV !== 'production'
-	? mongoose.connect('mongodb://localhost:27017/PH', {
-			useNewUrlParser: true
-	  })
-	:
-	mongoose.connect(DB, {
-			user: MONGO_USER,
-			pass: MONGO_PASSWORD,
-			keepAlive: 1,
-			reconnectTries: Number.MAX_VALUE,
-			useNewUrlParser: true
-	  });
+mongoose.connect(
+	DB,
+	{
+		useNewUrlParser: true
+	},
+	err =>
+		err
+			? console.error('Error connecting to mongo:', err)
+			: console.log('Connected to mongo:', DB)
+);
+
+// NODE_ENV !== 'production'
+// 	? mongoose.connect(
+// 			'mongodb://localhost:27017/PH',
+// 			{
+// 				useNewUrlParser: true
+// 			},
+// 			err =>
+// 				err
+// 					? console.error('Error connecting to mongo:', err)
+// 					: console.log(
+// 							'Connected to mongo:',
+// 							'mongodb://localhost:27017/PH'
+// 					  )
+// 	  )
+// 	: mongoose.connect(
+// 			DB,
+// 			{
+// 				user: MONGO_USER,
+// 				pass: MONGO_PASSWORD,
+// 				keepAlive: 1,
+// 				reconnectTries: Number.MAX_VALUE,
+// 				useNewUrlParser: true
+// 			},
+// 			err =>
+// 				err
+// 					? console.error('Error connecting to mongo:', err)
+// 					: console.log('Connected to mongo:', DB)
+// 	  );
 
 passportMiddleWare(passport);
 
