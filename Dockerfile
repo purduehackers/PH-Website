@@ -20,16 +20,13 @@ ENV PATH ${APP_PATH}/node_modules/.bin:$PATH
 
 WORKDIR ${APP_PATH}/frontend
 
-RUN npm install
+RUN yarn
+# RUN npm install
 
-RUN npm run build
-
-# EXPOSE 8080
-# EXPOSE 5000
-# EXPOSE 3000
+# RUN npm run build
+RUN yarn build
 
 WORKDIR ${APP_PATH}
-
 
 RUN npm run build
 CMD npm start
