@@ -1,4 +1,5 @@
 import * as nodemailer from 'nodemailer';
+import * as mailgunTransport from 'nodemailer-mailgun-transport';
 import { join } from 'path';
 import { readFileSync } from 'fs';
 import * as jwt from 'jsonwebtoken';
@@ -8,13 +9,28 @@ import { IEventModel } from '../models/event';
 import { IMemberModel } from '../models/member';
 import { formatDate } from './';
 
-const transport = nodemailer.createTransport({
-	service: CONFIG.EMAIL_SERVICE,
-	auth: {
-		user: CONFIG.EMAIL,
-		pass: CONFIG.EMAIL_PASSWORD
-	}
-});
+// const transport = nodemailer.createTransport({
+// 	service: CONFIG.EMAIL_SERVICE,
+// 	host: 'smtp.gmail.com',
+// 	port: 587,
+// 	auth: {
+// 		user: CONFIG.EMAIL,
+// 		pass: CONFIG.EMAIL_PASSWORD
+// 	},
+// 	tls: {
+// 		rejectUnauthorized: false
+// 	},
+// 	debug: true
+// });
+
+const transport = nodemailer.createTransport(
+	mailgunTransport({
+		auth: {
+			api_key: CONFIG.MAILGUN_SECRET,
+			domain: CONFIG.MAILGUN_DOMAIN
+		}
+	})
+);
 
 const resetTemplate = compile(
 	readFileSync(join(__dirname, '../emails', 'reset.hbs'), 'utf8')
@@ -38,8 +54,8 @@ const _sendResetEmail = async (
 		}),
 		attachments: [
 			{
-				filename: 'logo_square_200.png',
-				path: join(__dirname, '../emails', 'logo_square_200.png'),
+				filename: 'headerImage.png',
+				path: join(__dirname, '../emails', 'headerImage.png'),
 				cid: 'headerImage'
 			}
 		]

@@ -16,4 +16,6 @@ export default {
 	EMAIL: env.EMAIL || 'your@email.com',
 	EMAIL_PASSWORD: env.EMAIL_PASSWORD || 'SuperSecretPassword',
 	EMAIL_SERVICE: env.EMAIL_SERVICE || 'gmail',
+	MAILGUN_DOMAIN: env.MAILGUN_DOMAIN || 'mydomain',
+	MAILGUN_SECRET: env.MAILGUN_SECRET || 'mysecret'
 };
