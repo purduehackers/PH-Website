@@ -1,10 +1,10 @@
 import * as express from 'express';
 // import * as paginate from 'express-paginate';
-import { isEmail, isMobilePhone } from 'validator';
+import { isEmail } from 'validator';
 import { ObjectId } from 'mongodb';
-import { IEventModel, Event } from '../models/event';
+import { Event } from '../models/event';
 import { Member, IMemberModel } from '../models/member';
-import { auth } from '../middleware/passport';
+import { auth, hasPermissions } from '../middleware/passport';
 import { successRes, errorRes, sendAccountCreatedEmail } from '../utils';
 export const router = express.Router();
 
@@ -13,6 +13,7 @@ export const router = express.Router();
 
 router.get('/', async (req, res, next) => {
 	try {
+		console.log('User:', req.user);
 		let { order, sortBy } = req.query;
 		// tslint:disable-next-line:triple-equals
 		order = order == '1' ? 1 : -1;
@@ -24,7 +25,7 @@ router.get('/', async (req, res, next) => {
 		});
 		if (!contains) sortBy = 'eventTime';
 
-		const results = await Event.find({ privateProfile: { $ne: 1 } })
+		const results = await Event.find({ privateEvent: { $ne: true } })
 			.sort({ [sortBy]: order })
 			.lean()
 			.exec();
@@ -38,7 +39,7 @@ router.get('/', async (req, res, next) => {
 	}
 });
 
-router.post('/', async (req, res, next) => {
+router.post('/', auth(), hasPermissions(['events']), async (req, res) => {
 	try {
 		const { name, privateEvent, eventTime, location, facebook } = req.body;
 		if (!name) return errorRes(res, 400, 'Event must have a name');
@@ -68,7 +69,7 @@ router.post('/', async (req, res, next) => {
 	}
 });
 
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', async (req, res) => {
 	try {
 		if (!ObjectId.isValid(req.params.id))
 			return errorRes(res, 400, 'Invalid event ID');

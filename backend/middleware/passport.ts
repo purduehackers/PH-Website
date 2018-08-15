@@ -52,10 +52,19 @@ export default (pass: any) => {
 	);
 };
 
+// export const auth = () => (req: Request, res: Response, next: NextFunction) =>
+// 	passport.authenticate('jwt', { session: true }, (err, data, info) => {
+// 		req.user = data;
+// 		err || info ? errorRes(res, 401, 'Unauthorized') : next();
+// 	})(req, res, next);
+
 export const auth = () => (req: Request, res: Response, next: NextFunction) =>
+	req.user ? next() : errorRes(res, 401, 'Unauthorized');
+
+export const user = () => (req: Request, res: Response, next: NextFunction) =>
 	passport.authenticate('jwt', { session: true }, (err, data, info) => {
-		req.user = data;
-		err || info ? errorRes(res, 401, 'Unauthorized') : next();
+		req.user = data || null;
+		next();
 	})(req, res, next);
 
 export const hasPermissions = (roles: string[]) => (
@@ -63,6 +72,7 @@ export const hasPermissions = (roles: string[]) => (
 	res: Response,
 	next: NextFunction
 ) =>
-	!req.user || !roles.some(role => hasPermission(req.user as IMemberModel, role))
+	!req.user ||
+	!roles.some(role => hasPermission(req.user as IMemberModel, role))
 		? errorRes(res, 401, 'Permission Denied')
 		: next();
