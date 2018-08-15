@@ -32,13 +32,13 @@ export default () => (
 		</h4>
 		<h4>
 			Source{' '}
-			<Link
-				to="https://github.com/purdueHackers/MembersPortal"
+			<a
+				href="https://github.com/PurdueHackers/PH-Website"
 				rel="noopener noreferrer"
 				target="_blank"
 			>
 				available on GitHub
-			</Link>
+			</a>
 		</h4>
 	</div>
 );
