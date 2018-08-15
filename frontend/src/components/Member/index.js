@@ -85,6 +85,34 @@ class MemberPage extends Component {
 			.catch(error => flash(err(error)));
 	};
 
+	componentWillReceiveProps = nextProps => {
+		const {
+			match: {
+				params: { id }
+			},
+			flash
+		} = nextProps;
+		fetchMember(id)
+			.then(member => {
+				console.log('MemberPage fetched member:', member);
+				member ? this.setState({ member }) : this.setState({ notFound: true });
+			})
+			.catch(() => this.setState({ notFound: true }));
+
+		fetchMemberEvents(id)
+			.then(events => {
+				console.log('MemberPage fetched events:', events);
+				this.setState({ events });
+			})
+			.catch(error => flash(err(error)));
+		fetchMemberJobs(id)
+			.then(jobs => {
+				console.log('MemberPage fetched jobs:', jobs);
+				this.setState({ jobs });
+			})
+			.catch(error => flash(err(error)));
+	};
+
 	onChange = e => this.setState({ [e.target.id]: e.target.value });
 
 	onEventClick = id => () => this.props.history.push(`/event/${id}`);
@@ -176,11 +204,11 @@ class MemberPage extends Component {
 											Edit Profile
 										</button>
 									</Link>
-									<Link to={routes.PROJECTS} className="pull-left">
+									{/* <Link to={routes.PROJECTS} className="pull-left">
 										<button type="button" className="btn btn-primary btn-sm">
 											Projects
 										</button>
-									</Link>
+									</Link> */}
 								</React.Fragment>
 							)}
 						</h3>
@@ -315,6 +343,7 @@ const mapStateToProps = state => ({
 	...state.sessionState
 });
 
-export default connect(mapStateToProps, { flash: sendFlashMessage, clear: clearFlashMessages })(
-	MemberPage
-);
+export default connect(
+	mapStateToProps,
+	{ flash: sendFlashMessage, clear: clearFlashMessages }
+)(MemberPage);

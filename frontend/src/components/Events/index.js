@@ -44,13 +44,13 @@ class EventsPage extends Component {
 					<Header message="Events" />
 					<h3>
 						Events
-						<Link to={routes.HACKATHONS} className="pull-left">
+						{/* <Link to={routes.HACKATHONS} className="pull-left">
 							<button type="button" className="btn btn-info btn-sm marginR">
 								Upcoming Hackathons
 							</button>
-						</Link>
+						</Link> */}
 						<a href="https://goo.gl/forms/hAhYgXes2zQeftbR2" className="pull-right">
-							<button type="button" className="btn btn-primary btn-sm">
+							<button type="button" className="btn btn-primary btn-sm marginR ">
 								Submit Event Suggestion
 							</button>
 						</a>
@@ -84,4 +84,7 @@ const mapStateToProps = state => ({
 	...state.sessionState
 });
 
-export default connect(mapStateToProps, {})(EventsPage);
+export default connect(
+	mapStateToProps,
+	{}
+)(EventsPage);

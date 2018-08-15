@@ -51,6 +51,24 @@ class EventPage extends Component {
 		}
 	};
 
+	componentWillReceiveProps = async nextProps => {
+		const {
+			match: {
+				params: { id }
+			},
+			flash,
+			clear
+		} = nextProps;
+		try {
+			clear();
+			const event = await fetchEvent(id);
+			this.setState({ event, loading: false });
+		} catch (error) {
+			this.setState({ loading: false });
+			flash(err(error));
+		}
+	};
+
 	onChange = e => this.setState({ [e.target.id]: e.target.value });
 
 	render() {
@@ -124,6 +142,7 @@ const mapStateToProps = state => ({
 	...state.sessionState
 });
 
-export default connect(mapStateToProps, { flash: sendFlashMessage, clear: clearFlashMessages })(
-	EventPage
-);
+export default connect(
+	mapStateToProps,
+	{ flash: sendFlashMessage, clear: clearFlashMessages }
+)(EventPage);

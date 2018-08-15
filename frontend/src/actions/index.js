@@ -541,8 +541,7 @@ export const autocompleteMembers = async params => {
 		const token = getToken();
 		const {
 			data: { response }
-			// } = await axios.get('/api/autocomplete/members/', {
-		} = await axios.get('http://localhost:5000/api/autocomplete/members/', {
+		} = await axios.get('/api/autocomplete/members/', {
 			params,
 			headers: { Authorization: `Bearer ${token}` }
 		});

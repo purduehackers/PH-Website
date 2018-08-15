@@ -7,6 +7,13 @@ import App from './components/App';
 import 'sanitize.css/sanitize.css';
 import './index.css';
 
+
+if (process.env.NODE_ENV !== 'development') {
+	console.log = () => {};
+	console.warn = () => {};
+	console.error = () => {};
+}
+
 render(
 	<Provider store={store}>
 		<ConnectedRouter history={history}>

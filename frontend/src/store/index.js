@@ -8,7 +8,9 @@ import rootReducer from '../reducers';
 
 export const history = createHistory();
 const enhancers = [];
-const middleware = [thunk, routerMiddleware(history), logger];
+const middleware = [thunk, routerMiddleware(history)];
+
+if (process.env.NODE_ENV !== 'production') middleware.push(logger);
 
 export default createStore(
 	rootReducer,
