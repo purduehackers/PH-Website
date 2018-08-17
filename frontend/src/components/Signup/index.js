@@ -201,12 +201,11 @@ class SignUpPage extends Component {
 								</span>
 							</div>
 							<br />
-							<label htmlFor="gradYear">
+							<label htmlFor="graduationYear">
 								Year of Graduation *
 								<input
 									type="number"
-									name="gradYear"
-									id="gradYear"
+									id="graduationYear"
 									min="1869"
 									max={new Date().getFullYear() + 20}
 									placeholder="Graduation Year"
@@ -492,8 +491,11 @@ const mapStateToProps = state => ({
 	...state.sessionState
 });
 
-export default connect(mapStateToProps, {
-	flash: sendFlashMessage,
-	clear: clearFlashMessages,
-	signUp
-})(SignUpPage);
+export default connect(
+	mapStateToProps,
+	{
+		flash: sendFlashMessage,
+		clear: clearFlashMessages,
+		signUp
+	}
+)(SignUpPage);

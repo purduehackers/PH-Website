@@ -1,18 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { Nav, Navbar, NavItem } from 'react-bootstrap';
+import { Nav, Navbar, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
+import routes, { hasPermission } from '../../constants';
 
 const CommonNav = () => (
 	<React.Fragment>
-		<NavItem href="/members">Members</NavItem>
-		<NavItem href="/events">Events</NavItem>
-		<NavItem href="/calendar">Calendar</NavItem>
+		<NavItem href={routes.MEMBERS}>Members</NavItem>
+		<NavItem href={routes.EVENTS}>Events</NavItem>
+		<NavItem href={routes.CALENDAR}>Calendar</NavItem>
 	</React.Fragment>
 );
 
-const PHNavbar = ({ auth, id }) => (
-	<Navbar collapseOnSelect bsStyle="default" style={{ marginBottom: '10px' }}>
+const PHNavbar = ({ auth, id, user }) => (
+	<Navbar collapseOnSelect bsStyle="default" style={{ marginBottom: '10px', maxWidth: '100%' }}>
 		<Navbar.Header>
 			<Navbar.Brand>
 				<Link id="nav-brand" to="/">
@@ -26,19 +27,32 @@ const PHNavbar = ({ auth, id }) => (
 			<Nav pullRight>
 				{auth && id ? (
 					<React.Fragment>
-						<li>
+						<li role="presentation">
 							<Link to={`/member/${id}`}>Profile</Link>
 						</li>
 						<CommonNav />
-						<li>
-							<Link to="/logout">Logout</Link>
+						<NavDropdown title="Organizers" id="protected-nav-dropdown">
+							<style>{`.privateItem a {padding-top: 5px !important;}`}</style>
+							{hasPermission(user, 'permissions') && (
+								<MenuItem className="privateItem" href={routes.PERMISSIONS}>
+									Permissions
+								</MenuItem>
+							)}
+							{hasPermission(user, 'credentials') && (
+								<MenuItem className="privateItem" href={routes.CREDENTIALS}>
+									Credentials
+								</MenuItem>
+							)}
+						</NavDropdown>
+						<li role="presentation">
+							<Link to={routes.LOGOUT}>Logout</Link>
 						</li>
 					</React.Fragment>
 				) : (
 					<React.Fragment>
 						<CommonNav />
-						<NavItem href="/login">Login</NavItem>
-						<NavItem href="/signup">Join</NavItem>
+						<NavItem href={routes.LOGIN}>Login</NavItem>
+						<NavItem href={routes.SIGNUP}>Join</NavItem>
 					</React.Fragment>
 				)}
 			</Nav>

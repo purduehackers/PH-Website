@@ -77,10 +77,10 @@ export const uploadToStorage = async (
 	if (!file) return 'No image file';
 	else if (
 		folder === 'pictures' &&
-		!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)
+		!file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)
 	)
 		return `File: ${file.originalname} is an invalid image type`;
-	else if (folder === 'resume' && !file.originalname.match(/\.(png|PNG)$/))
+	else if (folder === 'resumes' && !file.originalname.match(/\.(pdf)$/i))
 		return `File: ${file.originalname} is an invalid image type`;
 
 	const fileName = `${folder}/${user.email.replace('@', '_')}`;
@@ -99,9 +99,14 @@ export const uploadToStorage = async (
 			reject('Something is wrong! Unable to upload at the moment.');
 		});
 
+		// blobStream.on('finish', () => {
+		// 	// The public URL can be used to directly access the file via HTTP.
+		// 	fileUpload.getMetadata().then(meta => resolve(meta['0'].mediaLink));
+		// });
+
 		blobStream.on('finish', () => {
 			// The public URL can be used to directly access the file via HTTP.
-			fileUpload.getMetadata().then(meta => resolve(meta['0'].mediaLink));
+			resolve(`https://storage.googleapis.com/purduehackers/${fileName}`);
 		});
 
 		blobStream.end(file.buffer);

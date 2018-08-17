@@ -71,7 +71,7 @@ class App extends Component {
 		const { token, user } = this.props;
 		return (
 			<React.Fragment>
-				<Navigation auth={!!token} id={user ? user._id : null} />
+				<Navigation auth={!!token} id={user ? user._id : null} user={user} />
 				<div className="pageWrap">
 					<FlashMessage />
 					<Switch>
@@ -166,5 +166,8 @@ const mapStateToProps = state => ({
 });
 
 export default withRouter(
-	connect(mapStateToProps, { storageChanged, clearFlashMessages, fetchProfile })(App)
+	connect(
+		mapStateToProps,
+		{ storageChanged, clearFlashMessages, fetchProfile }
+	)(App)
 );

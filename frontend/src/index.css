@@ -16,7 +16,7 @@ body {
 /*------------ NAVBAR STYLING ----------------*/
 
 .container {
-	max-width: 55em;
+	max-width: 65em;
 }
 
 .navbar {
@@ -54,6 +54,7 @@ body {
 	font-family: MontserratLite, sans-serif !important;
 	color: #666;
 	font-size: 1.3em;
+	/* padding-top: 20px !important; */
 	padding-top: 20px !important;
 	-webkit-transition: color 300ms;
 	-moz-transition: color 300ms;
