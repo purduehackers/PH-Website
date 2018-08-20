@@ -1,5 +1,6 @@
+import { join } from 'path';
 // require('dotenv').config();
-require('dotenv').config({ path: '../../.env' });
+require('dotenv').config({ path: join(__dirname, '../../', '.env') });
 
 const env = process.env;
 

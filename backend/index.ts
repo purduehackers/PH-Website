@@ -89,7 +89,7 @@ app.use(express.static(join(__dirname, '../frontend/build')));
 app.get('*', (req, res) =>
 	res.sendFile(resolve(__dirname, '../frontend/build/index.html'))
 );
-server.listen(PORT, () =>
-	// console.log('CONFIG:', CONFIG, `\nListening on port: ${PORT}`)
-	console.log(`Listening on port: ${PORT}`)
-);
+server.listen(PORT, () => {
+	console.log('CONFIG:', CONFIG, `\nListening on port: ${PORT}`);
+	console.log(`Listening on port: ${PORT}`);
+});
