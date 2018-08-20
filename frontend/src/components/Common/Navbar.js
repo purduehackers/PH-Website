@@ -12,6 +12,22 @@ const CommonNav = () => (
 	</React.Fragment>
 );
 
+const OrganizerDropdown = ({ user }) => (
+	<NavDropdown title="Organizers" id="protected-nav-dropdown">
+		<style>{'.privateItem a {padding-top: 5px !important;}'}</style>
+		{hasPermission(user, 'permissions') && (
+			<MenuItem className="privateItem" href={routes.PERMISSIONS}>
+				Permissions
+			</MenuItem>
+		)}
+		{hasPermission(user, 'credentials') && (
+			<MenuItem className="privateItem" href={routes.CREDENTIALS}>
+				Credentials
+			</MenuItem>
+		)}
+	</NavDropdown>
+);
+
 const PHNavbar = ({ auth, id, user }) => (
 	<Navbar collapseOnSelect bsStyle="default" style={{ marginBottom: '10px', maxWidth: '100%' }}>
 		<Navbar.Header>
@@ -31,19 +47,9 @@ const PHNavbar = ({ auth, id, user }) => (
 							<Link to={`/member/${id}`}>Profile</Link>
 						</li>
 						<CommonNav />
-						<NavDropdown title="Organizers" id="protected-nav-dropdown">
-							<style>{`.privateItem a {padding-top: 5px !important;}`}</style>
-							{hasPermission(user, 'permissions') && (
-								<MenuItem className="privateItem" href={routes.PERMISSIONS}>
-									Permissions
-								</MenuItem>
-							)}
-							{hasPermission(user, 'credentials') && (
-								<MenuItem className="privateItem" href={routes.CREDENTIALS}>
-									Credentials
-								</MenuItem>
-							)}
-						</NavDropdown>
+						{(hasPermission(user, 'permissions') || hasPermission(user, 'credentials')) && (
+							<OrganizerDropdown user={user} />
+						)}
 						<li role="presentation">
 							<Link to={routes.LOGOUT}>Logout</Link>
 						</li>
@@ -60,91 +66,21 @@ const PHNavbar = ({ auth, id, user }) => (
 	</Navbar>
 );
 
-// const CommonNav = () => (
-// 	<React.Fragment>
-// 		<li>
-// 			<Link to="/members">Members</Link>
-// 		</li>
-// 		<li>
-// 			<Link to="/events">Events</Link>
-// 		</li>
-// 		<li>
-// 			<Link to="/calendar">Calendar</Link>
-// 		</li>
-// 	</React.Fragment>
-// );
-
-// const Navbars = ({ auth, id }) => (
-// 	<nav className="navbar navbar-default navbar-static-top">
-// 		<div className="container">
-// 			<div className="navbar-header">
-// 				<button
-// 					type="button"
-// 					className="navbar-toggle collapsed"
-// 					data-toggle="collapse"
-// 					data-target="#navbar"
-// 					aria-expanded="false"
-// 					aria-controls="navbar"
-// 				>
-// 					<span className="sr-only">Toggle navigation</span>
-// 					<span className="icon-bar" />
-// 					<span className="icon-bar" />
-// 					<span className="icon-bar" />
-// 				</button>
-// 				<Link id="nav-brand" className="navbar-brand" to="/">
-// 					<div className="nav-logo" />
-// 					<span className="nav-name">Purdue Hackers</span>
-// 				</Link>
-// 			</div>
-// 			<div className="collapse navbar-collapse" id="navbar">
-// 				<ul className="nav navbar-nav navbar-right">
-// 					{auth && id ? (
-// 						<React.Fragment>
-// 							<li>
-// 								<Link to={`/member/${id}`}>Profile</Link>
-// 							</li>
-
-// 							<CommonNav />
-// 							<li>
-// 								<Link to="/logout">Logout</Link>
-// 							</li>
-// 						</React.Fragment>
-// 					) : (
-// 						<React.Fragment>
-// 							<CommonNav />
-// 							<li>
-// 								<Link to="/login">Login</Link>
-// 							</li>
-// 							<li>
-// 								<Link to="/signup">Join</Link>
-// 							</li>
-// 						</React.Fragment>
-// 					)}
-// 				</ul>
-// 			</div>
-// 		</div>
-// 	</nav>
-// );
-
-// Navbar.propTypes = {
-// 	auth: PropTypes.bool,
-// 	id: PropTypes.string
-// };
-
-// Navbar.defaultProps = {
-// 	auth: null,
-// 	id: null
-// };
-
 PHNavbar.propTypes = {
 	auth: PropTypes.bool,
-	id: PropTypes.string
+	id: PropTypes.string,
+	user: PropTypes.object
 };
 
 PHNavbar.defaultProps = {
 	auth: null,
-	id: null
+	id: null,
+	user: null
 };
+
+OrganizerDropdown.propTypes = { user: PropTypes.object };
+
+OrganizerDropdown.defaultProps = { user: null };
 
 // export default Navbar;
 export default PHNavbar;
