@@ -28,7 +28,12 @@ export const errorRes = (res: Response, status: number, error: any) =>
 		error
 	});
 
-export const hasPermission = (user: IMemberModel, name: string) =>
+// export const hasPermission = (user: IMemberModel, name: string) =>
+// 	user.permissions.some(per => per.name === name || per.name === 'admin');
+
+export const hasPermission = (user: IMemberModel, name: string): boolean =>
+	user &&
+	// (Object.keys(user).length !== 0 && user.constructor === Object) &&
 	user.permissions.some(per => per.name === name || per.name === 'admin');
 
 export const isAdmin = (user: IMemberModel) => hasPermission(user, 'admin');

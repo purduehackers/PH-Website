@@ -111,7 +111,7 @@ class EditEventPage extends Component {
 			};
 			if (type === 'edit') {
 				const newEvent = await updateEvent(match.params.id, event);
-				console.log('Created new event:', newEvent);
+				console.log('Updated event:', newEvent);
 				this.setState({ event: newEvent });
 				return flash('Event successfully updated', 'green');
 			}

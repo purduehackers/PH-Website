@@ -5,7 +5,12 @@ import { ObjectId } from 'mongodb';
 import { Event } from '../models/event';
 import { Member, IMemberModel } from '../models/member';
 import { auth, hasPermissions } from '../middleware/passport';
-import { successRes, errorRes, sendAccountCreatedEmail } from '../utils';
+import {
+	successRes,
+	errorRes,
+	sendAccountCreatedEmail,
+	hasPermission
+} from '../utils';
 export const router = express.Router();
 
 // TODO: Add auth to routes
@@ -13,7 +18,6 @@ export const router = express.Router();
 
 router.get('/', async (req, res, next) => {
 	try {
-		console.log('User:', req.user);
 		let { order, sortBy } = req.query;
 		// tslint:disable-next-line:triple-equals
 		order = order == '1' ? 1 : -1;
@@ -25,8 +29,12 @@ router.get('/', async (req, res, next) => {
 		});
 		if (!contains) sortBy = 'eventTime';
 
+		const conditions = hasPermission(req.user as IMemberModel, 'events')
+			? {}
+			: { privateEvent: { $ne: true } };
+
 		const results = await Event.find(
-			{ privateEvent: { $ne: true } },
+			conditions,
 			'_id name createdAt location members'
 		)
 			.sort({ [sortBy]: order })
@@ -94,7 +102,7 @@ router.post('/:id', async (req, res, next) => {
 		if (!ObjectId.isValid(req.params.id))
 			return errorRes(res, 400, 'Invalid event ID');
 		const { name, privateEvent, eventTime, location, facebook } = req.body;
-		const eventBuilder = {};
+		const eventBuilder = { privateEvent };
 		if (!name) return errorRes(res, 400, 'Event must have a name');
 		else Object.assign(eventBuilder, { name });
 		if (!eventTime) return errorRes(res, 400, 'Event must have a time');
