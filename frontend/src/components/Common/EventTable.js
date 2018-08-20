@@ -19,8 +19,8 @@ class EventTable extends Component {
 					<thead>
 						<tr>
 							<th>Name</th>
-							<th>Date</th>
 							<th>Location</th>
+							<th>Date</th>
 							{allowed && <th># Attended</th>}
 						</tr>
 					</thead>
@@ -29,8 +29,9 @@ class EventTable extends Component {
 							events.map(event => (
 								<tr key={event._id + 1} id={event._id} onClick={this.onClick(event._id)}>
 									<td>{event.name}</td>
-									<td>{formatDate(event.createdAt)}</td>
+									{/* <td>{formatDate(event.createdAt)}</td> */}
 									<td>{event.location}</td>
+									<td>{formatDate(event.eventTime)}</td>
 									{allowed && <td>{event.members ? event.members.length : 0}</td>}
 								</tr>
 							))}

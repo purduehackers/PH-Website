@@ -120,8 +120,9 @@ h3 {
  }*/
 
 .section-container {
-	max-width: 55em;
-	width: 90%;
+	/* max-width: 55em; */
+	max-width: 57.5em;
+	/* width: 90%; */
 	margin: 0 auto;
 }
 

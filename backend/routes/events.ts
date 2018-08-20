@@ -35,7 +35,7 @@ router.get('/', async (req, res, next) => {
 
 		const results = await Event.find(
 			conditions,
-			'_id name createdAt location members'
+			'_id name createdAt eventTime location members'
 		)
 			.sort({ [sortBy]: order })
 			.lean()
