@@ -1,5 +1,6 @@
 @font-face {
 	font-family: MontserratLite;
+	font-display: auto;
 	src: url('./assets/fonts/Montserrat-Light.otf');
 }
 

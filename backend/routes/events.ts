@@ -29,7 +29,7 @@ router.get('/', async (req, res, next) => {
 		});
 		if (!contains) sortBy = 'eventTime';
 
-		const conditions = hasPermission(req.user as IMemberModel, 'events')
+		const conditions = hasPermission(req.user, 'events')
 			? {}
 			: { privateEvent: { $ne: true } };
 

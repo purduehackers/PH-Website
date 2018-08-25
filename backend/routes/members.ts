@@ -120,7 +120,7 @@ router.put('/:id', auth(), multer.any(), async (req, res, next) => {
 	try {
 		if (!ObjectId.isValid(req.params.id))
 			return errorRes(res, 400, 'Invalid member ID');
-		if (!memberMatches(req.user as any, req.params.id))
+		if (!memberMatches(req.user, req.params.id))
 			return errorRes(
 				res,
 				401,
