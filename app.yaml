@@ -1,7 +1,12 @@
 # [START app_yaml]
 runtime: nodejs
 env: flex
-service: dev
+service: default
+
+handlers:
+  - url: /.*
+    secure: always
+    script: auto
 
 env_variables:
     NODE_ENV: 'production'
