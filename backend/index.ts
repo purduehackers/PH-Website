@@ -21,13 +21,11 @@ import { router as autocomplete } from './routes/autocomplete';
 
 export const app = express();
 export const server = http.createServer(app);
-const { NODE_ENV, PORT, DB, MONGO_USER, MONGO_PASSWORD } = CONFIG;
+const { NODE_ENV, PORT, DB } = CONFIG;
 
 mongoose.connect(
 	DB,
-	{
-		useNewUrlParser: true
-	},
+	{ useNewUrlParser: true },
 	err =>
 		err
 			? console.error('Error connecting to mongo:', err)
