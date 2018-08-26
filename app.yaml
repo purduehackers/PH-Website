@@ -1,0 +1,7 @@
+# [START app_yaml]
+runtime: nodejs
+env: flex
+service: dev
+
+env_variables:
+    NODE_ENV: 'production'

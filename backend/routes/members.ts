@@ -116,7 +116,7 @@ router.get('/:id', async (req, res) => {
 	}
 });
 
-router.put('/:id', auth(), multer.any(), async (req, res, next) => {
+router.put('/:id', auth(), multer.any(), async (req, res) => {
 	try {
 		if (!ObjectId.isValid(req.params.id))
 			return errorRes(res, 400, 'Invalid member ID');

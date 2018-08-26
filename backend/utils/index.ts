@@ -31,14 +31,14 @@ export const errorRes = (res: Response, status: number, error: any) =>
 // export const hasPermission = (user: IMemberModel, name: string) =>
 // 	user.permissions.some(per => per.name === name || per.name === 'admin');
 
-export const hasPermission = (user: IMemberModel, name: string): boolean =>
+export const hasPermission = (user: Express.User, name: string): boolean =>
 	user &&
 	// (Object.keys(user).length !== 0 && user.constructor === Object) &&
 	user.permissions.some(per => per.name === name || per.name === 'admin');
 
-export const isAdmin = (user: IMemberModel) => hasPermission(user, 'admin');
+export const isAdmin = (user: Express.User) => hasPermission(user, 'admin');
 
-export const memberMatches = (user: IMemberModel, id: ObjectId | string) =>
+export const memberMatches = (user: Express.User, id: ObjectId | string) =>
 	user &&
 	(hasPermission(user, 'admin') ||
 		user._id === id ||

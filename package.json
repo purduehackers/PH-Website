@@ -8,7 +8,7 @@
 		"watch": "tsc -w",
 		"start": "nodemon dist/index.js",
 		"dev": "nodemon -i \"**/*.test.ts\" -i \"**/*.spec.ts\" -i \"node_modules\" -w backend -e ts -x \"npm run server\"",
-		"deploy": "gcloud app deploy",
+		"deploy": "sh build.sh && gcloud app deploy -q",
 		"server": "node --inspect -r ts-node/register backend/index.ts"
 	},
 	"dependencies": {

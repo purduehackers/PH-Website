@@ -73,6 +73,6 @@ export const hasPermissions = (roles: string[]) => (
 	next: NextFunction
 ) =>
 	!req.user ||
-	!roles.some(role => hasPermission(req.user as IMemberModel, role))
+	!roles.some(role => hasPermission(req.user, role))
 		? errorRes(res, 401, 'Permission Denied')
 		: next();
