@@ -8,6 +8,7 @@ import CONFIG from '../config';
 import { IEventModel } from '../models/event';
 import { IMemberModel } from '../models/member';
 import { formatDate } from './';
+import { Request } from 'express';
 
 // const transport = nodemailer.createTransport({
 // 	service: CONFIG.EMAIL_SERVICE,
@@ -61,16 +62,13 @@ const _sendResetEmail = async (
 		]
 	});
 
-export const sendResetEmail = async (member: IMemberModel) => {
+export const sendResetEmail = async (member: IMemberModel, req: Request) => {
 	const token = jwt.sign({ id: member._id }, CONFIG.SECRET, {
 		expiresIn: '2 days'
 	});
 	member.resetPasswordToken = token;
 	await member.save();
-	const resetUrl =
-		CONFIG.NODE_ENV === 'development'
-			? `http://localhost:3000/reset?token=${token}`
-			: `https://www.purduehackers.com/reset?token=${token}`;
+	const resetUrl =`${req.protocol}://${req.get('host')}/reset?token=${token}`;
 	return await _sendResetEmail(member, resetUrl);
 };
 
@@ -101,17 +99,15 @@ const _sendAccountCreatedEmail = async (
 
 export const sendAccountCreatedEmail = async (
 	member: IMemberModel,
-	event: IEventModel
+	event: IEventModel,
+	req: Request
 ) => {
 	const token = jwt.sign({ id: member._id }, CONFIG.SECRET, {
 		expiresIn: '2 days'
 	});
 	member.resetPasswordToken = token;
 	await member.save();
-	const resetUrl =
-		CONFIG.NODE_ENV === 'development'
-			? `http://localhost:3000/reset?token=${token}`
-			: `https://www.purduehackers.com/reset?token=${token}`;
+	const resetUrl =`${req.protocol}://${req.get('host')}/reset?token=${token}`;
 	return await _sendAccountCreatedEmail(
 		member,
 		event.name,

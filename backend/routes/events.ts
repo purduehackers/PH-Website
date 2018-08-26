@@ -191,12 +191,12 @@ router.post('/:id/checkin', async (req, res, next) => {
 
 			await member.save();
 			// TODO: Send welcome email when member is created
-			await sendAccountCreatedEmail(member, event);
+			await sendAccountCreatedEmail(member, event, req);
 		}
 		// Existing Member, If account not setup, send creation email
 		else {
 			if (member.graduationYear === 0) {
-				await sendAccountCreatedEmail(member, event);
+				await sendAccountCreatedEmail(member, event, req);
 				// TODO: Send welcome email when member is created
 				// Mail::send('emails.accountCreated', ['member'=>$member, 'event'=>$event], function ($message) use ($member) {
 				// 	$message->from('purduehackers@gmail.com', 'Purdue Hackers');

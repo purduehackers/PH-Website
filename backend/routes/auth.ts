@@ -282,7 +282,7 @@ router.post('/forgot', async (req, res) => {
 		// 		? `http://localhost:3000/reset?token=${token}`
 		// 		: `https://www.purduehackers.com/reset?token=${token}`;
 		// const response = await sendResetEmail(member, resetUrl);
-		await sendResetEmail(member);
+		await sendResetEmail(member, req);
 		return successRes(
 			res,
 			`A link to reset your password has been sent to: ${email}`
