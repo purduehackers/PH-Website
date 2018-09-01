@@ -5,7 +5,7 @@ import * as Multer from 'multer';
 import { IMemberModel, Member } from '../models/member';
 export * from './email';
 
-const storage = GoogleCloudStorage({
+const storage = new GoogleCloudStorage({
 	projectId: 'purduehackers-212319',
 	keyFilename: 'purduehackers.json'
 });
