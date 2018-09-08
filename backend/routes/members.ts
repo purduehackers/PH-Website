@@ -15,7 +15,8 @@ import {
 	errorRes,
 	memberMatches,
 	uploadToStorage,
-	multer
+	multer,
+	addMemberToPermissions
 } from '../utils';
 
 export const router = express.Router();
@@ -234,6 +235,40 @@ router.put('/:id', auth(), multer.any(), async (req, res) => {
 		return errorRes(res, 500, error.message);
 	}
 });
+
+router.post(
+	'/organizer',
+	auth(),
+	hasPermissions(['permissions']),
+	async (req, res) => {
+		try {
+			const { email } = req.body;
+			if (!email)
+				return errorRes(res, 400, 'Please enter member name or email');
+			let permissions = await Permission.find()
+				.where('organizer')
+				.ne(0)
+				.exec();
+
+			let member = await Member.findOne({
+				$or: [{ name: email }, { email }]
+			}).exec();
+
+			if (!member) return errorRes(res, 400, 'Member not found');
+
+			const [m, p] = await addMemberToPermissions(
+				member,
+				permissions,
+				req.user
+			);
+
+			return successRes(res, { member: m, permissions: p });
+		} catch (error) {
+			console.error(error);
+			return errorRes(res, 500, error);
+		}
+	}
+);
 
 router.delete('/:id', auth(), hasPermissions(['admin']), async (req, res) => {
 	try {

@@ -174,6 +174,24 @@ export const updateProfile = (id, member) => async dispatch => {
 	}
 };
 
+export const addOrganizer = async email => {
+	try {
+		const token = getToken();
+		const {
+			data: { response }
+		} = await axios.post(
+			'/api/members/organizer',
+			{ email },
+			{
+				headers: { Authorization: `Bearer ${token}` }
+			}
+		);
+		return response;
+	} catch (error) {
+		throw error.response.data;
+	}
+};
+
 export const fetchMemberEvents = async (id, params) => {
 	try {
 		const token = getToken();

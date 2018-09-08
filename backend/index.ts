@@ -34,11 +34,6 @@ mongoose.connect(
 );
 
 app.use(helmet());
-// app.use((req, res, next) => {
-// 	if (req.host != 'localhost' && req.get('X-Forwarded-Proto') == 'http')
-// 		return res.redirect(`https://${req.host}${req.url}`);
-// 	next();
-// });
 passportMiddleWare(passport);
 
 NODE_ENV !== 'production' ? app.use(logger('dev')) : app.use(logger('tiny'));

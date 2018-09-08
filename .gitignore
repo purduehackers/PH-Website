@@ -69,3 +69,5 @@ phdump/
 # Google Cloud
 purduehackers.json
 # app.yaml
+
+.DS_Store
