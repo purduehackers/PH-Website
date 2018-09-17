@@ -5,7 +5,11 @@
 		"node": true
 	},
 	"parserOptions": {
-		"ecmaVersion": 2017
+		"ecmaVersion": 2017,
+		"sourceType": "module",
+		"ecmaFeatures": {
+			"modules": true
+		}
 	},
 	"parser": "typescript-eslint-parser",
 	"extends": "eslint:recommended",
@@ -16,16 +20,7 @@
 		"linebreak-style": ["error", "unix"],
 		"quotes": ["error", "single"],
 		"semi": ["error", "always"],
-		"prettier/prettier": [
-			"error",
-			{
-				"singleQuote": true,
-				"printWidth": 120,
-				"tabWidth": 4,
-				"useTabs": true,
-				"parser": "typescript"
-			}
-		],
+
 		"no-underscore-dangle": "off",
 		"import/prefer-default-export": "off",
 		"no-console": "off",
@@ -42,5 +37,14 @@
 		"no-mixed-spaces-and-tabs": "error",
 		"newline-per-chained-call": ["error", { "ignoreChainWithDepth": 2 }],
 		"comma-dangle": "off"
-	}
+	},
+	"overrides": [
+		{
+			"files": ["**/*.ts"],
+			"parser": "typescript-eslint-parser",
+			"rules": {
+				"no-undef": "off"
+			}
+		}
+	]
 }
