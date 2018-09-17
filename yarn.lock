@@ -141,13 +141,6 @@
     "@types/node" "*"
     "@types/request" "*"
 
-"@types/gridfs-stream@^0.5.30":
-  version "0.5.30"
-  resolved "https://registry.yarnpkg.com/@types/gridfs-stream/-/gridfs-stream-0.5.30.tgz#665dea97398182505de019717fb6d2b63ce76259"
-  dependencies:
-    "@types/mongodb" "*"
-    "@types/node" "*"
-
 "@types/handlebars@^4.0.39":
   version "4.0.39"
   resolved "https://registry.yarnpkg.com/@types/handlebars/-/handlebars-4.0.39.tgz#961fb54db68030890942e6aeffe9f93a957807bd"
@@ -4334,6 +4327,10 @@ yargs@~3.10.0:
     cliui "^2.1.0"
     decamelize "^1.0.0"
     window-size "0.1.0"
+
+yes-https@^0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/yes-https/-/yes-https-0.0.4.tgz#c392f7bd9ed59a33c2a8a91a842c1cfdede55eac"
 
 yn@^2.0.0:
   version "2.0.0"
