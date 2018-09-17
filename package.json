@@ -52,7 +52,6 @@
 		"@types/express": "^4.11.1",
 		"@types/express-session": "^1.15.8",
 		"@types/google-cloud__storage": "^1.7.0",
-		"@types/gridfs-stream": "^0.5.30",
 		"@types/handlebars": "^4.0.39",
 		"@types/helmet": "^0.0.39",
 		"@types/http-errors": "^1.6.1",
