@@ -6,6 +6,7 @@ import * as logger from 'morgan';
 import * as mongoose from 'mongoose';
 import * as passport from 'passport';
 import * as cors from 'cors';
+import * as helmet from 'helmet';
 import { join, resolve } from 'path';
 import CONFIG from './config';
 import passportMiddleWare, { user } from './middleware/passport';
@@ -32,35 +33,7 @@ mongoose.connect(
 			: console.log('Connected to mongo:', DB)
 );
 
-// NODE_ENV !== 'production'
-// 	? mongoose.connect(
-// 			'mongodb://localhost:27017/PH',
-// 			{
-// 				useNewUrlParser: true
-// 			},
-// 			err =>
-// 				err
-// 					? console.error('Error connecting to mongo:', err)
-// 					: console.log(
-// 							'Connected to mongo:',
-// 							'mongodb://localhost:27017/PH'
-// 					  )
-// 	  )
-// 	: mongoose.connect(
-// 			DB,
-// 			{
-// 				user: MONGO_USER,
-// 				pass: MONGO_PASSWORD,
-// 				keepAlive: 1,
-// 				reconnectTries: Number.MAX_VALUE,
-// 				useNewUrlParser: true
-// 			},
-// 			err =>
-// 				err
-// 					? console.error('Error connecting to mongo:', err)
-// 					: console.log('Connected to mongo:', DB)
-// 	  );
-
+app.use(helmet());
 passportMiddleWare(passport);
 
 NODE_ENV !== 'production' ? app.use(logger('dev')) : app.use(logger('tiny'));

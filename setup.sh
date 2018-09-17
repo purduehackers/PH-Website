@@ -1,7 +1,12 @@
+#!/usr/bin/env bash
 cd frontend
 yarn
-yarn build
-cd ../
-npm i
-npm run build
-cp .env.example .env
+if [ "$1" == "build" ]; then
+	yarn build
+fi
+cd ../backend
+yarn
+if [ "$1" != "build" ]; then
+	cd ../
+	cp .env.example .env
+fi

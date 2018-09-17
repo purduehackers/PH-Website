@@ -6,7 +6,8 @@ import {
 	sendFlashMessage,
 	clearFlashMessages,
 	fetchPermissions,
-	addPermission
+	addPermission,
+	addOrganizer
 } from '../../actions';
 import { Header } from '../Common';
 
@@ -67,6 +68,24 @@ class PermissionsPage extends Component {
 				permissionDescription: ''
 			});
 			return flash(`Successfully added permission: ${permission.name}`, 'green');
+		} catch (error) {
+			console.error('Permissions Page error:', error);
+			return flash(err(error));
+		}
+	};
+
+	onAddOrganizer = async e => {
+		e.preventDefault();
+		const { flash, clear } = this.props;
+		const { organizerName } = this.state;
+		try {
+			clear();
+			if (!organizerName) return flash('Permission must have name');
+			const { member, permissions } = await addOrganizer(organizerName);
+			console.log('Member:', member);
+			console.log('Permissions:', permissions);
+			this.setState({ organizerName: '', permissions });
+			return flash(`Successfully added organizer: ${member.name}`, 'green');
 		} catch (error) {
 			console.error('Permissions Page error:', error);
 			return flash(err(error));
@@ -142,8 +161,7 @@ class PermissionsPage extends Component {
 									<td>
 										<input
 											type="text"
-											id="memberEmail"
-											name="member_name"
+											id="organizerName"
 											placeholder="Add Organizer"
 											className="form-control membersautocomplete"
 											data-bvalidator="required"
@@ -153,9 +171,10 @@ class PermissionsPage extends Component {
 									</td>
 									<td>
 										<input
-											type="submit"
+											type="button"
 											value="Add Organizer"
 											className="btn btn-sm btn-primary"
+											onClick={this.onAddOrganizer}
 										/>
 									</td>
 								</tr>
@@ -172,6 +191,7 @@ const mapStateToProps = state => ({
 	...state.sessionState
 });
 
-export default connect(mapStateToProps, { flash: sendFlashMessage, clear: clearFlashMessages })(
-	PermissionsPage
-);
+export default connect(
+	mapStateToProps,
+	{ flash: sendFlashMessage, clear: clearFlashMessages }
+)(PermissionsPage);
