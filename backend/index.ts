@@ -1,9 +1,8 @@
 import * as express from 'express';
 import * as cookieParser from 'cookie-parser';
-import * as paginate from 'express-paginate';
 import * as http from 'http';
-import * as https from 'https';
-import * as fs from 'fs';
+// import * as https from 'https';
+// import * as fs from 'fs';
 import * as logger from 'morgan';
 import * as mongoose from 'mongoose';
 import * as passport from 'passport';
@@ -48,7 +47,7 @@ app.use(cookieParser());
 app.use(passport.initialize());
 app.use(cors());
 
-app.use(paginate.middleware(20, 50));
+// app.use(paginate.middleware(20, 50));
 app.use(user());
 app.use('/api', home);
 app.use('/api/auth', auth);
