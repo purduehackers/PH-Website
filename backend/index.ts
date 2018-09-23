@@ -1,12 +1,14 @@
 import * as express from 'express';
 import * as cookieParser from 'cookie-parser';
-import * as paginate from 'express-paginate';
 import * as http from 'http';
+// import * as https from 'https';
+// import * as fs from 'fs';
 import * as logger from 'morgan';
 import * as mongoose from 'mongoose';
 import * as passport from 'passport';
 import * as cors from 'cors';
 import * as helmet from 'helmet';
+import * as yes from 'yes-https';
 import { join, resolve } from 'path';
 import CONFIG from './config';
 import passportMiddleWare, { user } from './middleware/passport';
@@ -34,6 +36,8 @@ mongoose.connect(
 );
 
 app.use(helmet());
+if (NODE_ENV === 'production') app.use(yes());
+
 passportMiddleWare(passport);
 
 NODE_ENV !== 'production' ? app.use(logger('dev')) : app.use(logger('tiny'));
@@ -43,7 +47,7 @@ app.use(cookieParser());
 app.use(passport.initialize());
 app.use(cors());
 
-app.use(paginate.middleware(20, 50));
+// app.use(paginate.middleware(20, 50));
 app.use(user());
 app.use('/api', home);
 app.use('/api/auth', auth);
@@ -60,6 +64,22 @@ app.use(express.static(join(__dirname, '../frontend/build')));
 app.get('*', (req, res) =>
 	res.sendFile(resolve(__dirname, '../frontend/build/index.html'))
 );
+
+// if (NODE_ENV === 'production') {
+// 	const serverHTTPS = https.createServer(
+// 		{
+// 			key: fs.readFileSync(join(__dirname, '..', 'key.pem')),
+// 			cert: fs.readFileSync(join(__dirname, '..', 'cert.pem'))
+// 		},
+// 		app
+// 	);
+
+// 	serverHTTPS.listen(
+// 		PORT,
+// 		() => console.log('CONFIG:', CONFIG, `\nListening on port: ${PORT}`)
+// 		// console.log(`Listening on port: ${PORT}`));
+// 	);
+// } else
 server.listen(
 	PORT,
 	() => console.log('CONFIG:', CONFIG, `\nListening on port: ${PORT}`)

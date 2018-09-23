@@ -4,6 +4,7 @@ import * as GoogleCloudStorage from '@google-cloud/storage';
 import * as Multer from 'multer';
 import { IMemberModel, Member } from '../models/member';
 import { Permission, IPermissionModel } from '../models/permission';
+import CONFIG from '../config';
 export * from './email';
 
 const storage = new GoogleCloudStorage({
@@ -11,7 +12,7 @@ const storage = new GoogleCloudStorage({
 	keyFilename: 'purduehackers.json'
 });
 
-const bucket = storage.bucket('purduehackers');
+const bucket = storage.bucket(CONFIG.GC_BUCKET);
 
 export const multer = Multer({
 	storage: Multer.memoryStorage(),
@@ -113,7 +114,7 @@ export const uploadToStorage = async (
 
 		blobStream.on('finish', () => {
 			// The public URL can be used to directly access the file via HTTP.
-			resolve(`https://storage.googleapis.com/purduehackers/${fileName}`);
+			resolve(`https://storage.googleapis.com/${CONFIG.GC_BUCKET}/${fileName}`);
 		});
 
 		blobStream.end(file.buffer);
