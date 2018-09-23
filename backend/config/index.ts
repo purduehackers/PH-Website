@@ -19,7 +19,8 @@ const config = {
 	EMAIL_PASSWORD: env.EMAIL_PASSWORD || 'SuperSecretPassword',
 	EMAIL_SERVICE: env.EMAIL_SERVICE || 'gmail',
 	MAILGUN_DOMAIN: env.MAILGUN_DOMAIN || 'mydomain',
-	MAILGUN_SECRET: env.MAILGUN_SECRET || 'mysecret'
+	MAILGUN_SECRET: env.MAILGUN_SECRET || 'mysecret',
+	GC_BUCKET: env.GC_BUCKET || 'mybucket'
 };
 
 export default config;
