@@ -180,8 +180,6 @@ router.post('/signup', multer.any(), async (req, res, next) => {
 		user.devpost = devpost;
 		user.resumeLink = resumeLink;
 
-		console.log('Saving user:', user);
-
 		await user.save();
 		const u = user.toJSON();
 		delete u.password;
@@ -202,11 +200,11 @@ router.post('/login', async (req, res) => {
 		const user = await Member.findOne({ email }, '+password')
 			.populate({ path: 'permissions', model: Permission })
 			.exec();
-		if (!user) return errorRes(res, 401, 'Member not found.');
+		if (!user) return errorRes(res, 401, 'Member not found');
 
 		// Check if password matches
 		if (!user.comparePassword(password))
-			return errorRes(res, 401, 'Wrong password.');
+			return errorRes(res, 401, 'Wrong password');
 
 		const u = user.toJSON();
 		delete u.password;
@@ -238,7 +236,7 @@ router.get('/me', auth(), async (req, res) => {
 		const user = await Member.findById(req.user._id)
 			.populate({ path: 'permissions', model: Permission })
 			.exec();
-		if (!user) return errorRes(res, 401, 'Member not found.');
+		if (!user) return errorRes(res, 401, 'Member not found');
 
 		// If user is found and password is right create a token
 		const token = jwt.sign(

@@ -1,13 +1,12 @@
 {
 	"compilerOptions": {
-		"lib": ["es2017"],
+		"lib": ["es2017", "es2015", "es2015.promise", "dom"],
 		"module": "commonjs",
 		"noImplicitReturns": true,
 		"outDir": "dist",
 		"sourceMap": true,
 		"target": "es6",
-		"typeRoots": ["./backend/typings", "./node_modules/@types"],
-		// "strict": true,
+		"typeRoots": ["./node_modules/@types"],
 		"allowJs": true,
 		"removeComments": true,
 		"moduleResolution": "node",
@@ -15,5 +14,6 @@
 		"emitDecoratorMetadata": true
 	},
 	"compileOnSave": true,
-	"include": ["backend"]
+	"include": ["src"],
+	"exclude": ["node_modules", "**/*.test.ts"]
 }

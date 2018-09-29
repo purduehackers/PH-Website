@@ -6,7 +6,7 @@ import { auth, hasPermissions } from '../middleware/passport';
 import { successRes, errorRes, to, addMemberToPermission } from '../utils';
 export const router = express.Router();
 
-//TODO: Add logic to delete permissons from members document when deleting a permission
+// TODO: Add logic to delete permissons from members document when deleting a permission
 router.get('/', auth(), hasPermissions(['permissions']), async (req, res) => {
 	const [permissions, error] = await to(
 		Permission.find()

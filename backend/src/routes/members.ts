@@ -103,14 +103,15 @@ router.get('/:id', async (req, res) => {
 	try {
 		if (!ObjectId.isValid(req.params.id))
 			return errorRes(res, 400, 'Invalid member ID');
-		const user = await Member.findById(new ObjectId(req.params.id))
+		const member = await Member.findById(req.params.id)
 			.populate({
 				path: 'permissions',
 				model: Permission
 			})
 			.lean()
 			.exec();
-		return successRes(res, user);
+		if (!member) return errorRes(res, 400, 'Member does not exist');
+		return successRes(res, member);
 	} catch (error) {
 		return errorRes(res, 500, error);
 	}
@@ -244,12 +245,12 @@ router.post(
 			const { email } = req.body;
 			if (!email)
 				return errorRes(res, 400, 'Please enter member name or email');
-			let permissions = await Permission.find()
+			const permissions = await Permission.find()
 				.where('organizer')
 				.ne(0)
 				.exec();
 
-			let member = await Member.findOne({
+			const member = await Member.findOne({
 				$or: [{ name: email }, { email }]
 			}).exec();
 
