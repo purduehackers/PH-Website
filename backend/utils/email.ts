@@ -1,5 +1,5 @@
 import * as nodemailer from 'nodemailer';
-import * as mailgunTransport from 'nodemailer-mailgun-transport';
+import { Request } from 'express';
 import { join } from 'path';
 import { readFileSync } from 'fs';
 import * as jwt from 'jsonwebtoken';
@@ -8,30 +8,15 @@ import CONFIG from '../config';
 import { IEventModel } from '../models/event';
 import { IMemberModel } from '../models/member';
 import { formatDate } from './';
-import { Request } from 'express';
 
-// const transport = nodemailer.createTransport({
-// 	service: CONFIG.EMAIL_SERVICE,
-// 	host: 'smtp.gmail.com',
-// 	port: 587,
-// 	auth: {
-// 		user: CONFIG.EMAIL,
-// 		pass: CONFIG.EMAIL_PASSWORD
-// 	},
-// 	tls: {
-// 		rejectUnauthorized: false
-// 	},
-// 	debug: true
-// });
-
-const transport = nodemailer.createTransport(
-	mailgunTransport({
-		auth: {
-			api_key: CONFIG.MAILGUN_SECRET,
-			domain: CONFIG.MAILGUN_DOMAIN
-		}
-	})
-);
+const transport = nodemailer.createTransport({
+	host: 'smtp.sendgrid.net',
+	port: 465,
+	auth: {
+		user: 'apikey',
+		pass: CONFIG.SENDGRID_KEY
+	}
+});
 
 const resetTemplate = compile(
 	readFileSync(join(__dirname, '../emails', 'reset.hbs'), 'utf8')
@@ -68,7 +53,9 @@ export const sendResetEmail = async (member: IMemberModel, req: Request) => {
 	});
 	member.resetPasswordToken = token;
 	await member.save();
-	const resetUrl =`${req.protocol}://${req.get('host')}/reset?token=${token}`;
+	const resetUrl = `${req.protocol}://${req.get(
+		'host'
+	)}/reset?token=${token}`;
 	return await _sendResetEmail(member, resetUrl);
 };
 
@@ -107,7 +94,9 @@ export const sendAccountCreatedEmail = async (
 	});
 	member.resetPasswordToken = token;
 	await member.save();
-	const resetUrl =`${req.protocol}://${req.get('host')}/reset?token=${token}`;
+	const resetUrl = `${req.protocol}://${req.get(
+		'host'
+	)}/reset?token=${token}`;
 	return await _sendAccountCreatedEmail(
 		member,
 		event.name,
