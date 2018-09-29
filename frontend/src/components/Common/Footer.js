@@ -1,29 +1,36 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
 export default () => (
 	<div className="footer">
 		<ul className="footer-links">
 			<li className="facebook">
-				<Link to="//www.facebook.com/groups/purduehackers/">
+				<a
+					target="_blank"
+					rel="noopener noreferrer"
+					href="//www.facebook.com/groups/purduehackers/"
+				>
 					<FontAwesomeIcon icon={['fab', 'facebook']} />
-				</Link>
+				</a>
 			</li>
 			<li className="twitter">
-				<Link to="//www.twitter.com/purduehackers">
+				<a target="_blank" rel="noopener noreferrer" href="//www.twitter.com/purduehackers">
 					<FontAwesomeIcon icon={['fab', 'twitter']} />
-				</Link>
+				</a>
 			</li>
 			<li className="calendar">
-				<Link to="//www.google.com/calendar/embed?src=t27bsfuiaaeh82n0upu2hkepn4%40group.calendar.google.com">
+				<a
+					target="_blank"
+					rel="noopener noreferrer"
+					href="//www.google.com/calendar/embed?src=t27bsfuiaaeh82n0upu2hkepn4%40group.calendar.google.com"
+				>
 					<FontAwesomeIcon icon="calendar" />
-				</Link>
+				</a>
 			</li>
 			<li className="email">
-				<Link to="mailto:purduehackers@gmail.com">
+				<a href="mailto:purduehackers@gmail.com">
 					<FontAwesomeIcon icon="envelope" />
-				</Link>
+				</a>
 			</li>
 		</ul>
 		<h4>
