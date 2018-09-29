@@ -1,3 +1,0 @@
-dispatch:
-    - url: '*/dev*'
-      service: dev
