@@ -1,6 +1,9 @@
 # [START app_yaml]
 runtime: nodejs8
+<<<<<<< HEAD
 service: default
+=======
+>>>>>>> fb9431bc3d933a9af007d8720a38016b7787cdbc
 
 env_variables:
     NODE_ENV: 'production'
