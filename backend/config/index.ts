@@ -20,7 +20,8 @@ const config = {
 	EMAIL_SERVICE: env.EMAIL_SERVICE || 'gmail',
 	MAILGUN_DOMAIN: env.MAILGUN_DOMAIN || 'mydomain',
 	MAILGUN_SECRET: env.MAILGUN_SECRET || 'mysecret',
-	GC_BUCKET: env.GC_BUCKET || 'mybucket'
+	GC_BUCKET: env.GC_BUCKET || 'mybucket',
+	SENDGRID_KEY: env.SENDGRID_KEY || 'sendgridkey'
 };
 
 export default config;
