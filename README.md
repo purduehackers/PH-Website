@@ -6,11 +6,11 @@ http://www.purduehackers.com/
 
 ### Prerequisites
 
-*   [NodeJS](https://nodejs.org/en/)
-*   [MongoDB](https://docs.mongodb.com/manual/installation/)
-*   [Yarn](https://yarnpkg.com/en/docs/install)
-*   [Homebrew](https://brew.sh/) \*Only on Mac
-*	[Docker](https://www.docker.com/)
+-   [NodeJS](https://nodejs.org/en/)
+-   [MongoDB](https://docs.mongodb.com/manual/installation/)
+-   [Yarn](https://yarnpkg.com/en/docs/install)
+-   [Homebrew](https://brew.sh/) \*Only on Mac
+-   [Docker](https://www.docker.com/)
 
 ### Setup
 
@@ -26,30 +26,29 @@ http://www.purduehackers.com/
 1.  `cd backend`
 2.  Edit .env
 
-*   Ask `webmaster` about what to change
+-   Ask `webmaster` about what to change
 
 3.  Add purduehackers.json to `backend` folder
 
-*   Ask `webmaster` to get this file
+-   Ask `webmaster` to get this file
 
 4.  Make sure MongoDB is running:
 
-*   `mongod`
+-   `mongod`
 
-5.  `npm start`
+5.  `yarn dev`
 
 ## Technologies used:
 
 #### Frontend:
 
-*   [ReactJS](https://reactjs.org/)
-*   [ReduxJS](https://redux.js.org/)
-*   [ReactRouter](https://github.com/ReactTraining/react-router)
-*   [Yarn](https://yarnpkg.com/en/docs/install)
+-   [ReactJS](https://reactjs.org/)
+-   [ReduxJS](https://redux.js.org/)
+-   [ReactRouter](https://github.com/ReactTraining/react-router)
+-   [Yarn](https://yarnpkg.com/en/docs/install)
 
 #### Backend:
 
-*   [TypeScript](https://www.typescriptlang.org/)
-*   [MongoDB](https://docs.mongodb.com/manual/installation/)
-*   [ExpressJS](https://expressjs.com/)
-*   [Typegoose](https://github.com/szokodiakos/typegoose)
+-   [TypeScript](https://www.typescriptlang.org/)
+-   [MongoDB](https://docs.mongodb.com/manual/installation/)
+-   [ExpressJS](https://expressjs.com/)

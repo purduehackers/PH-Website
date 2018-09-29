@@ -1,11 +1,10 @@
 import * as express from 'express';
 // import * as paginate from 'express-paginate';
 import { ObjectId } from 'mongodb';
-import * as Multer from 'multer';
 import { isEmail, isMobilePhone, isURL } from 'validator';
 import { compareSync } from 'bcrypt';
 import { Member } from '../models/member';
-import { IEventModel, Event } from '../models/event';
+import { Event, IEventModel } from '../models/event';
 import { Location } from '../models/location';
 import { Permission } from '../models/permission';
 import { Job } from '../models/job';
@@ -65,7 +64,7 @@ export const router = express.Router();
 // 	}
 // });
 
-router.get('/', async (req, res, next) => {
+router.get('/', async (req, res) => {
 	try {
 		console.log(req.protocol + '://' + req.get('host'));
 		// tslint:disable-next-line:triple-equals
@@ -128,6 +127,7 @@ router.put('/:id', auth(), multer.any(), async (req, res) => {
 				401,
 				'You are unauthorized to edit this profile'
 			);
+
 		const files: Express.Multer.File[] = req.files
 			? (req.files as Express.Multer.File[])
 			: new Array<Express.Multer.File>();

@@ -1,8 +1,6 @@
 import * as express from 'express';
 import * as cookieParser from 'cookie-parser';
 import * as http from 'http';
-// import * as https from 'https';
-// import * as fs from 'fs';
 import * as logger from 'morgan';
 import * as mongoose from 'mongoose';
 import * as passport from 'passport';
@@ -65,21 +63,6 @@ app.get('*', (req, res) =>
 	res.sendFile(resolve(__dirname, '../frontend/build/index.html'))
 );
 
-// if (NODE_ENV === 'production') {
-// 	const serverHTTPS = https.createServer(
-// 		{
-// 			key: fs.readFileSync(join(__dirname, '..', 'key.pem')),
-// 			cert: fs.readFileSync(join(__dirname, '..', 'cert.pem'))
-// 		},
-// 		app
-// 	);
-
-// 	serverHTTPS.listen(
-// 		PORT,
-// 		() => console.log('CONFIG:', CONFIG, `\nListening on port: ${PORT}`)
-// 		// console.log(`Listening on port: ${PORT}`));
-// 	);
-// } else
 server.listen(
 	PORT,
 	() => console.log('CONFIG:', CONFIG, `\nListening on port: ${PORT}`)
