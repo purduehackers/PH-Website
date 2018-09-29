@@ -66,7 +66,6 @@ export const router = express.Router();
 
 router.get('/', async (req, res) => {
 	try {
-		console.log(req.protocol + '://' + req.get('host'));
 		// tslint:disable-next-line:triple-equals
 		const order = req.query.order == '1' ? 1 : -1;
 		let sortBy = req.query.sortBy || 'createdAt';
