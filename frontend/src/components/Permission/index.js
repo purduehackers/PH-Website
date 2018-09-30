@@ -222,6 +222,7 @@ const mapStateToProps = state => ({
 	...state.sessionState
 });
 
-export default connect(mapStateToProps, { flash: sendFlashMessage, clear: clearFlashMessages })(
-	PermissionPage
-);
+export default connect(
+	mapStateToProps,
+	{ flash: sendFlashMessage, clear: clearFlashMessages }
+)(PermissionPage);

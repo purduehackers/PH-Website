@@ -196,6 +196,7 @@ class CredentialsPage extends Component {
 	}
 }
 
-export default connect(null, { flash: sendFlashMessage, clear: clearFlashMessages })(
-	CredentialsPage
-);
+export default connect(
+	null,
+	{ flash: sendFlashMessage, clear: clearFlashMessages }
+)(CredentialsPage);

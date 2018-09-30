@@ -18,4 +18,7 @@ class Logout extends Component {
 	render = () => <Redirect to={routes.HOME} />;
 }
 
-export default connect(null, { signOut, sendFlashMessage })(Logout);
+export default connect(
+	null,
+	{ signOut, sendFlashMessage }
+)(Logout);

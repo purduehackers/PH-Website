@@ -1,8 +1,8 @@
 {
 	"root": true,
 	"parser": "babel-eslint",
-	"extends": "airbnb",
-	"plugins": ["import", "prettier", "react"],
+	"extends": ["airbnb", "prettier", "prettier/react"],
+	"plugins": ["import", "prettier", "react", "unicorn"],
 	"rules": {
 		"indent": "off",
 		"no-tabs": "off",

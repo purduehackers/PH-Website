@@ -76,7 +76,10 @@ class ForgotPasswordPage extends Component {
 
 const mapStateToProps = state => ({ ...state.sessionState });
 
-export default connect(mapStateToProps, {
-	flash: sendFlashMessage,
-	clear: clearFlashMessages
-})(ForgotPasswordPage);
+export default connect(
+	mapStateToProps,
+	{
+		flash: sendFlashMessage,
+		clear: clearFlashMessages
+	}
+)(ForgotPasswordPage);

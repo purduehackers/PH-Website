@@ -104,7 +104,10 @@ class ResetPasswordPage extends Component {
 
 const mapStateToProps = state => ({ ...state.sessionState });
 
-export default connect(mapStateToProps, {
-	flash: sendFlashMessage,
-	clear: clearFlashMessages
-})(ResetPasswordPage);
+export default connect(
+	mapStateToProps,
+	{
+		flash: sendFlashMessage,
+		clear: clearFlashMessages
+	}
+)(ResetPasswordPage);

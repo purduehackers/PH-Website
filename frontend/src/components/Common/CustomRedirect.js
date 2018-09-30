@@ -31,4 +31,7 @@ class CustomRedirect extends Component {
 	render = () => <Redirect to={this.props.to} />;
 }
 
-export default connect(null, { flash: sendFlashMessage })(CustomRedirect);
+export default connect(
+	null,
+	{ flash: sendFlashMessage }
+)(CustomRedirect);

@@ -86,4 +86,7 @@ const mapStateToProps = state => ({
 	...state.sessionState
 });
 
-export default connect(mapStateToProps, {})(MembersPage);
+export default connect(
+	mapStateToProps,
+	{}
+)(MembersPage);

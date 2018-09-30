@@ -156,4 +156,7 @@ const mapStateToProps = state => ({
 	...state.sessionState
 });
 
-export default connect(mapStateToProps, { signUp, flash: sendFlashMessage })(SignupPage);
+export default connect(
+	mapStateToProps,
+	{ signUp, flash: sendFlashMessage }
+)(SignupPage);
