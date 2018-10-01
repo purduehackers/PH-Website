@@ -31,8 +31,12 @@ import SignUp from '../Signup';
 import ForgotPassword from '../ForgotPassword';
 import ResetPassword from '../ResetPassword';
 import { storageChanged, clearFlashMessages, fetchProfile } from '../../actions';
+import withTracker from '../withTracker/index.jsx';
+import ReactGA from 'react-ga';
 
 fontawesome.library.add(faFacebook, faGithub, faTwitter, faEnvelope, faCalendar, faCoffee, faHeart);
+
+ReactGA.initialize('UA-124576559-1');
 
 class App extends Component {
 	static propTypes = {
@@ -75,27 +79,27 @@ class App extends Component {
 				<div className="pageWrap">
 					<FlashMessage />
 					<Switch>
-						<Route exact path={routes.HOME} component={Home} />
-						<Route exact path={routes.LOGIN} component={Login} />
-						<Route exact path={routes.LOGOUT} component={Logout} />
-						<Route exact path={routes.SIGNUP} component={SignUp} />
-						<Route exact path={routes.FORGOT_PASSWORD} component={ForgotPassword} />
-						<Route exact path={routes.RESET_PASSWORD} component={ResetPassword} />
-						<Route exact path={routes.LOCATIONS} component={Locations} />
-						<Route exact path={routes.LOCATIONS_MAP} component={LocationsMap} />
-						<Route exact path={routes.LOCATION} component={Location} />
-						<Route exact path={routes.CALENDAR} component={Calendar} />
-						<Route exact path={routes.DEV} component={Dev} />
-						<Route exact path={routes.MEMBERS} component={Members} />
-						<Route exact path={routes.MEMBER} component={Member} />
-						<Route exact path={routes.EVENTS} component={Events} />
-						<Route exact path={routes.EVENT} component={Event} />
+						<Route exact path={routes.HOME} component={withTracker(Home)} />
+						<Route exact path={routes.LOGIN} component={withTracker(Login)} />
+						<Route exact path={routes.LOGOUT} component={withTracker(Logout)} />
+						<Route exact path={routes.SIGNUP} component={withTracker(SignUp)} />
+						<Route exact path={routes.FORGOT_PASSWORD} component={withTracker(ForgotPassword)} />
+						<Route exact path={routes.RESET_PASSWORD} component={withTracker(ResetPassword)} />
+						<Route exact path={routes.LOCATIONS} component={withTracker(Locations)} />
+						<Route exact path={routes.LOCATIONS_MAP} component={withTracker(LocationsMap)} />
+						<Route exact path={routes.LOCATION} component={withTracker(Location)} />
+						<Route exact path={routes.CALENDAR} component={withTracker(Calendar)} />
+						<Route exact path={routes.DEV} component={withTracker(Dev)} />
+						<Route exact path={routes.MEMBERS} component={withTracker(Members)} />
+						<Route exact path={routes.MEMBER} component={withTracker(Member)} />
+						<Route exact path={routes.EVENTS} component={withTracker(Events)} />
+						<Route exact path={routes.EVENT} component={withTracker(Event)} />
 						<ProtectedRoute
 							token={token}
 							user={user}
 							exact
 							path={routes.EDIT_PROFILE}
-							component={EditProfile}
+							component={withTracker(EditProfile)}
 						/>
 						<ProtectedRoute
 							token={token}
@@ -103,7 +107,7 @@ class App extends Component {
 							exact
 							path={routes.CREATE_EVENT}
 							type="create"
-							component={EditCreateEvent}
+							component={withTracker(EditCreateEvent)}
 						/>
 						<ProtectedRoute
 							token={token}
@@ -111,7 +115,7 @@ class App extends Component {
 							exact
 							path={routes.EDIT_EVENT}
 							type="edit"
-							component={EditCreateEvent}
+							component={withTracker(EditCreateEvent)}
 						/>
 						<ProtectedRoute
 							token={token}
@@ -119,7 +123,7 @@ class App extends Component {
 							exact
 							path={routes.CHECKIN_EVENT}
 							roles={['events']}
-							component={EventCheckin}
+							component={withTracker(EventCheckin)}
 						/>
 						<ProtectedRoute
 							token={token}
@@ -127,7 +131,7 @@ class App extends Component {
 							exact
 							path={routes.CREDENTIALS}
 							roles={['credentials']}
-							component={Credentials}
+							component={withTracker(Credentials)}
 						/>
 						<ProtectedRoute
 							token={token}
@@ -135,7 +139,7 @@ class App extends Component {
 							exact
 							path={routes.PERMISSIONS}
 							roles={['permissions']}
-							component={Permissions}
+							component={withTracker(Permissions)}
 						/>
 						<ProtectedRoute
 							token={token}
@@ -143,14 +147,14 @@ class App extends Component {
 							exact
 							path={routes.PERMISSION}
 							roles={['permissions']}
-							component={Permission}
+							component={withTracker(Permission)}
 						/>
 						<ProtectedRoute
 							token={token}
 							user={user}
 							exact
 							path={routes.ANVIL_WIFI}
-							component={AnvilWifi}
+							component={withTracker(AnvilWifi)}
 						/>
 						<Route component={NotFound} />
 					</Switch>
